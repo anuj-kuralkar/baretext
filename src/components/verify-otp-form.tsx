@@ -1,3 +1,6 @@
+"use client";
+
+import { useActionState } from "react";
 import { ArrowLeft } from "react-bootstrap-icons";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +18,17 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-export function VerifyOtpForm() {
+import { verifyOtp } from "@/actions/auth";
+
+export function VerifyOtpForm({
+  email,
+  onBack,
+}: { email: string; onBack: () => void }) {
+  const initialState = {
+    inputs: { otp: "" },
+    errors: { otp: [] },
+  };
+  const [state, action, isPending] = useActionState(verifyOtp, initialState);
   return (
     <div className="flex flex-col gap-6">
       <Card>
@@ -27,10 +40,11 @@ export function VerifyOtpForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form action={action} noValidate>
             <div className="grid gap-6">
+              <input type="hidden" name="email" value={email} required />
               <div className="mx-auto">
-                <InputOTP maxLength={6}>
+                <InputOTP maxLength={6} name="otp" required>
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
@@ -41,15 +55,19 @@ export function VerifyOtpForm() {
                   </InputOTPGroup>
                 </InputOTP>
               </div>
-
-              <Button type="submit" className="w-full">
+              {state.errors.otp && (
+                <p className="text-xs text-red-600">
+                  {state.errors.otp.join(", ")}
+                </p>
+              )}
+              <Button type="submit" disabled={isPending} className="w-full">
                 Confirm
               </Button>
             </div>
           </form>
         </CardContent>
         <CardFooter className="justify-center">
-          <Button variant="link">
+          <Button variant="link" onClick={onBack}>
             <ArrowLeft />
             Back
           </Button>
