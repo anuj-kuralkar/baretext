@@ -36,7 +36,7 @@ export function VerifyOtpForm({
           <CardTitle className="text-xl">Verify Your Email</CardTitle>
           <CardDescription>
             We've sent a 6-digit verification code to{" "}
-            <span className="text-foreground">me@example.com</span>.
+            <span className="text-foreground">{email}</span>.
           </CardDescription>
         </CardHeader>
         <CardContent>
