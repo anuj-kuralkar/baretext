@@ -8,6 +8,7 @@ import {
   loginWithEmailFormSchema,
 } from "@/schemas/auth";
 import { type VerifyOtpFormState, verifyOtpFormSchema } from "@/schemas/auth";
+import type { Provider } from "@supabase/auth-js";
 
 export async function loginWithEmail(
   state: LoginWithEmailFormState,
@@ -74,4 +75,21 @@ export async function verifyOtp(state: VerifyOtpFormState, formData: FormData) {
   }
 
   redirect("/");
+}
+
+export async function loginWithOAuth(provider: Provider) {
+  console.log("Logging in with OAuth provider:", provider);
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: "http://localhost:3000/auth/callback",
+    },
+  });
+
+  if (data.url) {
+    redirect(data.url);
+  }
+
+  return data;
 }

@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { Envelope, Github, Google } from "react-bootstrap-icons";
 
 import { loginWithEmail } from "@/actions/auth";
+import { loginWithOAuth } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,30 +13,26 @@ import { VerifyOtpForm } from "@/components/verify-otp-form";
 
 function LoginWithOAuthForm() {
   return (
-    <form>
-      <div className="flex flex-col gap-4">
-        <Button
-          type="submit"
-          name="provider"
-          value="google"
-          variant="outline"
-          className="w-full"
-        >
-          <Google />
-          Login with Google
-        </Button>
-        <Button
-          type="submit"
-          name="provider"
-          value="github"
-          variant="outline"
-          className="w-full"
-        >
-          <Github />
-          Login with Github
-        </Button>
-      </div>
-    </form>
+    <div className="flex flex-col gap-4">
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={() => loginWithOAuth("google")}
+      >
+        <Google />
+        Login with Google
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={() => loginWithOAuth("github")}
+      >
+        <Github />
+        Login with Github
+      </Button>
+    </div>
   );
 }
 
