@@ -25,7 +25,7 @@ export async function Header({ user }: { user: User | null }) {
       </nav>
       {user ? (
         <Avatar>
-          <AvatarImage src={user.user_metadata?.avatar_url} />
+          <AvatarImage src={user.user_metadata?.avatar_url} alt="User Avatar" />
           <AvatarFallback>
             <Person />
           </AvatarFallback>
