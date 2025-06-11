@@ -32,7 +32,7 @@ export async function Header({ user }: { user: User | null }) {
         </Avatar>
       ) : (
         <Button asChild>
-          <Link href="/login">Login</Link>
+          <Link href="/auth/login">Login</Link>
         </Button>
       )}
     </header>
