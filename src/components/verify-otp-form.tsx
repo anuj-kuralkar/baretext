@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { ArrowLeft } from "react-bootstrap-icons";
 
+import { verifyOtp } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,13 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-
-import { verifyOtp } from "@/actions/auth";
 
 export function VerifyOtpForm({
   email,
@@ -42,23 +42,23 @@ export function VerifyOtpForm({
         <form action={action} noValidate>
           <div className="grid gap-y-6">
             <input type="hidden" name="email" value={email} required />
-            <div className="mx-auto space-y-1">
-              <InputOTP maxLength={6} name="otp" required>
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} className="h-10 w-10" />
-                  <InputOTPSlot index={1} className="h-10 w-10" />
-                  <InputOTPSlot index={2} className="h-10 w-10" />
-                  <InputOTPSlot index={3} className="h-10 w-10" />
-                  <InputOTPSlot index={4} className="h-10 w-10" />
-                  <InputOTPSlot index={5} className="h-10 w-10" />
-                </InputOTPGroup>
-              </InputOTP>
+            <FormItem className="justify-center">
+              <FormControl>
+                <InputOTP maxLength={6} name="otp" required>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} className="h-10 w-10" />
+                    <InputOTPSlot index={1} className="h-10 w-10" />
+                    <InputOTPSlot index={2} className="h-10 w-10" />
+                    <InputOTPSlot index={3} className="h-10 w-10" />
+                    <InputOTPSlot index={4} className="h-10 w-10" />
+                    <InputOTPSlot index={5} className="h-10 w-10" />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormControl>
               {state.errors.otp && (
-                <p className="text-xs text-red-600">
-                  {state.errors.otp.join(", ")}
-                </p>
+                <FormMessage>{state.errors.otp.join(", ")}</FormMessage>
               )}
-            </div>
+            </FormItem>
             <Button type="submit" disabled={isPending} className="w-full">
               Confirm
             </Button>

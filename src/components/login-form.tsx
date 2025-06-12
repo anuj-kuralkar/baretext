@@ -7,8 +7,13 @@ import { loginWithEmail } from "@/actions/auth";
 import { loginWithOAuth } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { VerifyOtpForm } from "@/components/verify-otp-form";
 
 function LoginWithOAuthForm() {
@@ -57,22 +62,21 @@ function LoginWithEmailForm({
 
   return (
     <form action={action} noValidate>
-      <div className="grid gap-6">
-        <div className="grid gap-3">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            placeholder="me@example.com"
-            type="email"
-            required
-          />
+      <div className="grid gap-4">
+        <FormItem>
+          <FormLabel>Email</FormLabel>
+          <FormControl>
+            <Input
+              name="email"
+              placeholder="me@example.com"
+              type="email"
+              required
+            />
+          </FormControl>
           {state.errors.email && (
-            <p className="text-xs text-red-600">
-              {state.errors.email.join(", ")}
-            </p>
+            <FormMessage>{state.errors.email.join(", ")}</FormMessage>
           )}
-        </div>
+        </FormItem>
         <Button type="submit" disabled={isPending} className="w-full">
           <Envelope />
           Login with Email
