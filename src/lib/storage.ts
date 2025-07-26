@@ -1,27 +1,16 @@
 "use server";
+
 import { getUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 const BUCKET = "files";
 
-async function prefixName(name: string) {
+async function getUserPrefix(): Promise<string> {
   const { user, error } = await getUser();
   if (!error && user?.id) {
-    return `${user.id}/${name}`;
+    return `${user.id}/`;
   }
   return "";
-}
-
-export async function createFolder(name: string) {
-  const supabase = await createClient();
-
-  const prefixedName = await prefixName(name);
-
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .upload(`${prefixedName}/.keep`, new Blob([""]));
-
-  return { data, error };
 }
 
 export async function createFile(
@@ -30,8 +19,8 @@ export async function createFile(
   contentType = "text/plain",
 ) {
   const supabase = await createClient();
-
-  const prefixedName = await prefixName(name);
+  const userPrefix = await getUserPrefix();
+  const prefixedName = `${userPrefix}${name}`;
 
   const { data, error } = await supabase.storage
     .from(BUCKET)
@@ -42,27 +31,24 @@ export async function createFile(
   return { data, error };
 }
 
-export async function renameFile(oldName: string, newName: string) {
-  const supabase = await createClient();
-
-  const oldPrefixed = await prefixName(oldName);
-  const newPrefixed = await prefixName(newName);
-
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .move(oldPrefixed, newPrefixed);
-
-  return { data, error };
-}
-
 export async function deleteFile(name: string) {
   const supabase = await createClient();
+  const userPrefix = await getUserPrefix();
+  const prefixedName = `${userPrefix}${name}`;
 
-  const prefixedName = await prefixName(name);
+  return await supabase.storage.from(BUCKET).remove([prefixedName]);
+}
 
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .remove([prefixedName]);
+export async function renameFile(oldName: string, newName: string) {
+  return move(oldName, newName);
+}
+
+export async function createFolder(name: string) {
+  const { data, error } = await createFile(
+    `${name}/.emptyFolderPlaceholder`,
+    new Blob(),
+    "application/x-directory",
+  );
 
   return { data, error };
 }
@@ -70,55 +56,69 @@ export async function deleteFile(name: string) {
 export async function deleteFolder(name: string) {
   const supabase = await createClient();
 
-  const prefixedName = await prefixName(name);
-
-  const { data: listData, error: listError } = await supabase.rpc(
-    "list_objects",
-    {
-      bucketid: BUCKET,
-      prefix: prefixedName,
-    },
-  );
+  const { data: names, error: listError } = await listFiles(name);
 
   if (listError) {
     return { data: null, error: listError };
   }
 
-  const fullPaths = listData.map((item: { name: string }) => item.name);
-
-  const { data, error } = await supabase.storage.from(BUCKET).remove(fullPaths);
-
-  return { data, error };
+  return await supabase.storage.from(BUCKET).remove(names);
 }
 
-export async function listFiles(
-  prefix = "",
-  limit = 100,
-  offset = 0,
-  recursive = true,
-) {
-  const supabase = await createClient();
+export async function renameFolder(oldName: string, newName: string) {
+  const { data: listData, error: listError } = await listFiles(oldName);
 
-  const prefixedPrefix = await prefixName(prefix);
-
-  if (recursive) {
-    const { data, error } = await supabase.rpc("list_objects", {
-      bucketid: BUCKET,
-      prefix: prefixedPrefix,
-      limits: limit,
-      offsets: offset,
-    });
-
-    return { data, error };
+  if (listError) {
+    return { data: null, error: listError };
   }
 
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .list(prefixedPrefix, {
-      limit,
-      offset,
-      sortBy: { column: "name", order: "asc" },
-    });
+  const movePromises = listData.map(async (name: string) => {
+    const relativePath = name.slice(oldName.length);
+    const destination = newName + relativePath;
 
-  return { data, error };
+    return await move(name, destination);
+  });
+
+  const results = await Promise.all(movePromises);
+  const errors = results.filter((r) => r.error);
+
+  if (errors.length > 0) {
+    return { data: null, error: errors };
+  }
+
+  return { data: results.map((r) => r.data), error: null };
+}
+
+export async function listFiles(rootName = "") {
+  const supabase = await createClient();
+  const userPrefix = await getUserPrefix();
+  const prefixedRootName = `${userPrefix}${rootName}`;
+
+  const { data, error } = await supabase.rpc("list_objects", {
+    bucketid: BUCKET,
+    prefix: prefixedRootName,
+  });
+
+  if (error || !data) {
+    return { data: null, error };
+  }
+
+  let names = data;
+
+  names = names.map((name: string) => {
+    return name.replace(userPrefix, "");
+  });
+
+  return { data: names, error: null };
+}
+
+export async function move(source: string, destination: string) {
+  const supabase = await createClient();
+  const userPrefix = await getUserPrefix();
+  const prefixedSource = `${userPrefix}${source}`;
+  const prefixedDestination = `${userPrefix}${destination}`;
+
+  return supabase.storage
+    .from(BUCKET)
+    .move(prefixedSource, prefixedDestination);
 }
