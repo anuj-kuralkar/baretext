@@ -1,5 +1,16 @@
 # lintnote
 
+## 0.4.0
+
+### Minor Changes
+
+- 9727937: Added a sidebar
+- 3bcd0fa: Added file manager with create, rename, and delete for files and folders.
+
+### Patch Changes
+
+- 347351e: Enhanced form appearance
+
 ## 0.3.0
 
 ### Minor Changes
