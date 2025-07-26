@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import type * as React from "react";
+import { Person } from "react-bootstrap-icons";
 
+import { FileTree } from "@/components/file-tree";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -16,7 +16,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { createClient } from "@/lib/supabase/server";
-import { Person } from "react-bootstrap-icons";
 
 export async function AppSidebar({
   ...props
@@ -49,9 +48,7 @@ export async function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Files</SidebarGroupLabel>
-        </SidebarGroup>
+        <FileTree />
       </SidebarContent>
       <SidebarFooter>
         <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
