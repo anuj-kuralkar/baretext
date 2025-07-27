@@ -13,17 +13,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
+import { FieldErrorText, FieldRoot } from "@/components/ui/field";
 import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+  PinInputControl,
+  PinInputHiddenInput,
+  PinInputInput,
+  PinInputRoot,
+} from "@/components/ui/pin-input";
 
 export function VerifyOtpForm({
   email,
   onBack,
-}: { email: string; onBack: () => void }) {
+}: {
+  email: string;
+  onBack: () => void;
+}) {
   const initialState = {
     inputs: { otp: "" },
     errors: { otp: [] },
@@ -41,32 +45,29 @@ export function VerifyOtpForm({
       <CardContent>
         <form action={action} noValidate>
           <div className="grid gap-y-6">
-            <input type="hidden" name="email" value={email} required />
-            <FormItem className="justify-center">
-              <FormControl>
-                <InputOTP maxLength={6} name="otp" required>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} className="h-10 w-10" />
-                    <InputOTPSlot index={1} className="h-10 w-10" />
-                    <InputOTPSlot index={2} className="h-10 w-10" />
-                    <InputOTPSlot index={3} className="h-10 w-10" />
-                    <InputOTPSlot index={4} className="h-10 w-10" />
-                    <InputOTPSlot index={5} className="h-10 w-10" />
-                  </InputOTPGroup>
-                </InputOTP>
-              </FormControl>
-              {state.errors.otp && (
-                <FormMessage>{state.errors.otp.join(", ")}</FormMessage>
-              )}
-            </FormItem>
-            <Button type="submit" disabled={isPending} className="w-full">
+            <input name="email" required type="hidden" value={email} />
+            <FieldRoot
+              className="justify-center"
+              invalid={!!state.errors.otp?.length}
+            >
+              <PinInputRoot count={6} name="otp" otp required>
+                <PinInputControl>
+                  {[0, 1, 2, 3, 4, 5].map((id, index) => (
+                    <PinInputInput index={index} key={id} />
+                  ))}
+                </PinInputControl>
+                <PinInputHiddenInput />
+              </PinInputRoot>
+              <FieldErrorText>{state.errors.otp?.join(", ")}</FieldErrorText>
+            </FieldRoot>
+            <Button className="w-full" disabled={isPending} type="submit">
               Confirm
             </Button>
           </div>
         </form>
       </CardContent>
       <CardFooter className="justify-center">
-        <Button variant="link" onClick={onBack}>
+        <Button onClick={onBack} variant="link">
           <ArrowLeft />
           Back
         </Button>

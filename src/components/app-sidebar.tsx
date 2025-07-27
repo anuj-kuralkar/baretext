@@ -4,7 +4,11 @@ import type * as React from "react";
 import { Person } from "react-bootstrap-icons";
 
 import { FileTree } from "@/components/file-tree";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -31,13 +35,13 @@ export async function AppSidebar({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton asChild size="lg">
               <Link href="/">
                 <Image
-                  src="/lintnote.svg"
                   alt="LintNote"
-                  width={32}
                   height={32}
+                  src="/lintnote.svg"
+                  width={32}
                 />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">LintNote</span>
@@ -52,15 +56,15 @@ export async function AppSidebar({
       </SidebarContent>
       <SidebarFooter>
         <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-          <Avatar className="h-8 w-8 rounded-lg">
+          <AvatarRoot className="h-8 w-8 rounded-lg">
             <AvatarImage
-              src={user?.user_metadata.avatar}
               alt={user?.user_metadata.name}
+              src={user?.user_metadata.avatar}
             />
             <AvatarFallback className="rounded-lg">
               <Person />
             </AvatarFallback>
-          </Avatar>
+          </AvatarRoot>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">
               {user?.user_metadata.name}
