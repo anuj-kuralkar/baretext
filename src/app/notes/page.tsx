@@ -1,19 +1,27 @@
+import { LayoutSidebar } from "react-bootstrap-icons";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
+  SidebarContent,
   SidebarInset,
-  SidebarProvider,
+  SidebarResizeTrigger,
+  SidebarRoot,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 export default function Page() {
   return (
-    <SidebarProvider>
-      <AppSidebar />
+    <SidebarRoot>
+      <SidebarContent>
+        <AppSidebar />
+      </SidebarContent>
+      <SidebarResizeTrigger />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
+          <SidebarTrigger className="-ml-1">
+            <LayoutSidebar className="size-4" />
+          </SidebarTrigger>
         </header>
       </SidebarInset>
-    </SidebarProvider>
+    </SidebarRoot>
   );
 }
