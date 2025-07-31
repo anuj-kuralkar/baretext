@@ -3,36 +3,34 @@
 import { useActionState, useEffect, useState } from "react";
 import { Envelope, Github, Google } from "react-bootstrap-icons";
 
-import { loginWithEmail } from "@/actions/auth";
-import { loginWithOAuth } from "@/actions/auth";
+import { loginWithEmail, loginWithOAuth } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+  FieldErrorText,
+  FieldInput,
+  FieldLabel,
+  FieldRoot,
+} from "@/components/ui/field";
 import { VerifyOtpForm } from "@/components/verify-otp-form";
 
 function LoginWithOAuthForm() {
   return (
     <div className="flex flex-col gap-4">
       <Button
-        type="button"
-        variant="outline"
         className="w-full"
         onClick={() => loginWithOAuth("google")}
+        type="button"
+        variant="outline"
       >
         <Google />
         Login with Google
       </Button>
       <Button
-        type="button"
-        variant="outline"
         className="w-full"
         onClick={() => loginWithOAuth("github")}
+        type="button"
+        variant="outline"
       >
         <Github />
         Login with Github
@@ -43,7 +41,9 @@ function LoginWithOAuthForm() {
 
 function LoginWithEmailForm({
   onSuccess,
-}: { onSuccess: (email: string) => void }) {
+}: {
+  onSuccess: (email: string) => void;
+}) {
   const initialState = {
     inputs: { email: "" },
     errors: { email: [] },
@@ -63,21 +63,12 @@ function LoginWithEmailForm({
   return (
     <form action={action} noValidate>
       <div className="grid gap-4">
-        <FormItem>
-          <FormLabel>Email</FormLabel>
-          <FormControl>
-            <Input
-              name="email"
-              placeholder="me@example.com"
-              type="email"
-              required
-            />
-          </FormControl>
-          {state.errors.email && (
-            <FormMessage>{state.errors.email.join(", ")}</FormMessage>
-          )}
-        </FormItem>
-        <Button type="submit" disabled={isPending} className="w-full">
+        <FieldRoot invalid={!!state.errors.email?.length} required>
+          <FieldLabel>Email</FieldLabel>
+          <FieldInput name="email" placeholder="me@example.com" type="email" />
+          <FieldErrorText>{state.errors.email?.join(", ")}</FieldErrorText>
+        </FieldRoot>
+        <Button className="w-full" disabled={isPending} type="submit">
           <Envelope />
           Login with Email
         </Button>

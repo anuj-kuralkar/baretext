@@ -1,77 +1,61 @@
 import Image from "next/image";
 import Link from "next/link";
-import type * as React from "react";
 import { Person } from "react-bootstrap-icons";
 
 import { FileTree } from "@/components/file-tree";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Sidebar,
-  SidebarContent,
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
 } from "@/components/ui/sidebar";
-import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/auth";
 
-export async function AppSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+export async function AppSidebar() {
+  const { user } = await getUser();
+  const { name, email, avatar } = user?.user_metadata ?? {};
 
   return (
-    <Sidebar {...props}>
+    <>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/">
-                <Image
-                  src="/lintnote.svg"
-                  alt="LintNote"
-                  width={32}
-                  height={32}
-                />
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">LintNote</span>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <Button asChild className="w-full h-12" size="lg" variant="ghost">
+          <Link className="flex items-center gap-2" href="/">
+            <Image alt="LintNote" height={32} src="/lintnote.svg" width={32} />
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">LintNote</span>
+            </div>
+          </Link>
+        </Button>
       </SidebarHeader>
-      <SidebarContent>
+
+      <SidebarGroup>
         <FileTree />
-      </SidebarContent>
+      </SidebarGroup>
+
       <SidebarFooter>
-        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-          <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarImage
-              src={user?.user_metadata.avatar}
-              alt={user?.user_metadata.name}
-            />
-            <AvatarFallback className="rounded-lg">
-              <Person />
-            </AvatarFallback>
-          </Avatar>
-          <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-medium">
-              {user?.user_metadata.name}
-            </span>
-            <span className="truncate text-xs">
-              {user?.user_metadata.email}
-            </span>
-          </div>
-        </div>
+        <Button asChild className="w-full h-12" size="lg" variant="ghost">
+          <Link
+            className="flex items-center gap-2 px-1 py-1.5 text-left text-sm"
+            href="/settings"
+          >
+            <AvatarRoot className="h-8 w-8 rounded-lg">
+              <AvatarImage alt={name} src={avatar} />
+              <AvatarFallback className="rounded-lg">
+                <Person />
+              </AvatarFallback>
+            </AvatarRoot>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{name}</span>
+              <span className="truncate text-xs">{email}</span>
+            </div>
+          </Link>
+        </Button>
       </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    </>
   );
 }

@@ -8,8 +8,8 @@ import {
 import { type UseMenuReturn, useMenu } from "@ark-ui/react/menu";
 import {
   type CreateToasterReturn,
-  Toaster,
   createToaster,
+  Toaster,
 } from "@ark-ui/react/toast";
 import { type TreeView, useTreeView } from "@ark-ui/react/tree-view";
 import { useEffect, useState } from "react";
@@ -86,7 +86,7 @@ const TreeNode = (
     isEditing && activeEditing.intent === "create-folder";
 
   return (
-    <TreeViewNodeProvider<TreeViewNode> node={node} indexPath={indexPath}>
+    <TreeViewNodeProvider<TreeViewNode> indexPath={indexPath} node={node}>
       {node.children ? (
         <TreeViewBranch>
           <EditableRootProvider value={editable}>
@@ -138,12 +138,12 @@ const TreeNode = (
               ?.filter((child) => child.label !== ".emptyFolderPlaceholder")
               ?.map((child, index) => (
                 <TreeNode
-                  key={child.value}
-                  node={child}
-                  indexPath={[...indexPath, index]}
-                  menu={menu}
                   activeEditing={activeEditing}
                   editable={editable}
+                  indexPath={[...indexPath, index]}
+                  key={child.value}
+                  menu={menu}
+                  node={child}
                 />
               ))}
           </TreeViewBranchContent>
@@ -271,8 +271,8 @@ export const FileTree = () => {
 
   return (
     <TreeViewRootProvider
-      value={tree}
       className={cn("flex flex-col h-full", isLoading && "animate-pulse")}
+      value={tree}
     >
       <TreeViewLabel>Files</TreeViewLabel>
 
@@ -283,12 +283,12 @@ export const FileTree = () => {
           )
           ?.map((node: TreeViewNode, index: number) => (
             <TreeNode
-              key={node.value}
-              node={node}
-              indexPath={[index]}
-              menu={menu}
-              editable={editable}
               activeEditing={activeEdit}
+              editable={editable}
+              indexPath={[index]}
+              key={node.value}
+              menu={menu}
+              node={node}
             />
           ))}
 
@@ -313,12 +313,12 @@ export const FileTree = () => {
 
       <button
         {...menu.api.getContextTriggerProps()}
+        className="size-full min-h-8"
         onFocus={() => {
           setFocusedNode({ value: "", label: "" });
         }}
-        className="size-full min-h-8"
       />
-      <TreeViewContextMenu menu={menu} focusedNode={focusedNode} />
+      <TreeViewContextMenu focusedNode={focusedNode} menu={menu} />
       <TreeViewToaster toaster={toaster} />
     </TreeViewRootProvider>
   );
