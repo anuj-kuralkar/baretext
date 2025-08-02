@@ -1,6 +1,6 @@
 import {
-  type TreeCollection,
   createFileTreeCollection,
+  type TreeCollection,
 } from "@ark-ui/react/tree-view";
 import type { StorageError } from "@supabase/storage-js";
 import { useEffect, useState } from "react";
