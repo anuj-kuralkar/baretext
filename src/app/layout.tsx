@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -19,8 +20,8 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
-          enableSystem
           disableTransitionOnChange
+          enableSystem
         >
           {children}
         </ThemeProvider>

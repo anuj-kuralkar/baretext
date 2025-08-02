@@ -1,17 +1,18 @@
 "use server";
 
+import type { Provider } from "@supabase/auth-js";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import {
   type LoginWithEmailFormState,
   loginWithEmailFormSchema,
+  type VerifyOtpFormState,
+  verifyOtpFormSchema,
 } from "@/schemas/auth";
-import { type VerifyOtpFormState, verifyOtpFormSchema } from "@/schemas/auth";
-import type { Provider } from "@supabase/auth-js";
 
 export async function loginWithEmail(
-  state: LoginWithEmailFormState,
+  _state: LoginWithEmailFormState,
   formData: FormData,
 ): Promise<LoginWithEmailFormState> {
   const email = formData.get("email") as string;
@@ -28,7 +29,7 @@ export async function loginWithEmail(
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithOtp({
+  const { error } = await supabase.auth.signInWithOtp({
     email: validatedFields.data.email,
   });
 
@@ -47,7 +48,10 @@ export async function loginWithEmail(
   };
 }
 
-export async function verifyOtp(state: VerifyOtpFormState, formData: FormData) {
+export async function verifyOtp(
+  _state: VerifyOtpFormState,
+  formData: FormData,
+) {
   const otp = formData.get("otp") as string;
   const email = formData.get("email") as string;
 
@@ -61,7 +65,7 @@ export async function verifyOtp(state: VerifyOtpFormState, formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.verifyOtp({
+  const { error } = await supabase.auth.verifyOtp({
     email,
     token: otp,
     type: "email",
@@ -80,7 +84,7 @@ export async function verifyOtp(state: VerifyOtpFormState, formData: FormData) {
 export async function loginWithOAuth(provider: Provider) {
   console.log("Logging in with OAuth provider:", provider);
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { data } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
       redirectTo: "http://localhost:3000/auth/callback",
