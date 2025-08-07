@@ -6,19 +6,9 @@ import {
   useEditable,
 } from "@ark-ui/react/editable";
 import { type UseMenuReturn, useMenu } from "@ark-ui/react/menu";
-import {
-  type CreateToasterReturn,
-  createToaster,
-  Toaster,
-} from "@ark-ui/react/toast";
 import { type TreeView, useTreeView } from "@ark-ui/react/tree-view";
 import { useEffect, useState } from "react";
-import {
-  ChevronRight,
-  FileEarmark,
-  Folder,
-  InfoCircle,
-} from "react-bootstrap-icons";
+import { ChevronRight, FileEarmark, Folder } from "react-bootstrap-icons";
 
 import {
   EditableArea,
@@ -31,7 +21,7 @@ import {
   MenuPositioner,
   MenuRootProvider,
 } from "@/components/ui/menu";
-import { ToastDescription, ToastRoot, ToastTitle } from "@/components/ui/toast";
+import { toaster } from "@/components/ui/toast";
 import {
   TreeViewBranch,
   TreeViewBranchContent,
@@ -64,11 +54,6 @@ type TreeViewContextMenuProps = {
   menu: UseMenuReturn;
   focusedNode?: TreeViewNode;
 };
-
-const toaster = createToaster({
-  placement: "top",
-  gap: 16,
-});
 
 const TreeNode = (
   props: TreeView.NodeProviderProps<TreeViewNode> & {
@@ -319,7 +304,6 @@ export const FileTree = () => {
         }}
       />
       <TreeViewContextMenu focusedNode={focusedNode} menu={menu} />
-      <TreeViewToaster toaster={toaster} />
     </TreeViewRootProvider>
   );
 };
@@ -355,19 +339,5 @@ function TreeViewContextMenu({ menu, focusedNode }: TreeViewContextMenuProps) {
         </MenuContent>
       </MenuPositioner>
     </MenuRootProvider>
-  );
-}
-
-function TreeViewToaster({ toaster }: { toaster: CreateToasterReturn }) {
-  return (
-    <Toaster toaster={toaster}>
-      {(toast) => (
-        <ToastRoot key={toast.id}>
-          <InfoCircle />
-          <ToastTitle>{toast.title}</ToastTitle>
-          <ToastDescription>{toast.description}</ToastDescription>
-        </ToastRoot>
-      )}
-    </Toaster>
   );
 }

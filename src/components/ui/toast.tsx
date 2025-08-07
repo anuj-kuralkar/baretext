@@ -1,4 +1,7 @@
-import { Toast } from "@ark-ui/react/toast";
+"use client";
+
+import { createToaster, Toast, Toaster } from "@ark-ui/react/toast";
+import { InfoCircle } from "react-bootstrap-icons";
 
 export function ToastRoot(props: Toast.RootProps) {
   return (
@@ -24,5 +27,24 @@ export function ToastDescription(props: Toast.DescriptionProps) {
       className="col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
       {...props}
     />
+  );
+}
+
+export const toaster = createToaster({
+  placement: "top",
+  gap: 16,
+});
+
+export function AppToaster() {
+  return (
+    <Toaster toaster={toaster}>
+      {(toast) => (
+        <ToastRoot key={toast.id}>
+          <InfoCircle />
+          <ToastTitle>{toast.title}</ToastTitle>
+          <ToastDescription>{toast.description}</ToastDescription>
+        </ToastRoot>
+      )}
+    </Toaster>
   );
 }

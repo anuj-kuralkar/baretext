@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AppToaster } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: "LintNote - Simple and Fast Markdown Notes",
@@ -24,6 +25,7 @@ export default function RootLayout({
           enableSystem
         >
           {children}
+          <AppToaster />
         </ThemeProvider>
       </body>
     </html>
