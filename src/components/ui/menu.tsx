@@ -33,3 +33,7 @@ export function MenuContent({ className, ...props }: Menu.ContentProps) {
     />
   );
 }
+
+export function MenuContextTrigger(props: Menu.ContextTriggerProps) {
+  return <Menu.ContextTrigger {...props} />;
+}
