@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@ark-ui/react": "^5.18.3",
-    "@supabase/ssr": "^0.6.1",
+    "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.53.0",
     "@t3-oss/env-nextjs": "^0.13.8",
     "class-variance-authority": "^0.7.1",
