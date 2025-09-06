@@ -1,50 +1,139 @@
 "use client";
 
 import { createToaster, Toast, Toaster } from "@ark-ui/react/toast";
-import { InfoCircle } from "react-bootstrap-icons";
+import {
+  ArrowRepeat,
+  CheckCircle,
+  ExclamationCircle,
+  ExclamationTriangle,
+  type IconProps,
+  InfoCircle,
+  X,
+} from "react-bootstrap-icons";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function ToastRoot(props: Toast.RootProps) {
   return (
     <Toast.Root
-      className="data-[state=open]:animate-in data-[state=closed]:animate-out fade-in slide-in-from-top-8 fade-out slide-out-to-top-8 duration-500 translate-y-[var(--offset)] relative w-xs rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 text-destructive bg-card [&>svg]:text-current *:data-[part=description]:text-destructive/90"
+      className={cn(
+        "w-xs p-4 flex gap-2 rounded-md border text-sm shadow-md",
+        "translate-x-(--x) translate-y-(--y) z-(--z-index) opacity-(--opacity) height-(--height) scale-(--scale)",
+        "duration-400 transition-all",
+        "bg-popover border-border text-popover-foreground",
+        "data-[type=error]:text-red-600 dark:data-[type=error]:text-red-400",
+        "data-[type=info]:text-blue-600 dark:data-[type=info]:text-blue-400",
+        "data-[type=success]:text-green-600 dark:data-[type=success]:text-green-400",
+        "data-[type=warning]:text-yellow-600 dark:data-[type=warning]:text-yellow-400",
+      )}
       {...props}
     />
   );
 }
 
 export function ToastTitle(props: Toast.TitleProps) {
-  return (
-    <Toast.Title
-      className="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
-      {...props}
-    />
-  );
+  return <Toast.Title className="font-medium leading-normal pr-5" {...props} />;
 }
 
 export function ToastDescription(props: Toast.DescriptionProps) {
   return (
     <Toast.Description
-      className="col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+      className="font-normal pr-5 text-popover-foreground"
       {...props}
     />
   );
 }
 
+export function ToastActionTrigger({
+  className,
+  children,
+  ...props
+}: Toast.ActionTriggerProps) {
+  return (
+    <Toast.ActionTrigger
+      className={cn("self-start mt-1", className)}
+      {...props}
+      asChild
+    >
+      <Button size="sm">{children}</Button>
+    </Toast.ActionTrigger>
+  );
+}
+
+export function ToastCloseTrigger({
+  className,
+  ...props
+}: Toast.CloseTriggerProps) {
+  return (
+    <Toast.CloseTrigger
+      className={cn(
+        "inline-flex items-center justify-center size-6 rounded-md shadow-md transition-colors",
+        "absolute right-3 top-3",
+        "border border-border",
+        "disabled:pointer-events-none disabled:opacity-50",
+        "outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3",
+        "hover:bg-secondary/90",
+        "bg-secondary text-secondary-foreground",
+        "[&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:translate-y-0.5",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+const iconMap = {
+  success: CheckCircle,
+  error: ExclamationCircle,
+  info: InfoCircle,
+  warning: ExclamationTriangle,
+  loading: ({ className, ...props }: IconProps) => (
+    <ArrowRepeat className={cn("animate-spin", className)} {...props} />
+  ),
+} as const;
+
 export const toaster = createToaster({
   placement: "top",
   gap: 16,
+  overlap: true,
 });
 
 export function AppToaster() {
   return (
     <Toaster toaster={toaster}>
-      {(toast) => (
-        <ToastRoot key={toast.id}>
-          <InfoCircle />
-          <ToastTitle>{toast.title}</ToastTitle>
-          <ToastDescription>{toast.description}</ToastDescription>
-        </ToastRoot>
-      )}
+      {(toast) => {
+        const ToastIcon = toast.type
+          ? iconMap[toast.type as keyof typeof iconMap]
+          : undefined;
+
+        return (
+          <ToastRoot key={toast.id}>
+            {ToastIcon && <ToastIcon />}
+            <div className="flex flex-col gap-1">
+              <ToastTitle>{toast.title}</ToastTitle>
+              <ToastDescription>{toast.description}</ToastDescription>
+              {toast.action && (
+                <ToastActionTrigger>{toast.action?.label}</ToastActionTrigger>
+              )}
+            </div>
+            <ToastCloseTrigger>
+              <X />
+            </ToastCloseTrigger>
+          </ToastRoot>
+        );
+      }}
     </Toaster>
   );
 }
+
+const ToastStyled = {
+  Root: ToastRoot,
+  ActionTrigger: ToastActionTrigger,
+  CloseTrigger: ToastCloseTrigger,
+  Description: ToastDescription,
+  Title: ToastTitle,
+  Context: Toast.Context,
+};
+
+export { ToastStyled as Toast };

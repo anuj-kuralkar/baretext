@@ -17,5 +17,8 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "iconLibrary": "bootstrap-icons"
+  "iconLibrary": "bootstrap-icons",
+  "registries": {
+    "@sharkui": "http://localhost:3000/r/{name}.json"
+  }
 }

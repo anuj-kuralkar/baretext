@@ -1,4 +1,4 @@
-import { ark } from "@ark-ui/react";
+import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
@@ -39,10 +39,7 @@ function Button({
   variant,
   size,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-  }) {
+}: HTMLArkProps<"button"> & VariantProps<typeof buttonVariants>) {
   return (
     <ark.button
       className={cn(buttonVariants({ variant, size, className }))}
