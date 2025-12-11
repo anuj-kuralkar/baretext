@@ -122,3 +122,38 @@ export async function move(source: string, destination: string) {
     .from(BUCKET)
     .move(prefixedSource, prefixedDestination);
 }
+
+export async function getFile(name: string) {
+  const supabase = await createClient();
+  const userPrefix = await getUserPrefix();
+  const prefixedName = `${userPrefix}${name}`;
+
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .download(prefixedName);
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+}
+
+export async function upsertFile(
+  name: string,
+  content: Blob,
+  contentType = "text/plain",
+) {
+  const supabase = await createClient();
+  const userPrefix = await getUserPrefix();
+  const prefixedName = `${userPrefix}${name}`;
+
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .upload(prefixedName, content, {
+      contentType,
+      upsert: true,
+    });
+
+  return { data, error };
+}
