@@ -1,5 +1,7 @@
 import { LayoutSidebar } from "react-bootstrap-icons";
+
 import { AppSidebar } from "@/components/app-sidebar";
+import { Editor } from "@/components/editor/editor";
 import {
   SidebarContent,
   SidebarInset,
@@ -21,6 +23,7 @@ export default function Page() {
             <LayoutSidebar className="size-4" />
           </SidebarTrigger>
         </header>
+        <Editor />
       </SidebarInset>
     </SidebarRoot>
   );

@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/tree";
 import { useFileTree } from "@/hooks/use-file-tree";
 import { cn } from "@/lib/utils";
+import { useEditorStore } from "@/providers/editor-store";
 
 interface TreeViewNode {
   value: string;
@@ -57,6 +58,8 @@ const TreeNode = (
   },
 ) => {
   const { node, indexPath, activeEditing } = props;
+
+  const { setOpenFile } = useEditorStore((state) => state);
 
   const isEditing = activeEditing?.node.value === node.value;
   const isRenaming = isEditing && activeEditing.intent === "rename";
@@ -123,7 +126,7 @@ const TreeNode = (
       ) : (
         <div className="flex items-center justify-between">
           <MenuContextTrigger className={cn("w-full", isRenaming && "w-auto")}>
-            <TreeViewItem>
+            <TreeViewItem onDoubleClick={() => setOpenFile(node.value)}>
               <TreeViewItemText>
                 <FileEarmark className="size-4" />
                 {!isRenaming && node.label}
