@@ -297,7 +297,7 @@ export const FileTree = () => {
 
 function TreeViewContextMenu({ focusedNode }: TreeViewContextMenuProps) {
   const isFolder = focusedNode?.children !== undefined;
-  const isRoot = focusedNode?.value === "";
+  const isRoot = !focusedNode || focusedNode?.value === "";
   return (
     <MenuPositioner>
       <MenuContent>
