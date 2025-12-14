@@ -2,7 +2,11 @@
 
 import { type Editable, useEditable } from "@ark-ui/react/editable";
 import { useMenu } from "@ark-ui/react/menu";
-import { type TreeView, useTreeView } from "@ark-ui/react/tree-view";
+import {
+  type TreeView,
+  useTreeView,
+  useTreeViewContext,
+} from "@ark-ui/react/tree-view";
 import { useEffect, useState } from "react";
 import { ChevronRight, FileEarmark, Folder } from "react-bootstrap-icons";
 
@@ -30,6 +34,7 @@ import {
   TreeViewItemText,
   TreeViewLabel,
   TreeViewNodeProvider,
+  TreeViewNodeRenameInput,
   TreeViewRootProvider,
   TreeViewTree,
 } from "@/components/ui/tree";
@@ -43,29 +48,48 @@ interface TreeViewNode {
   children?: TreeViewNode[];
 }
 
-type ActiveEdit = {
+type CreateState = {
   node: TreeViewNode;
-  intent: "rename" | "create-file" | "create-folder";
+  kind: "file" | "folder";
 } | null;
 
 type TreeViewContextMenuProps = {
-  focusedNode?: TreeViewNode;
+  node?: TreeViewNode;
+};
+
+const TreeViewNodeCreateInput = ({
+  node,
+  nodeCreateState,
+}: {
+  node: TreeViewNode;
+  nodeCreateState: CreateState;
+}) => {
+  if (node.value !== nodeCreateState?.node.value) return null;
+  return (
+    <div className="flex items-center justify-between gap-x-2 px-2">
+      {nodeCreateState?.kind === "file" ? (
+        <FileEarmark className="shrink-0 size-4" />
+      ) : (
+        <>
+          <ChevronRight className="shrink-0 size-4" />
+          <Folder className="shrink-0 size-4" />
+        </>
+      )}
+      <EditableInput className="h-7 self-center" />
+    </div>
+  );
 };
 
 const TreeNode = (
   props: TreeView.NodeProviderProps<TreeViewNode> & {
-    activeEditing: ActiveEdit;
+    createState: CreateState;
   },
 ) => {
-  const { node, indexPath, activeEditing } = props;
+  const { node, indexPath, createState } = props;
+  const tree = useTreeViewContext();
+  const nodeState = tree.getNodeState({ indexPath, node });
 
   const { setOpenFile } = useEditorStore((state) => state);
-
-  const isEditing = activeEditing?.node.value === node.value;
-  const isRenaming = isEditing && activeEditing.intent === "rename";
-  const isCreatingFile = isEditing && activeEditing.intent === "create-file";
-  const isCreatingFolder =
-    isEditing && activeEditing.intent === "create-folder";
 
   return (
     <TreeViewNodeProvider<TreeViewNode> indexPath={indexPath} node={node}>
@@ -73,7 +97,7 @@ const TreeNode = (
         <TreeViewBranch>
           <div className="flex items-center justify-between">
             <MenuContextTrigger
-              className={cn("w-full", isRenaming && "w-auto")}
+              className={cn("w-full", nodeState.renaming && "w-auto")}
             >
               <TreeViewBranchControl>
                 <TreeViewBranchIndicator className="transition-transform data-[state=open]:rotate-90">
@@ -81,41 +105,27 @@ const TreeNode = (
                 </TreeViewBranchIndicator>
                 <TreeViewBranchText>
                   <Folder className="size-4" />
-                  {!isRenaming && node.label}
+                  {!nodeState.renaming && node.label}
                 </TreeViewBranchText>
               </TreeViewBranchControl>
             </MenuContextTrigger>
 
-            {isRenaming && (
-              <EditableInput
-                className="h-7 self-center"
-                defaultValue={node.label}
-              />
-            )}
+            <TreeViewNodeRenameInput />
           </div>
 
           <TreeViewBranchContent>
             <TreeViewBranchIndentGuide />
 
-            {(isCreatingFile || isCreatingFolder) && (
-              <div className="flex items-center justify-between gap-x-2 px-2">
-                {isCreatingFile ? (
-                  <FileEarmark className="shrink-0 size-4" />
-                ) : (
-                  <>
-                    <ChevronRight className="shrink-0 size-4" />
-                    <Folder className="shrink-0 size-4" />
-                  </>
-                )}
-                <EditableInput className="h-7 self-center" />
-              </div>
-            )}
+            <TreeViewNodeCreateInput
+              node={node}
+              nodeCreateState={createState}
+            />
 
             {node.children
               ?.filter((child) => child.label !== ".emptyFolderPlaceholder")
               ?.map((child, index) => (
                 <TreeNode
-                  activeEditing={activeEditing}
+                  createState={createState}
                   indexPath={[...indexPath, index]}
                   key={child.value}
                   node={child}
@@ -125,21 +135,18 @@ const TreeNode = (
         </TreeViewBranch>
       ) : (
         <div className="flex items-center justify-between">
-          <MenuContextTrigger className={cn("w-full", isRenaming && "w-auto")}>
+          <MenuContextTrigger
+            className={cn("w-full", nodeState.renaming && "w-auto")}
+          >
             <TreeViewItem onDoubleClick={() => setOpenFile(node.value)}>
               <TreeViewItemText>
                 <FileEarmark className="size-4" />
-                {!isRenaming && node.label}
+                {!nodeState.renaming && node.label}
               </TreeViewItemText>
             </TreeViewItem>
           </MenuContextTrigger>
 
-          {isRenaming && (
-            <EditableInput
-              className="h-7 self-center"
-              defaultValue={node.label}
-            />
-          )}
+          <TreeViewNodeRenameInput />
         </div>
       )}
     </TreeViewNodeProvider>
@@ -165,12 +172,20 @@ export const FileTree = () => {
   const [focusedNode, setFocusedNode] = useState<TreeViewNode | undefined>(
     undefined,
   );
-  const [activeEdit, setActiveEdit] = useState<ActiveEdit>(null);
+  const [createState, setCreateState] = useState<CreateState>(null);
 
   const tree = useTreeView({
     collection,
     focusedValue: focusedNode?.value,
     onFocusChange: (details) => setFocusedNode(details.focusedNode),
+    onRenameComplete: (details) => {
+      rename(details);
+    },
+    onBeforeRename: (details) => {
+      if (!details.label) return false;
+      if (details.label === focusedNode?.label) return false;
+      return true;
+    },
   });
 
   const menu = useMenu({
@@ -178,13 +193,13 @@ export const FileTree = () => {
     onSelect: (details) => {
       switch (details.value) {
         case "create-file":
-          handleEditStart("create-file");
+          handleEditStart("file");
           break;
         case "create-folder":
-          handleEditStart("create-folder");
+          handleEditStart("folder");
           break;
         case "rename":
-          handleEditStart("rename");
+          tree.startRenaming(focusedNode?.value || "");
           break;
         case "delete":
           if (focusedNode) {
@@ -199,41 +214,33 @@ export const FileTree = () => {
     activationMode: "none",
     onValueCommit(details) {
       handleEditSubmit(details);
-      setActiveEdit(null);
+      setCreateState(null);
       editable.clearValue();
     },
   });
 
-  function handleEditStart(intent: "rename" | "create-file" | "create-folder") {
-    if (intent === "create-file" || intent === "create-folder") {
-      tree.expand([focusedNode?.value || ""]);
-    }
+  function handleEditStart(kind: "file" | "folder") {
+    tree.expand([focusedNode?.value || ""]);
 
-    setActiveEdit({
+    setCreateState({
       node: focusedNode ?? { value: "", label: "" },
-      intent,
+      kind,
     });
 
     editable.edit();
   }
 
   async function handleEditSubmit(details: Editable.ValueChangeDetails) {
-    const node: TreeViewNode | undefined = activeEdit?.node;
+    const node: TreeViewNode | undefined = createState?.node;
     const newLabel = details.value.trim();
-    const isFolder = collection.isBranchNode(node?.value);
 
-    if (activeEdit && node) {
-      switch (activeEdit?.intent) {
-        case "rename":
-          if (!isFolder) {
-            await rename(node, newLabel);
-          }
+    if (createState && node) {
+      switch (createState?.kind) {
+        case "file":
+          create(node, newLabel);
           break;
-        case "create-file":
-          await create(node, newLabel);
-          break;
-        case "create-folder":
-          await create(node, `${newLabel}/.emptyFolderPlaceholder`);
+        case "folder":
+          create(node, `${newLabel}/.emptyFolderPlaceholder`);
           break;
       }
     }
@@ -257,28 +264,17 @@ export const FileTree = () => {
                 )
                 ?.map((node: TreeViewNode, index: number) => (
                   <TreeNode
-                    activeEditing={activeEdit}
+                    createState={createState}
                     indexPath={[index]}
                     key={node.value}
                     node={node}
                   />
                 ))}
 
-              {activeEdit?.node.value === "" &&
-                (activeEdit?.intent === "create-file" ||
-                  activeEdit?.intent === "create-folder") && (
-                  <div className="flex items-center justify-between gap-x-2 px-2">
-                    {activeEdit.intent === "create-file" ? (
-                      <FileEarmark className="shrink-0 size-4" />
-                    ) : (
-                      <>
-                        <ChevronRight className="shrink-0 size-4" />
-                        <Folder className="shrink-0 size-4" />
-                      </>
-                    )}
-                    <EditableInput className="h-7 self-center" />
-                  </div>
-                )}
+              <TreeViewNodeCreateInput
+                node={{ value: "", label: "" }}
+                nodeCreateState={createState}
+              />
             </TreeViewTree>
           </EditableArea>
         </EditableRootProvider>
@@ -289,15 +285,15 @@ export const FileTree = () => {
             setFocusedNode({ value: "", label: "" });
           }}
         />
-        <TreeViewContextMenu focusedNode={focusedNode} />
+        <TreeViewContextMenu node={focusedNode} />
       </MenuRootProvider>
     </TreeViewRootProvider>
   );
 };
 
-function TreeViewContextMenu({ focusedNode }: TreeViewContextMenuProps) {
-  const isFolder = focusedNode?.children !== undefined;
-  const isRoot = !focusedNode || focusedNode?.value === "";
+function TreeViewContextMenu({ node }: TreeViewContextMenuProps) {
+  const isFolder = node?.children !== undefined;
+  const isRoot = !node || node?.value === "";
   return (
     <MenuPositioner>
       <MenuContent>
