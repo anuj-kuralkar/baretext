@@ -1,6 +1,7 @@
 import {
   createFileTreeCollection,
   type TreeCollection,
+  type TreeView,
 } from "@ark-ui/react/tree-view";
 import type { StorageError } from "@supabase/storage-js";
 import { useEffect, useState } from "react";
@@ -113,27 +114,28 @@ export function useFileTree(rootValue: string) {
     })();
   }
 
-  function rename(node: TreeViewNode, newLabel: string) {
+  function rename(details: TreeView.RenameCompleteDetails) {
     (async () => {
       setIsLoading(true);
 
-      if (!newLabel) {
+      if (!details.label) {
         setError("Label cannot be empty or unchanged.");
         setIsLoading(false);
         return;
       }
-      if (newLabel.includes("/")) {
+      if (details.label.includes("/")) {
         setError("Label cannot contain /");
         setIsLoading(false);
         return;
       }
 
-      const newValue = node.value.replace(/[^/]+$/, newLabel);
-      const isFolder = node.children && node.children.length > 0;
+      const newValue = details.value.replace(/[^/]+$/, details.label);
+      const node = collection.at(details.indexPath);
+      const isFolder = collection.isBranchNode(node);
 
       const { error } = isFolder
-        ? await renameFolder(node.value, newValue)
-        : await renameFile(node.value, newValue);
+        ? await renameFolder(details.value, newValue)
+        : await renameFile(details.value, newValue);
 
       if (error) {
         setError(error.toString());
@@ -141,19 +143,11 @@ export function useFileTree(rootValue: string) {
         return;
       }
 
-      const indexPath = collection.getIndexPath(node.value);
-      if (indexPath) {
-        const newCollection = collection.replace(indexPath, {
-          value: newValue,
-          label: newLabel,
-          ...(isFolder && {
-            children: node.children,
-          }),
-        });
-        if (newCollection) {
-          setCollection(newCollection);
-        }
-      }
+      const newCollection = collection.replace(details.indexPath, {
+        ...node,
+        label: details.label,
+      });
+      setCollection(newCollection);
 
       setIsLoading(false);
     })();

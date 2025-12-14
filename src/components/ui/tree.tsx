@@ -1,5 +1,6 @@
-import { TreeView } from "@ark-ui/react";
+import { TreeView } from "@ark-ui/react/tree-view";
 
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 function TreeViewRootProvider<T>(props: TreeView.RootProviderProps<T>) {
@@ -114,6 +115,17 @@ function TreeViewItem({ className, ...props }: TreeView.ItemProps) {
   );
 }
 
+function TreeViewNodeRenameInput({
+  className,
+  ...props
+}: TreeView.NodeRenameInputProps) {
+  return (
+    <TreeView.NodeRenameInput asChild {...props}>
+      <Input className={cn("h-7 self-center", className)} />
+    </TreeView.NodeRenameInput>
+  );
+}
+
 export {
   TreeViewRootProvider,
   TreeViewLabel,
@@ -127,4 +139,5 @@ export {
   TreeViewBranchText,
   TreeViewItemText,
   TreeViewItem,
+  TreeViewNodeRenameInput,
 };
