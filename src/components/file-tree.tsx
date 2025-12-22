@@ -7,8 +7,16 @@ import {
   useTreeView,
   useTreeViewContext,
 } from "@ark-ui/react/tree-view";
+import {
+  ChevronRightIcon,
+  FileIcon,
+  FilePlusIcon,
+  FolderIcon,
+  FolderPlusIcon,
+  PencilIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import { ChevronRight, FileEarmark, Folder } from "react-bootstrap-icons";
 
 import {
   EditableArea,
@@ -68,11 +76,11 @@ const TreeViewNodeCreateInput = ({
   return (
     <div className="flex items-center justify-between gap-x-2 px-2">
       {nodeCreateState?.kind === "file" ? (
-        <FileEarmark className="shrink-0 size-4" />
+        <FileIcon className="shrink-0 size-4" />
       ) : (
         <>
-          <ChevronRight className="shrink-0 size-4" />
-          <Folder className="shrink-0 size-4" />
+          <ChevronRightIcon className="shrink-0 size-4" />
+          <FolderIcon className="shrink-0 size-4" />
         </>
       )}
       <EditableInput className="h-7 self-center" />
@@ -101,10 +109,10 @@ const TreeNode = (
             >
               <TreeViewBranchControl>
                 <TreeViewBranchIndicator className="transition-transform data-[state=open]:rotate-90">
-                  <ChevronRight className="size-4" />
+                  <ChevronRightIcon className="size-4" />
                 </TreeViewBranchIndicator>
                 <TreeViewBranchText>
-                  <Folder className="size-4" />
+                  <FolderIcon className="size-4" />
                   {!nodeState.renaming && node.label}
                 </TreeViewBranchText>
               </TreeViewBranchControl>
@@ -140,7 +148,7 @@ const TreeNode = (
           >
             <TreeViewItem onDoubleClick={() => setOpenFile(node.value)}>
               <TreeViewItemText>
-                <FileEarmark className="size-4" />
+                <FileIcon className="size-4" />
                 {!nodeState.renaming && node.label}
               </TreeViewItemText>
             </TreeViewItem>
@@ -301,6 +309,7 @@ function TreeViewContextMenu({ node }: TreeViewContextMenuProps) {
           className={cn(!(isRoot || isFolder) && "hidden")}
           value="create-file"
         >
+          <FilePlusIcon className="size-4" />
           New File
         </MenuItem>
 
@@ -308,14 +317,21 @@ function TreeViewContextMenu({ node }: TreeViewContextMenuProps) {
           className={cn(!(isRoot || isFolder) && "hidden")}
           value="create-folder"
         >
+          <FolderPlusIcon className="size-4" />
           New Folder
         </MenuItem>
 
         <MenuItem className={cn(isRoot && "hidden")} value="rename">
+          <PencilIcon className="size-4" />
           Rename
         </MenuItem>
 
-        <MenuItem className={cn(isRoot && "hidden")} value="delete">
+        <MenuItem
+          className={cn(isRoot && "hidden")}
+          tone="critical"
+          value="delete"
+        >
+          <TrashIcon className="size-4" />
           Delete
         </MenuItem>
       </MenuContent>
