@@ -13,7 +13,7 @@
     "@ark-ui/react": "^5.30.0",
     "@lexical/react": "^0.39.0",
     "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.87.1",
+    "@supabase/supabase-js": "^2.89.0",
     "@t3-oss/env-nextjs": "^0.13.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
