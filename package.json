@@ -37,7 +37,7 @@
     "@types/node": "^24.9.1",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "lefthook": "^1.12.2",
+    "lefthook": "^2.0.13",
     "tailwindcss": "^4.1.16",
     "tw-animate-css": "^1.3.6",
     "typescript": "^5.9.2"
