@@ -50,4 +50,5 @@ export const theme: EditorThemeClasses = {
     url: "text-blue-600",
     variable: "text-orange-600",
   },
+  hr: "my-8 border-t border-neutral-200 dark:border-neutral-800",
 };
