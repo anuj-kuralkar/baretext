@@ -72,31 +72,27 @@ export function Editor() {
 
   if (!openFile) {
     return (
-      <div className="flex items-center justify-center h-[calc(100dvh-64px)]">
-        Open a file
-      </div>
+      <div className="flex items-center justify-center h-full">Open a file</div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-[calc(100dvh-64px)]">
-        Loading...
-      </div>
+      <div className="flex items-center justify-center h-full">Loading...</div>
     );
   }
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="relative">
+      <div className="relative h-full">
         <RichTextPlugin
           contentEditable={
             <ContentEditable
               aria-placeholder="Try typing # for heading"
-              className="h-[calc(100dvh-64px)] overflow-y-scroll w-full p-3 border border-border outline-none text-sm leading-relaxed focus:ring-1 focus:ring-ring"
+              className="bg-background min-h-full outline-none md:p-12 p-8"
               placeholder={
-                <div className="absolute top-3 left-3 text-gray-400 text-sm pointer-events-none">
-                  Try typing # for heading, &gt; for quote, * for list...
+                <div className="absolute inset-0 pointer-events-none md:p-12 p-8 text-muted-foreground text-sm">
+                  {"Try typing # for heading, >; for quote, * for list..."}
                 </div>
               }
             />
