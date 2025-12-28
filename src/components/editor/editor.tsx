@@ -16,6 +16,8 @@ import { toaster } from "@/components/ui/toast";
 import { getFile } from "@/lib/storage";
 import { useEditorStore } from "@/providers/editor-store";
 import { theme } from "@/styles/editor-theme";
+
+import { CodeHighlightPlugin } from "./plugins/code-highlight";
 import { LoadPlugin } from "./plugins/load";
 import { SavePlugin } from "./plugins/save";
 
@@ -105,6 +107,7 @@ export function Editor() {
         <MarkdownShortcutPlugin />
         <SavePlugin path={openFile} />
         <LoadPlugin content={content} />
+        <CodeHighlightPlugin />
       </div>
     </LexicalComposer>
   );
