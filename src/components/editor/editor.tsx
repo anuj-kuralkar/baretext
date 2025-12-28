@@ -92,7 +92,6 @@ export function Editor() {
           contentEditable={
             <ContentEditable
               aria-placeholder="Try typing # for heading"
-              className="bg-background min-h-full outline-none xl:p-12 md:p-8 p-4"
               placeholder={
                 <div className="absolute inset-0 pointer-events-none xl:p-12 md:p-8 p-4 text-muted-foreground text-sm">
                   {"Try typing # for heading, >; for quote, * for list..."}
