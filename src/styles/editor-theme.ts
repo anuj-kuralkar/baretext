@@ -1,54 +1,125 @@
 import type { EditorThemeClasses } from "lexical";
 
 export const theme: EditorThemeClasses = {
+  root: "bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 antialiased leading-7 min-h-full p-4 md:p-8 xl:p-12 w-full focus:outline-none",
+
+  paragraph: "mb-4 last:mb-0 leading-7 text-neutral-900 dark:text-neutral-100",
+
   heading: {
-    h1: "text-3xl font-bold mb-4",
-    h2: "text-2xl font-bold mb-3",
-    h3: "text-xl font-bold mb-2",
-    h4: "text-lg font-bold mb-2",
-    h5: "text-base font-bold mb-1",
-    h6: "text-sm font-bold mb-1",
+    h1: "mt-8 mb-4 text-3xl font-semibold tracking-tight text-neutral-950 dark:text-white",
+    h2: "mt-8 mb-4 text-2xl font-semibold tracking-tight text-neutral-950 dark:text-white",
+    h3: "mt-6 mb-3 text-xl font-bold tracking-tight text-neutral-950 dark:text-white",
+    h4: "mt-6 mb-3 text-lg font-bold text-neutral-950 dark:text-white",
+    h5: "mt-4 mb-2 text-base font-extrabold text-neutral-950 dark:text-white",
+    h6: "mt-4 mb-2 text-sm font-extrabold text-neutral-950 dark:text-white",
   },
-  quote: "border-l-4 border-gray-300 pl-4 italic text-gray-600",
+
+  quote:
+    "my-4 border-s-4 border-neutral-200 dark:border-neutral-700 ps-4 text-lg italic font-medium text-neutral-700 dark:text-neutral-300",
+
   list: {
+    ul: "mb-4 ps-6 list-disc text-neutral-900 dark:text-neutral-100",
+    ol: "mb-4 ps-6 list-decimal text-neutral-900 dark:text-neutral-100",
+
+    listitem: "ps-1 marker:text-neutral-400 dark:marker:text-neutral-500",
+
+    listitemChecked:
+      "text-neutral-400 dark:text-neutral-600 line-through decoration-neutral-400/50",
+
+    listitemUnchecked: "",
+
+    checklist: "my-3 ps-0 list-none",
+
     nested: {
       listitem: "list-none",
     },
-    ol: "list-decimal ml-4",
-    ul: "list-disc ml-4",
   },
-  code: "bg-gray-100 px-1 py-0.5 rounded text-sm font-mono",
+
+  image:
+    "mx-auto block h-auto max-w-full rounded-lg border border-neutral-200 dark:border-neutral-800",
+
+  link: "font-medium text-neutral-900 dark:text-neutral-100 underline underline-offset-4 decoration-neutral-300 hover:decoration-neutral-900 dark:decoration-neutral-600 dark:hover:decoration-neutral-100 transition-colors cursor-pointer",
+
+  text: {
+    bold: "font-bold text-neutral-950 dark:text-white",
+
+    italic: "italic",
+
+    underline: "underline underline-offset-4",
+
+    strikethrough: "line-through opacity-70",
+
+    underlineStrikethrough:
+      "[text-decoration-line:underline_line-through] underline-offset-4 decoration-solid",
+
+    code: "px-1.5 py-0.5 rounded text-sm font-mono font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700",
+
+    subscript: "align-sub text-xs",
+
+    superscript: "align-super text-xs",
+  },
+
+  code: "relative block my-4 p-4 overflow-x-auto rounded-lg text-sm font-mono leading-6 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-neutral-100",
+
   codeHighlight: {
-    atrule: "text-purple-600",
-    attr: "text-blue-600",
-    boolean: "text-red-600",
-    builtin: "text-purple-600",
-    cdata: "text-gray-600",
-    char: "text-green-600",
-    class: "text-yellow-600",
-    "class-name": "text-yellow-600",
-    comment: "text-gray-500",
-    constant: "text-red-600",
-    deleted: "text-red-600",
-    doctype: "text-gray-600",
-    entity: "text-orange-600",
-    function: "text-blue-600",
-    important: "text-red-600",
-    inserted: "text-green-600",
-    keyword: "text-purple-600",
-    namespace: "text-orange-600",
-    number: "text-red-600",
-    operator: "text-gray-700",
-    prolog: "text-gray-600",
-    property: "text-blue-600",
-    punctuation: "text-gray-700",
-    regex: "text-green-600",
-    selector: "text-green-600",
-    string: "text-green-600",
-    symbol: "text-red-600",
-    tag: "text-red-600",
-    url: "text-blue-600",
-    variable: "text-orange-600",
+    atrule: "text-purple-600 dark:text-purple-400",
+    attr: "text-neutral-800 dark:text-neutral-200",
+    boolean: "text-blue-600 dark:text-blue-300",
+    builtin: "text-blue-600 dark:text-blue-300",
+    cdata: "italic text-neutral-500 dark:text-neutral-400",
+    char: "text-blue-700 dark:text-blue-300",
+    class: "text-orange-600 dark:text-orange-300",
+    "class-name": "text-orange-600 dark:text-orange-300",
+    comment: "italic text-neutral-500 dark:text-neutral-500",
+    constant: "text-blue-600 dark:text-blue-300",
+    deleted: "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+    doctype: "text-neutral-600 dark:text-neutral-400",
+    entity: "text-purple-600 dark:text-purple-400",
+    function: "text-purple-600 dark:text-purple-400",
+    important: "font-bold text-red-600 dark:text-red-400",
+    inserted:
+      "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+    keyword: "text-red-600 dark:text-red-400",
+    namespace: "text-orange-600 dark:text-orange-300",
+    number: "text-blue-600 dark:text-blue-300",
+    operator: "text-neutral-600 dark:text-neutral-300",
+    prolog: "text-neutral-600 dark:text-neutral-400",
+    property: "text-blue-600 dark:text-blue-300",
+    punctuation: "text-neutral-600 dark:text-neutral-300",
+    regex: "text-blue-800 dark:text-blue-300",
+    selector: "text-green-600 dark:text-green-400",
+    string: "text-blue-800 dark:text-blue-300",
+    symbol: "text-blue-600 dark:text-blue-300",
+    tag: "text-green-600 dark:text-green-400",
+    url: "text-blue-600 underline dark:text-blue-300",
+    variable: "text-orange-600 dark:text-orange-300",
   },
-  hr: "my-8 border-t border-neutral-200 dark:border-neutral-800",
+
+  hr: "my-8 h-px border-0 bg-neutral-200 dark:bg-neutral-800",
+
+  hrSelected: "bg-neutral-900 dark:bg-neutral-100 h-0.5",
+
+  table:
+    "w-full my-4 overflow-x-auto text-sm text-left border-collapse table-auto",
+
+  tableCell:
+    "px-4 py-2 border-b border-neutral-200 dark:border-neutral-800 align-top last:border-0",
+
+  tableCellHeader:
+    "px-4 py-2 text-xs font-semibold tracking-wider uppercase bg-white dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400",
+
+  tableCellSelected: "bg-neutral-50 dark:bg-neutral-900",
+
+  tableRow: "hover:bg-neutral-50 dark:hover:bg-neutral-900/50",
+
+  hashtag:
+    "inline-block px-1.5 py-0.5 text-xs font-bold rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300",
+
+  specialText:
+    "font-medium underline decoration-wavy decoration-red-500 text-neutral-950 dark:text-neutral-100",
+
+  embedBlock: {
+    base: "rounded-lg border border-transparent select-none transition-all",
+    focus: "border-neutral-300 dark:border-neutral-600 shadow-sm",
+  },
 };
