@@ -33,7 +33,7 @@
     "@changesets/cli": "^2.29.8",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^20.2.0",
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^24.9.1",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
