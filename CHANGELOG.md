@@ -1,5 +1,19 @@
 # lintnote
 
+## 0.5.0
+
+### Minor Changes
+
+- a75da81: Add horizontal rule node
+- 3c16dc2: Add editor with autosave
+
+### Patch Changes
+
+- 3420bc8: show correct root context menu in file tree.
+- c55370f: Add code highlighting
+- cac2507: Improved editor appearance and layout
+- aa5fc8e: Enhance editor theme
+
 ## 0.4.0
 
 ### Minor Changes
