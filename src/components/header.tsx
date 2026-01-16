@@ -14,8 +14,8 @@ export async function Header({ user }: { user: User | null }) {
     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
       <Link href="/">
         <div className="flex items-center gap-2">
-          <Image alt="LintNote" height={32} src="/lintnote.svg" width={32} />
-          <span className="text-lg font-semibold">LintNote</span>
+          <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
+          <span className="text-lg font-semibold">Baretext</span>
         </div>
       </Link>
       <nav className="ml-auto">

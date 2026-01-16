@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "lintnote",
+      "name": "baretext",
       "dependencies": {
         "@ark-ui/react": "^5.30.0",
         "@lexical/react": "^0.39.0",

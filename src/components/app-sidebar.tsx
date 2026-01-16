@@ -25,9 +25,9 @@ export async function AppSidebar() {
       <SidebarHeader>
         <Button asChild className="w-full h-12" size="lg" variant="ghost">
           <Link className="flex items-center gap-2" href="/">
-            <Image alt="LintNote" height={32} src="/lintnote.svg" width={32} />
+            <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">LintNote</span>
+              <span className="truncate font-medium">Baretext</span>
             </div>
           </Link>
         </Button>

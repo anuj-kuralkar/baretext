@@ -8,9 +8,9 @@ export default function LoginPage() {
       <div className="flex w-full max-w-sm flex-col gap-6">
         <a className="flex items-center gap-2 self-center font-medium" href="/">
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-            <Image alt="LintNote" height={32} src="/lintnote.svg" width={32} />
+            <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
           </div>
-          LintNote
+          Baretext
         </a>
         <LoginForm />
       </div>
