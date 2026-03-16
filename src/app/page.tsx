@@ -11,17 +11,11 @@ import Link from "next/link";
 
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   return (
     <main className="min-h-dvh bg-background grid grid-rows-[auto_1fr]">
-      <Header user={user} />
+      <Header />
 
       <section className="flex items-center relative">
         <div className="mx-auto max-w-7xl px-6 pt-20 pb-24">

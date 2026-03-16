@@ -1,35 +1,19 @@
-import { LayoutSidebar } from "react-bootstrap-icons";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { Empty } from "@/components/ui/empty";
+import { auth } from "@/lib/auth";
 
-import { AppSidebar } from "@/components/app-sidebar";
-import { Editor } from "@/components/editor/editor";
-import {
-  SidebarContent,
-  SidebarInset,
-  SidebarResizeTrigger,
-  SidebarRoot,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-
-export default function Page() {
+export default async function Page() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return redirect("/auth/login");
+  }
   return (
-    <SidebarRoot>
-      <SidebarContent>
-        <AppSidebar />
-      </SidebarContent>
-      <SidebarResizeTrigger />
-      <SidebarInset>
-        <div className="flex h-dvh min-h-0 flex-col">
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1">
-              <LayoutSidebar className="size-4" />
-            </SidebarTrigger>
-          </header>
-
-          <main className="flex-1 min-h-0 overflow-y-auto">
-            <Editor />
-          </main>
-        </div>
-      </SidebarInset>
-    </SidebarRoot>
+    <Empty.Root>
+      <Empty.Header>
+        <Empty.Title>Create a new note</Empty.Title>
+        <Empty.Description>Start by creating a new note.</Empty.Description>
+      </Empty.Header>
+    </Empty.Root>
   );
 }

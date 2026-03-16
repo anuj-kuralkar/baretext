@@ -1,8 +1,9 @@
+import { CircleUserRoundIcon } from "lucide-react";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import { Person } from "react-bootstrap-icons";
-
-import { FileTree } from "@/components/file-tree";
+import { CreateNoteButton } from "@/components/create-note-button";
+import { NoteList } from "@/components/note-list";
 import {
   AvatarFallback,
   AvatarImage,
@@ -14,11 +15,15 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { getUser } from "@/lib/auth";
+import { auth } from "@/lib/auth";
+import { listNotes } from "@/module/note/dal";
 
 export async function AppSidebar() {
-  const { user } = await getUser();
-  const { name, email, avatar } = user?.user_metadata ?? {};
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const { name, email, image, id } = session?.user ?? {};
+  const notes = id ? await listNotes({ userId: id }) : [];
 
   return (
     <>
@@ -34,7 +39,11 @@ export async function AppSidebar() {
       </SidebarHeader>
 
       <SidebarGroup>
-        <FileTree />
+        <div className="flex bg-muted rounded items-center justify-between py-2 px-4 mb-2">
+          <div className="flex-1">Notes</div>
+          <CreateNoteButton />
+        </div>
+        <NoteList notes={notes} />
       </SidebarGroup>
 
       <SidebarFooter>
@@ -44,9 +53,9 @@ export async function AppSidebar() {
             href="/settings"
           >
             <AvatarRoot className="h-8 w-8 rounded-lg">
-              <AvatarImage alt={name} src={avatar} />
+              <AvatarImage alt={name} src={image ?? ""} />
               <AvatarFallback className="rounded-lg">
-                <Person />
+                <CircleUserRoundIcon />
               </AvatarFallback>
             </AvatarRoot>
             <div className="grid flex-1 text-left text-sm leading-tight">
