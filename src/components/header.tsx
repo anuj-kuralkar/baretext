@@ -1,15 +1,23 @@
-import type { User } from "@supabase/supabase-js";
+import { CircleUserRoundIcon, FileIcon } from "lucide-react";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import { FileEarmark, Person } from "react-bootstrap-icons";
+
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
-export async function Header({ user }: { user: User | null }) {
+export async function Header() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  const user = session?.user;
+
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
       <Link href="/">
@@ -18,19 +26,21 @@ export async function Header({ user }: { user: User | null }) {
           <span className="text-lg font-semibold">Baretext</span>
         </div>
       </Link>
+
       <nav className="ml-auto">
         <Button asChild>
           <Link href="/notes">
-            <FileEarmark />
+            <FileIcon />
             Notes
           </Link>
         </Button>
       </nav>
+
       {user ? (
         <AvatarRoot>
-          <AvatarImage alt="User Avatar" src={user.user_metadata?.avatar_url} />
+          <AvatarImage alt="User Avatar" src={user.image ?? undefined} />
           <AvatarFallback>
-            <Person />
+            <CircleUserRoundIcon />
           </AvatarFallback>
         </AvatarRoot>
       ) : (

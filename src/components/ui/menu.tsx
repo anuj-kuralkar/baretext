@@ -179,7 +179,7 @@ export const MenuTriggerItem = ({
     data-inset={inset || undefined}
     {...props}
     className={cn(
-      "flex items-center rounded-sm",
+      "flex items-center rounded-sm gap-2",
       "px-2 py-1.5 data-inset:pl-8",
       "select-none text-sm",
       "data-highlighted:bg-accent data-highlighted:text-accent-foreground",

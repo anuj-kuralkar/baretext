@@ -2,14 +2,14 @@
 
 import { createToaster, Toast, Toaster } from "@ark-ui/react/toast";
 import {
-  ArrowRepeat,
-  CheckCircle,
-  ExclamationCircle,
-  ExclamationTriangle,
-  type IconProps,
-  InfoCircle,
-  X,
-} from "react-bootstrap-icons";
+  CheckCircleIcon,
+  CircleXIcon,
+  InfoIcon,
+  LoaderCircleIcon,
+  type LucideProps,
+  TriangleAlertIcon,
+  XIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -84,12 +84,12 @@ export function ToastCloseTrigger({
 }
 
 const iconMap = {
-  success: CheckCircle,
-  error: ExclamationCircle,
-  info: InfoCircle,
-  warning: ExclamationTriangle,
-  loading: ({ className, ...props }: IconProps) => (
-    <ArrowRepeat className={cn("animate-spin", className)} {...props} />
+  success: CheckCircleIcon,
+  error: CircleXIcon,
+  info: InfoIcon,
+  warning: TriangleAlertIcon,
+  loading: ({ className, ...props }: LucideProps) => (
+    <LoaderCircleIcon className={cn("animate-spin", className)} {...props} />
   ),
 } as const;
 
@@ -118,7 +118,7 @@ export function AppToaster() {
               )}
             </div>
             <ToastCloseTrigger>
-              <X />
+              <XIcon />
             </ToastCloseTrigger>
           </ToastRoot>
         );

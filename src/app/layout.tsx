@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 
 import "@/styles/globals.css";
+import { Geist } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppToaster } from "@/components/ui/toast";
-import { EditorStoreProvider } from "@/providers/editor-store";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Baretext - Simple and Fast Markdown Notes",
@@ -17,7 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      className={cn("font-sans", geist.variable)}
+      lang="en"
+      suppressHydrationWarning
+    >
       <body>
         <ThemeProvider
           attribute="class"
@@ -25,7 +32,7 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          <EditorStoreProvider>{children}</EditorStoreProvider>
+          {children}
           <AppToaster />
         </ThemeProvider>
       </body>
