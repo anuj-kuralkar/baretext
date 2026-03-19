@@ -16,14 +16,14 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
-import { listNotes } from "@/module/note/dal";
+import { listNotesAction } from "@/module/note/actions";
 
 export async function AppSidebar() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const { name, email, image, id } = session?.user ?? {};
-  const notes = id ? await listNotes({ userId: id }) : [];
+  const { name, email, image } = session?.user ?? {};
+  const { data: notes = [] } = await listNotesAction();
 
   return (
     <>

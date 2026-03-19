@@ -1,6 +1,8 @@
 import { surrealDBAdapter } from "@alde/ba-surreal";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
+import { jwt } from "better-auth/plugins/jwt";
+
 import { getDatabase } from "@/lib/db";
 import { env } from "@/lib/env";
 
@@ -19,5 +21,19 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
-  plugins: [nextCookies()],
+  plugins: [
+    nextCookies(),
+    jwt({
+      jwt: {
+        definePayload({ user }) {
+          return {
+            ac: "users",
+            db: env.SURREALDB_DATABASE,
+            id: user.id,
+            ns: env.SURREALDB_NAMESPACE,
+          };
+        },
+      },
+    }),
+  ],
 });
