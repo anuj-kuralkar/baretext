@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 import { Editor } from "@/module/editor/editor";
-import { getNote } from "@/module/note/dal";
+import { getNoteAction } from "@/module/note/actions";
 
 export default async function Page({ params }: { params: { noteId: string } }) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { noteId: string } }) {
   }
   const { noteId } = await params;
   const id = decodeURIComponent(noteId);
-  const note = await getNote({ id });
+  const { data: note } = await getNoteAction(id);
   if (!note) {
     notFound();
   }

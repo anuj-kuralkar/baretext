@@ -1,4 +1,7 @@
-DEFINE TABLE IF NOT EXISTS user SCHEMAFULL;
+DEFINE TABLE IF NOT EXISTS user SCHEMAFULL
+  PERMISSIONS
+    FOR select, update
+      WHERE id = $auth.id;
 DEFINE FIELD IF NOT EXISTS name ON user TYPE string;
 DEFINE FIELD IF NOT EXISTS email ON user TYPE string ASSERT string::is_email($value);
 DEFINE INDEX IF NOT EXISTS user_email_unique ON user FIELDS email UNIQUE;

@@ -16,14 +16,14 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
-import { listNotes } from "@/module/note/dal";
+import { listNotesAction } from "@/module/note/actions";
 
 export async function AppSidebar() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const { name, email, image, id } = session?.user ?? {};
-  const notes = id ? await listNotes({ userId: id }) : [];
+  const { name, email, image } = session?.user ?? {};
+  const { data: notes } = await listNotesAction();
 
   return (
     <>
@@ -43,14 +43,14 @@ export async function AppSidebar() {
           <div className="flex-1">Notes</div>
           <CreateNoteButton />
         </div>
-        <NoteList notes={notes} />
+        <NoteList notes={notes ?? []} />
       </SidebarGroup>
 
       <SidebarFooter>
         <Button asChild className="w-full h-12" size="lg" variant="ghost">
           <Link
             className="flex items-center gap-2 px-1 py-1.5 text-left text-sm"
-            href="/settings"
+            href="/"
           >
             <AvatarRoot className="h-8 w-8 rounded-lg">
               <AvatarImage alt={name} src={image ?? ""} />
