@@ -23,7 +23,7 @@ export async function AppSidebar() {
     headers: await headers(),
   });
   const { name, email, image } = session?.user ?? {};
-  const { data: notes = [] } = await listNotesAction();
+  const { data: notes } = await listNotesAction();
 
   return (
     <>
@@ -43,7 +43,7 @@ export async function AppSidebar() {
           <div className="flex-1">Notes</div>
           <CreateNoteButton />
         </div>
-        <NoteList notes={notes} />
+        <NoteList notes={notes ?? []} />
       </SidebarGroup>
 
       <SidebarFooter>
