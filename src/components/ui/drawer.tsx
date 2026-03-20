@@ -11,7 +11,7 @@ export const DrawerBackdrop = ({
 }: DrawerUnstyled.BackdropProps) => (
   <DrawerUnstyled.Backdrop
     className={cn(
-      "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+      "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 duration-500",
       "fixed inset-0 z-50 bg-black/10 supports-backdrop-filter:backdrop-blur-xs",
       className,
     )}
@@ -29,7 +29,7 @@ export const DrawerContent = ({
   <>
     <DrawerUnstyled.Content
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out ease-[cubic-bezier(0.32,0.72,0,1)] duration-500",
         "data-[state=open]:data-[swipe-direction=top]:slide-in-from-top data-[state=closed]:data-[swipe-direction=top]:slide-out-to-top",
         "data-[state=open]:data-[swipe-direction=left]:slide-in-from-left data-[state=closed]:data-[swipe-direction=left]:slide-out-to-left",
         "data-[state=open]:data-[swipe-direction=down]:slide-in-from-bottom data-[state=closed]:data-[swipe-direction=down]:slide-out-to-bottom",
@@ -43,7 +43,6 @@ export const DrawerContent = ({
       )}
       {...props}
     >
-      <div className="mx-auto mt-4 hidden h-1 w-25 shrink-0 rounded-full bg-muted data-[swipe-direction=down]:block" />
       {children}
     </DrawerUnstyled.Content>
   </>
@@ -70,7 +69,18 @@ export const DrawerFooter = ({ className, ...props }: HTMLArkProps<"div">) => (
 
 export const DrawerGrabber = DrawerUnstyled.Grabber;
 
-export const DrawerGrabberIndicator = DrawerUnstyled.GrabberIndicator;
+export const DrawerGrabberIndicator = ({
+  className,
+  ...props
+}: DrawerUnstyled.GrabberIndicatorProps) => (
+  <DrawerUnstyled.GrabberIndicator
+    className={cn(
+      "bg-muted mx-auto mt-4 hidden h-1 w-25 shrink-0 rounded-full in-data-[swipe-direction=down]:block",
+      className,
+    )}
+    {...props}
+  />
+);
 
 export const DrawerHeader = ({ className, ...props }: HTMLArkProps<"div">) => (
   <ark.div
