@@ -1,6 +1,6 @@
 "use client";
 
-import { type Dialog, useDialogContext } from "@ark-ui/react/dialog";
+import { type Drawer, useDrawerContext } from "@ark-ui/react/drawer";
 import { Portal } from "@ark-ui/react/portal";
 import { type Splitter, useSplitterContext } from "@ark-ui/react/splitter";
 import { createContext, useContext, useState } from "react";
@@ -78,7 +78,11 @@ export function SidebarRoot({ children }: SidebarRootProps) {
   if (isMobile) {
     return (
       <SidebarContext value={contextValue}>
-        <DrawerRoot onOpenChange={({ open }) => setOpen(open)} open={open}>
+        <DrawerRoot
+          onOpenChange={({ open }) => setOpen(open)}
+          open={open}
+          swipeDirection="left"
+        >
           {children}
         </DrawerRoot>
       </SidebarContext>
@@ -129,7 +133,7 @@ export function SidebarContent({ children }: SidebarContentProps) {
   return (
     <SplitterPanel
       className={cn(
-        "bg-sidebar text-sidebar-foreground h-dvh duration-500",
+        "bg-sidebar text-sidebar-foreground h-dvh duration-150",
         isResizing && "duration-0",
       )}
       id="a"
@@ -182,9 +186,9 @@ function SidebarTriggerDesktop(props: SidebarTriggerProps) {
 }
 
 function SidebarTriggerMobile(
-  props: Dialog.TriggerProps | Dialog.CloseTriggerProps,
+  props: Drawer.TriggerProps | Drawer.CloseTriggerProps,
 ) {
-  const { open } = useDialogContext();
+  const { open } = useDrawerContext();
   const TriggerComponent = open ? DrawerCloseTrigger : DrawerTrigger;
   return (
     <Button asChild size="icon" variant="ghost">
