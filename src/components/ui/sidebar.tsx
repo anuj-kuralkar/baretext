@@ -1,23 +1,18 @@
 "use client";
 
-import { type Drawer, useDrawerContext } from "@ark-ui/react/drawer";
+import {
+  type Drawer as DrawerUnstyled,
+  useDrawerContext,
+} from "@ark-ui/react/drawer";
 import { Portal } from "@ark-ui/react/portal";
-import { type Splitter, useSplitterContext } from "@ark-ui/react/splitter";
+import {
+  type Splitter as SplitterUnstyled,
+  useSplitterContext,
+} from "@ark-ui/react/splitter";
 import { createContext, useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DrawerBackdrop,
-  DrawerCloseTrigger,
-  DrawerContent,
-  DrawerPositioner,
-  DrawerRoot,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import {
-  SplitterPanel,
-  SplitterResizeTrigger,
-  SplitterRoot,
-} from "@/components/ui/splitter";
+import { Drawer } from "@/components/ui/drawer";
+import { Splitter } from "@/components/ui/splitter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useWindowWidth } from "@/hooks/use-window-size";
 import { cn } from "@/lib/utils";
@@ -38,7 +33,7 @@ export interface SidebarInsetProps {
 }
 
 export interface SidebarResizeTriggerProps
-  extends Omit<Splitter.ResizeTriggerProps, "id"> {}
+  extends Omit<SplitterUnstyled.ResizeTriggerProps, "id"> {}
 
 export interface SidebarTriggerProps extends React.ComponentProps<"button"> {}
 
@@ -78,20 +73,21 @@ export function SidebarRoot({ children }: SidebarRootProps) {
   if (isMobile) {
     return (
       <SidebarContext value={contextValue}>
-        <DrawerRoot
+        <Drawer.Root
+          defaultSnapPoint={1}
           onOpenChange={({ open }) => setOpen(open)}
           open={open}
           swipeDirection="left"
         >
           {children}
-        </DrawerRoot>
+        </Drawer.Root>
       </SidebarContext>
     );
   }
 
   return (
     <SidebarContext value={contextValue}>
-      <SplitterRoot
+      <Splitter.Root
         defaultSize={[defaultPercent, 100 - defaultPercent]}
         onCollapse={({ panelId }) => panelId === "a" && setOpen(false)}
         onExpand={({ panelId }) => panelId === "a" && setOpen(true)}
@@ -109,7 +105,7 @@ export function SidebarRoot({ children }: SidebarRootProps) {
         ]}
       >
         {children}
-      </SplitterRoot>
+      </Splitter.Root>
     </SidebarContext>
   );
 }
@@ -120,26 +116,26 @@ export function SidebarContent({ children }: SidebarContentProps) {
   if (isMobile) {
     return (
       <Portal>
-        <DrawerBackdrop />
-        <DrawerPositioner>
-          <DrawerContent className="bg-sidebar text-sidebar-foreground">
+        <Drawer.Backdrop />
+        <Drawer.Positioner>
+          <Drawer.Content className="bg-sidebar text-sidebar-foreground">
             {children}
-          </DrawerContent>
-        </DrawerPositioner>
+          </Drawer.Content>
+        </Drawer.Positioner>
       </Portal>
     );
   }
 
   return (
-    <SplitterPanel
+    <Splitter.Panel
       className={cn(
-        "bg-sidebar text-sidebar-foreground h-dvh duration-150",
+        "bg-sidebar text-sidebar-foreground h-dvh ease-[cubic-bezier(0.32,0.72,0,1)] duration-500",
         isResizing && "duration-0",
       )}
       id="a"
     >
       <div className="flex flex-col h-full min-w-3xs">{children}</div>
-    </SplitterPanel>
+    </Splitter.Panel>
   );
 }
 
@@ -148,26 +144,20 @@ export function SidebarInset({ children }: SidebarInsetProps) {
   if (isMobile) return children;
 
   return (
-    <SplitterPanel className="h-full" id="b">
+    <Splitter.Panel className="h-full" id="b">
       {children}
-    </SplitterPanel>
+    </Splitter.Panel>
   );
 }
 
-export function SidebarResizeTrigger({
-  className,
-  ...props
-}: SidebarResizeTriggerProps) {
+export function SidebarResizeTrigger({ ...props }: SidebarResizeTriggerProps) {
   const { isMobile } = useSidebarContext();
   if (isMobile) return null;
 
   return (
-    <SplitterResizeTrigger
-      aria-label="Resize"
-      className={cn("bg-sidebar-border w-0.5", className)}
-      id="a:b"
-      {...props}
-    />
+    <Splitter.ResizeTrigger aria-label="Resize" id="a:b" {...props}>
+      <Splitter.ResizeTriggerIndicator className="bg-sidebar-border" />
+    </Splitter.ResizeTrigger>
   );
 }
 
@@ -186,10 +176,10 @@ function SidebarTriggerDesktop(props: SidebarTriggerProps) {
 }
 
 function SidebarTriggerMobile(
-  props: Drawer.TriggerProps | Drawer.CloseTriggerProps,
+  props: DrawerUnstyled.TriggerProps | DrawerUnstyled.CloseTriggerProps,
 ) {
   const { open } = useDrawerContext();
-  const TriggerComponent = open ? DrawerCloseTrigger : DrawerTrigger;
+  const TriggerComponent = open ? Drawer.CloseTrigger : Drawer.Trigger;
   return (
     <Button asChild size="icon" variant="ghost">
       <TriggerComponent {...props} />
