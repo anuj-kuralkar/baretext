@@ -17,6 +17,9 @@ export const env = createEnv({
     SURREALDB_DATABASE: z.string().min(1),
     SURREALDB_USERNAME: z.string().min(1),
     SURREALDB_PASSWORD: z.string().min(1),
+
+    RESEND_API_KEY: z.string().min(1),
+    EMAIL_FROM: z.email(),
   },
   runtimeEnv: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
@@ -33,5 +36,8 @@ export const env = createEnv({
     SURREALDB_DATABASE: process.env.SURREALDB_DATABASE,
     SURREALDB_USERNAME: process.env.SURREALDB_USERNAME,
     SURREALDB_PASSWORD: process.env.SURREALDB_PASSWORD,
+
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    EMAIL_FROM: process.env.EMAIL_FROM,
   },
 });
