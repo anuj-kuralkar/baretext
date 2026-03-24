@@ -13,7 +13,7 @@
     "@alde/ba-surreal": "npm:@jsr/alde__ba-surreal",
     "@ark-ui/react": "^5.34.1",
     "@lexical/react": "^0.41.0",
-    "@t3-oss/env-nextjs": "^0.13.10",
+    "@t3-oss/env-nextjs": "^0.13.11",
     "better-auth": "1.5.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
