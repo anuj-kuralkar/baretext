@@ -1,10 +1,5 @@
-export type SendOtpEmailFormState = {
-  inputs: { email: string };
-  errors: { email?: string[] };
+export type LoginWithEmailFormState = {
+  inputs: { email: string; otp?: string };
+  errors: { email?: string[]; otp?: string[] };
   success: boolean;
-};
-
-export type VerifyOtpEmailFormState = {
-  inputs: { otp: string };
-  errors: { otp?: string[] };
 };

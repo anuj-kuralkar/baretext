@@ -7,10 +7,7 @@ import {
   sendOtpEmailFormSchema,
   verifyOtpFormSchema,
 } from "@/module/auth/schema";
-import type {
-  sendOtpEmailFormState,
-  VerifyOtpEmailFormState,
-} from "@/module/auth/types";
+import type { LoginWithEmailFormState } from "@/module/auth/types";
 
 export async function loginWithOAuth(provider: "google" | "github") {
   const { url } = await auth.api.signInSocial({
@@ -24,11 +21,34 @@ export async function loginWithOAuth(provider: "google" | "github") {
   }
 }
 
-export async function sendOtpEmail(
-  _state: sendOtpEmailFormState,
+export async function loginWithEmail(
+  state: LoginWithEmailFormState,
   formData: FormData,
-): Promise<sendOtpEmailFormState | never> {
+): Promise<LoginWithEmailFormState> {
   const email = formData.get("email") as string;
+
+  if (state.inputs.email && !state.errors.email) {
+    const otp = formData.get("otp") as string;
+    const validatedFields = verifyOtpFormSchema.safeParse({ email, otp });
+
+    if (!validatedFields.success) {
+      const errors = z.flattenError(validatedFields.error).fieldErrors;
+      return {
+        inputs: { email, otp },
+        errors,
+        success: false,
+      };
+    }
+
+    await auth.api.signInEmailOTP({
+      body: {
+        email,
+        otp,
+      },
+    });
+
+    redirect("/");
+  }
 
   const validatedFields = sendOtpEmailFormSchema.safeParse({ email });
 
@@ -53,30 +73,4 @@ export async function sendOtpEmail(
     errors: {},
     success,
   };
-}
-export async function verifyOtpEmail(
-  _state: VerifyOtpEmailFormState,
-  formData: FormData,
-): Promise<VerifyOtpEmailFormState> {
-  const email = formData.get("email") as string;
-  const otp = formData.get("otp") as string;
-
-  const validatedFields = verifyOtpFormSchema.safeParse({ email, otp });
-
-  if (!validatedFields.success) {
-    const errors = z.flattenError(validatedFields.error).fieldErrors;
-    return {
-      inputs: { otp },
-      errors,
-    };
-  }
-
-  await auth.api.signInEmailOTP({
-    body: {
-      email,
-      otp,
-    },
-  });
-
-  redirect("/");
 }

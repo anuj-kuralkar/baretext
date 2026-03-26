@@ -8,17 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
 import { PinInput } from "@/components/ui/pin-input";
-import {
-  loginWithOAuth,
-  sendOtpEmail,
-  verifyOtpEmail,
-} from "@/module/auth/actions";
-import type {
-  SendOtpEmailFormState,
-  VerifyOtpEmailFormState,
-} from "@/module/auth/types";
+import { Separator } from "@/components/ui/separator";
+import { loginWithEmail, loginWithOAuth } from "@/module/auth/actions";
+import type { LoginWithEmailFormState } from "@/module/auth/types";
 
-function LoginOptionsForm() {
+function LoginWithOAuthForm() {
   return (
     <div className="flex flex-col gap-4">
       <Button
@@ -39,21 +33,17 @@ function LoginOptionsForm() {
         <GithubIcon />
         Continue with Github
       </Button>
-      <Button className="w-full" variant="outline">
-        <MailIcon />
-        Continue with Email
-      </Button>
     </div>
   );
 }
 
-function SendOtpEmailForm() {
+export function LoginForm() {
   const [state, action, isPending] = useActionState<
-    SendOtpEmailFormState,
+    LoginWithEmailFormState,
     FormData
-  >(sendOtpEmail, {
-    inputs: { email: "" },
-    errors: { email: [] },
+  >(loginWithEmail, {
+    inputs: { email: "", otp: "" },
+    errors: { email: [], otp: [] },
     success: false,
   });
 
@@ -63,85 +53,85 @@ function SendOtpEmailForm() {
   }, [state.errors]);
 
   return (
-    <Form
-      action={action}
-      className="flex flex-col gap-4 items-center justify-center"
-      noValidate
-    >
-      <Field.Root invalid={invalid} required>
-        <Field.Label>Email</Field.Label>
-        <Field.Input
-          defaultValue={state.inputs.email}
-          name="email"
-          onChange={() => {
-            setInvalid(false);
-          }}
-          placeholder="me@example.com"
-          type="email"
-        />
-        <Field.ErrorText>{state.errors?.email?.join(", ")}</Field.ErrorText>
-      </Field.Root>
-      <Button className="w-full" disabled={isPending} type="submit">
-        Send OTP
-      </Button>
-    </Form>
-  );
-}
-
-function VerifyOtpEmailForm() {
-  const [state, action, isPending] = useActionState<
-    VerifyOtpEmailFormState,
-    FormData
-  >(verifyOtpEmail, {
-    inputs: { otp: "" },
-    errors: { otp: [] },
-  });
-
-  const [invalid, setInvalid] = useState<boolean | undefined>(undefined);
-  useEffect(() => {
-    setInvalid(state.errors?.otp?.[0] ? true : undefined);
-  }, [state.errors]);
-
-  return (
-    <Form
-      action={action}
-      className="flex flex-col gap-4 items-center justify-center"
-      noValidate
-    >
-      <Field.Root className="w-fit" invalid={invalid}>
-        <PinInput.Root
-          count={6}
-          name="otp"
-          onChange={() => setInvalid(false)}
-          otp
-          required
-          size="xl"
-        >
-          <PinInput.Control>
-            {[0, 1, 2, 3, 4, 5].map((id, index) => (
-              <PinInput.Input index={index} key={id} />
-            ))}
-          </PinInput.Control>
-          <PinInput.HiddenInput />
-        </PinInput.Root>
-        <Field.ErrorText>{state.errors?.otp?.join(", ")}</Field.ErrorText>
-      </Field.Root>
-      <Button className="w-full" disabled={isPending} type="submit">
-        Verify OTP
-      </Button>
-    </Form>
-  );
-}
-
-export function LoginForm() {
-  return (
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Login</CardTitle>
+          <CardTitle className="text-2xl font-semibold tracking-tight">
+            {state.success ? "Check Your Email" : "Login"}
+          </CardTitle>
+          {state.success && (
+            <p className="text-lg text-muted-foreground">
+              We sent a 6-digit code to
+              <span className="font-light text-card-foreground">
+                {" "}
+                {state.inputs.email}
+              </span>
+            </p>
+          )}
         </CardHeader>
         <CardContent>
-          <LoginOptionsForm />
+          {!state.success && (
+            <>
+              <LoginWithOAuthForm />
+              <Separator className="my-4" />
+            </>
+          )}
+
+          <Form
+            action={action}
+            className="flex flex-col gap-4 items-center justify-center"
+            noValidate
+          >
+            <Field.Root hidden={state.success} invalid={invalid} required>
+              <Field.Label>Email</Field.Label>
+              <Field.Input
+                defaultValue={state.inputs.email}
+                name="email"
+                onChange={() => {
+                  setInvalid(false);
+                }}
+                placeholder="me@example.com"
+                type="email"
+              />
+              <Field.ErrorText>
+                {state.errors?.email?.join(", ")}
+              </Field.ErrorText>
+            </Field.Root>
+
+            <Field.Root
+              className="mb-4"
+              hidden={!state.success}
+              invalid={invalid}
+            >
+              <PinInput.Root
+                count={6}
+                name="otp"
+                onChange={() => setInvalid(false)}
+                otp
+                required
+                size="xl"
+              >
+                <PinInput.Control className="w-fit mx-auto">
+                  {[0, 1, 2, 3, 4, 5].map((id, index) => (
+                    <PinInput.Input index={index} key={id} />
+                  ))}
+                </PinInput.Control>
+                <PinInput.HiddenInput />
+              </PinInput.Root>
+              <Field.ErrorText>{state.errors?.otp?.join(", ")}</Field.ErrorText>
+            </Field.Root>
+
+            <Button className="w-full" disabled={isPending} type="submit">
+              {state.success ? (
+                "Verify OTP"
+              ) : (
+                <>
+                  <MailIcon className="mr-2 h-4 w-4" />
+                  Continue With Email
+                </>
+              )}
+            </Button>
+          </Form>
         </CardContent>
       </Card>
     </div>
