@@ -4,6 +4,7 @@ import {
   type Drawer as DrawerUnstyled,
   useDrawerContext,
 } from "@ark-ui/react/drawer";
+import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 import { Portal } from "@ark-ui/react/portal";
 import {
   type Splitter as SplitterUnstyled,
@@ -48,6 +49,81 @@ function useSidebarContext() {
     throw new Error("useSidebarContext must be used within a SidebarRoot");
   }
   return context;
+}
+
+export function SidebarContent({ className, ...props }: HTMLArkProps<"div">) {
+  return (
+    <ark.div
+      className={cn(
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export function SidebarFooter({ className, ...props }: HTMLArkProps<"div">) {
+  return (
+    <ark.div className={cn("flex flex-col gap-2 p-2", className)} {...props} />
+  );
+}
+
+export function SidebarHeader({ className, ...props }: HTMLArkProps<"div">) {
+  return (
+    <ark.div className={cn("flex flex-col gap-2 p-2", className)} {...props} />
+  );
+}
+
+export function SidebarInset({ children }: SidebarInsetProps) {
+  const { isMobile } = useSidebarContext();
+  if (isMobile) return children;
+
+  return (
+    <Splitter.Panel className="h-full" id="b">
+      {children}
+    </Splitter.Panel>
+  );
+}
+
+export function SidebarPanel({ children }: SidebarContentProps) {
+  const { isMobile, isResizing } = useSidebarContext();
+
+  if (isMobile) {
+    return (
+      <Portal>
+        <Drawer.Backdrop />
+        <Drawer.Positioner>
+          <Drawer.Content className="bg-sidebar text-sidebar-foreground">
+            {children}
+          </Drawer.Content>
+        </Drawer.Positioner>
+      </Portal>
+    );
+  }
+
+  return (
+    <Splitter.Panel
+      className={cn(
+        "bg-sidebar text-sidebar-foreground h-dvh ease-[cubic-bezier(0.32,0.72,0,1)] duration-500",
+        isResizing && "duration-0",
+      )}
+      id="a"
+    >
+      <div className="flex flex-col h-full min-w-3xs">{children}</div>
+    </Splitter.Panel>
+  );
+}
+
+export function SidebarResizeTrigger({ ...props }: SidebarResizeTriggerProps) {
+  const { isMobile } = useSidebarContext();
+  if (isMobile) return null;
+
+  return (
+    <Splitter.ResizeTrigger aria-label="Resize" id="a:b" {...props}>
+      <Splitter.ResizeTriggerIndicator className="bg-sidebar-border" />
+    </Splitter.ResizeTrigger>
+  );
 }
 
 export function SidebarRoot({ children }: SidebarRootProps) {
@@ -110,57 +186,6 @@ export function SidebarRoot({ children }: SidebarRootProps) {
   );
 }
 
-export function SidebarContent({ children }: SidebarContentProps) {
-  const { isMobile, isResizing } = useSidebarContext();
-
-  if (isMobile) {
-    return (
-      <Portal>
-        <Drawer.Backdrop />
-        <Drawer.Positioner>
-          <Drawer.Content className="bg-sidebar text-sidebar-foreground">
-            {children}
-          </Drawer.Content>
-        </Drawer.Positioner>
-      </Portal>
-    );
-  }
-
-  return (
-    <Splitter.Panel
-      className={cn(
-        "bg-sidebar text-sidebar-foreground h-dvh ease-[cubic-bezier(0.32,0.72,0,1)] duration-500",
-        isResizing && "duration-0",
-      )}
-      id="a"
-    >
-      <div className="flex flex-col h-full min-w-3xs">{children}</div>
-    </Splitter.Panel>
-  );
-}
-
-export function SidebarInset({ children }: SidebarInsetProps) {
-  const { isMobile } = useSidebarContext();
-  if (isMobile) return children;
-
-  return (
-    <Splitter.Panel className="h-full" id="b">
-      {children}
-    </Splitter.Panel>
-  );
-}
-
-export function SidebarResizeTrigger({ ...props }: SidebarResizeTriggerProps) {
-  const { isMobile } = useSidebarContext();
-  if (isMobile) return null;
-
-  return (
-    <Splitter.ResizeTrigger aria-label="Resize" id="a:b" {...props}>
-      <Splitter.ResizeTriggerIndicator className="bg-sidebar-border" />
-    </Splitter.ResizeTrigger>
-  );
-}
-
 function SidebarTriggerDesktop(props: SidebarTriggerProps) {
   const splitter = useSplitterContext();
 
@@ -193,32 +218,13 @@ export function SidebarTrigger(props: SidebarTriggerProps) {
   return <SidebarTriggerDesktop {...props} />;
 }
 
-export function SidebarGroup({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("flex flex-col flex-1 w-full p-2", className)}
-      {...props}
-    />
-  );
-}
-
-export function SidebarHeader({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div className={cn("flex flex-col gap-2 p-2", className)} {...props} />
-  );
-}
-
-export function SidebarFooter({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div className={cn("flex flex-col gap-2 p-2", className)} {...props} />
-  );
-}
+export const Sidebar = {
+  Content: SidebarContent,
+  Footer: SidebarFooter,
+  Header: SidebarHeader,
+  Inset: SidebarInset,
+  Panel: SidebarPanel,
+  ResizeTrigger: SidebarResizeTrigger,
+  Root: SidebarRoot,
+  Trigger: SidebarTrigger,
+} as const;

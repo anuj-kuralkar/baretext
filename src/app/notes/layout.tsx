@@ -2,8 +2,8 @@ import { PanelLeftIcon } from "lucide-react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import {
-  SidebarContent,
   SidebarInset,
+  SidebarPanel,
   SidebarResizeTrigger,
   SidebarRoot,
   SidebarTrigger,
@@ -16,9 +16,9 @@ export default async function Page({
 }) {
   return (
     <SidebarRoot>
-      <SidebarContent>
+      <SidebarPanel>
         <AppSidebar />
-      </SidebarContent>
+      </SidebarPanel>
       <SidebarResizeTrigger />
       <SidebarInset>
         <div className="flex h-dvh min-h-0 flex-col">
