@@ -51,7 +51,10 @@ function useSidebarContext() {
   return context;
 }
 
-export function SidebarContent({ className, ...props }: HTMLArkProps<"div">) {
+export const SidebarContent = ({
+  className,
+  ...props
+}: HTMLArkProps<"div">) => {
   return (
     <ark.div
       className={cn(
@@ -61,21 +64,21 @@ export function SidebarContent({ className, ...props }: HTMLArkProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-export function SidebarFooter({ className, ...props }: HTMLArkProps<"div">) {
+export const SidebarFooter = ({ className, ...props }: HTMLArkProps<"div">) => {
   return (
     <ark.div className={cn("flex flex-col gap-2 p-2", className)} {...props} />
   );
-}
+};
 
-export function SidebarHeader({ className, ...props }: HTMLArkProps<"div">) {
+export const SidebarHeader = ({ className, ...props }: HTMLArkProps<"div">) => {
   return (
     <ark.div className={cn("flex flex-col gap-2 p-2", className)} {...props} />
   );
-}
+};
 
-export function SidebarInset({ children }: SidebarInsetProps) {
+export const SidebarInset = ({ children }: SidebarInsetProps) => {
   const { isMobile } = useSidebarContext();
   if (isMobile) return children;
 
@@ -84,9 +87,9 @@ export function SidebarInset({ children }: SidebarInsetProps) {
       {children}
     </Splitter.Panel>
   );
-}
+};
 
-export function SidebarPanel({ children }: SidebarContentProps) {
+export const SidebarPanel = ({ children }: SidebarContentProps) => {
   const { isMobile, isResizing } = useSidebarContext();
 
   if (isMobile) {
@@ -113,9 +116,11 @@ export function SidebarPanel({ children }: SidebarContentProps) {
       <div className="flex flex-col h-full min-w-3xs">{children}</div>
     </Splitter.Panel>
   );
-}
+};
 
-export function SidebarResizeTrigger({ ...props }: SidebarResizeTriggerProps) {
+export const SidebarResizeTrigger = ({
+  ...props
+}: SidebarResizeTriggerProps) => {
   const { isMobile } = useSidebarContext();
   if (isMobile) return null;
 
@@ -124,9 +129,9 @@ export function SidebarResizeTrigger({ ...props }: SidebarResizeTriggerProps) {
       <Splitter.ResizeTriggerIndicator className="bg-sidebar-border" />
     </Splitter.ResizeTrigger>
   );
-}
+};
 
-export function SidebarRoot({ children }: SidebarRootProps) {
+export const SidebarRoot = ({ children }: SidebarRootProps) => {
   const isMobile = useIsMobile();
   const windowWidth = useWindowWidth();
   const [open, setOpen] = useState(false);
@@ -184,9 +189,9 @@ export function SidebarRoot({ children }: SidebarRootProps) {
       </Splitter.Root>
     </SidebarContext>
   );
-}
+};
 
-function SidebarTriggerDesktop(props: SidebarTriggerProps) {
+const SidebarTriggerDesktop = (props: SidebarTriggerProps) => {
   const splitter = useSplitterContext();
 
   const togglePanel = () => {
@@ -198,11 +203,11 @@ function SidebarTriggerDesktop(props: SidebarTriggerProps) {
   return (
     <Button onClick={togglePanel} size="icon" variant="ghost" {...props} />
   );
-}
+};
 
-function SidebarTriggerMobile(
+const SidebarTriggerMobile = (
   props: DrawerUnstyled.TriggerProps | DrawerUnstyled.CloseTriggerProps,
-) {
+) => {
   const { open } = useDrawerContext();
   const TriggerComponent = open ? Drawer.CloseTrigger : Drawer.Trigger;
   return (
@@ -210,13 +215,13 @@ function SidebarTriggerMobile(
       <TriggerComponent {...props} />
     </Button>
   );
-}
+};
 
-export function SidebarTrigger(props: SidebarTriggerProps) {
+export const SidebarTrigger = (props: SidebarTriggerProps) => {
   const { isMobile } = useSidebarContext();
   if (isMobile) return <SidebarTriggerMobile {...props} />;
   return <SidebarTriggerDesktop {...props} />;
-}
+};
 
 export const Sidebar = {
   Content: SidebarContent,
