@@ -39,7 +39,6 @@ export interface SidebarResizeTriggerProps
 export interface SidebarTriggerProps extends React.ComponentProps<"button"> {}
 
 const SidebarContext = createContext<{
-  isResizing?: boolean;
   isMobile: boolean;
 } | null>(null);
 
@@ -90,7 +89,7 @@ export const SidebarInset = ({ children }: SidebarInsetProps) => {
 };
 
 export const SidebarPanel = ({ children }: SidebarContentProps) => {
-  const { isMobile, isResizing } = useSidebarContext();
+  const { isMobile } = useSidebarContext();
 
   if (isMobile) {
     return (
@@ -108,8 +107,7 @@ export const SidebarPanel = ({ children }: SidebarContentProps) => {
   return (
     <Splitter.Panel
       className={cn(
-        "bg-sidebar text-sidebar-foreground h-dvh ease-[cubic-bezier(0.32,0.72,0,1)] duration-500",
-        isResizing && "duration-0",
+        "bg-sidebar text-sidebar-foreground h-dvh ease-[cubic-bezier(0.32,0.72,0,1)] duration-500 data-dragging:duration-0",
       )}
       id="a"
     >
@@ -135,7 +133,6 @@ export const SidebarRoot = ({ children }: SidebarRootProps) => {
   const isMobile = useIsMobile();
   const windowWidth = useWindowWidth();
   const [open, setOpen] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
 
   const minPercent =
     windowWidth >= MIN_SIDEBAR_WIDTH
@@ -149,7 +146,7 @@ export const SidebarRoot = ({ children }: SidebarRootProps) => {
 
   const defaultPercent = open ? minPercent : 0;
 
-  const contextValue = { isMobile, isResizing };
+  const contextValue = { isMobile };
 
   if (isMobile) {
     return (
@@ -172,8 +169,6 @@ export const SidebarRoot = ({ children }: SidebarRootProps) => {
         defaultSize={[defaultPercent, 100 - defaultPercent]}
         onCollapse={({ panelId }) => panelId === "a" && setOpen(false)}
         onExpand={({ panelId }) => panelId === "a" && setOpen(true)}
-        onResizeEnd={() => setIsResizing(false)}
-        onResizeStart={() => setIsResizing(true)}
         panels={[
           {
             id: "a",
