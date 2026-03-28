@@ -2,6 +2,7 @@ import { Splitter as SplitterUnstyled } from "@ark-ui/react/splitter";
 
 import { cn } from "@/lib/utils";
 
+export const SplitterContext = SplitterUnstyled.Context;
 export const SplitterPanel = SplitterUnstyled.Panel;
 
 export const SplitterResizeTrigger = ({
@@ -43,9 +44,13 @@ export const SplitterRoot = ({
   />
 );
 
+export const SplitterRootProvider = SplitterUnstyled.RootProvider;
+
 export const Splitter = {
+  Context: SplitterContext,
   Panel: SplitterPanel,
   ResizeTrigger: SplitterResizeTrigger,
   ResizeTriggerIndicator: SplitterResizeTriggerIndicator,
   Root: SplitterRoot,
+  RootProvider: SplitterRootProvider,
 } as const;
