@@ -1,16 +1,56 @@
-"use client";
+import { Splitter as SplitterUnstyled } from "@ark-ui/react/splitter";
 
-import { Splitter } from "@ark-ui/react/splitter";
-import type { PropsWithChildren } from "react";
+import { cn } from "@/lib/utils";
 
-export function SplitterRoot(props: PropsWithChildren<Splitter.RootProps>) {
-  return <Splitter.Root {...props} />;
-}
+export const SplitterContext = SplitterUnstyled.Context;
+export const SplitterPanel = SplitterUnstyled.Panel;
 
-export function SplitterPanel(props: PropsWithChildren<Splitter.PanelProps>) {
-  return <Splitter.Panel {...props} />;
-}
+export const SplitterResizeTrigger = ({
+  className,
+  ...props
+}: SplitterUnstyled.ResizeTriggerProps) => (
+  <SplitterUnstyled.ResizeTrigger
+    className={cn(
+      "group w-2 -translate-x-1/2 flex justify-center items-center",
+      className,
+    )}
+    {...props}
+  />
+);
 
-export function SplitterResizeTrigger(props: Splitter.ResizeTriggerProps) {
-  return <Splitter.ResizeTrigger {...props} />;
-}
+export const SplitterResizeTriggerIndicator = ({
+  className,
+  ...props
+}: SplitterUnstyled.ResizeTriggerIndicatorProps) => (
+  <SplitterUnstyled.ResizeTriggerIndicator
+    className={cn(
+      "h-full w-px group-hover:w-1 bg-border transition-all duration-150 ease-in-out",
+      className,
+    )}
+    {...props}
+  />
+);
+
+export const SplitterRoot = ({
+  className,
+  ...props
+}: SplitterUnstyled.RootProps) => (
+  <SplitterUnstyled.Root
+    className={cn(
+      "flex size-full data-[orientation=vertical]:flex-col",
+      className,
+    )}
+    {...props}
+  />
+);
+
+export const SplitterRootProvider = SplitterUnstyled.RootProvider;
+
+export const Splitter = {
+  Context: SplitterContext,
+  Panel: SplitterPanel,
+  ResizeTrigger: SplitterResizeTrigger,
+  ResizeTriggerIndicator: SplitterResizeTriggerIndicator,
+  Root: SplitterRoot,
+  RootProvider: SplitterRootProvider,
+} as const;
