@@ -14,6 +14,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarPanel,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
 import { listNotesAction } from "@/module/note/actions";
@@ -26,7 +27,7 @@ export async function AppSidebar() {
   const { data: notes } = await listNotesAction();
 
   return (
-    <>
+    <SidebarPanel>
       <SidebarHeader>
         <Button asChild className="w-full h-12" size="lg" variant="ghost">
           <Link className="flex items-center gap-2" href="/">
@@ -65,6 +66,6 @@ export async function AppSidebar() {
           </Link>
         </Button>
       </SidebarFooter>
-    </>
+    </SidebarPanel>
   );
 }
