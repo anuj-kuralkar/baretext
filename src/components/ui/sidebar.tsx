@@ -57,7 +57,7 @@ export const SidebarContent = ({
   return (
     <ark.div
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto",
+        "no-scrollbar flex min-h-0 flex-1 flex-col gap-0 overflow-auto",
         className,
       )}
       {...props}
@@ -107,11 +107,11 @@ export const SidebarPanel = ({ children }: SidebarContentProps) => {
   return (
     <Splitter.Panel
       className={cn(
-        "bg-sidebar text-sidebar-foreground h-dvh ease-[cubic-bezier(0.32,0.72,0,1)] duration-500 data-dragging:duration-0",
+        "h-dvh bg-sidebar text-sidebar-foreground duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] data-dragging:duration-0",
       )}
       id="a"
     >
-      <div className="flex flex-col h-full min-w-3xs">{children}</div>
+      <div className="flex h-full min-w-3xs flex-col">{children}</div>
     </Splitter.Panel>
   );
 };
