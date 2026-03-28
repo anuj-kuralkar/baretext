@@ -104,6 +104,8 @@ export const DrawerRootProvider = DrawerUnstyled.RootProvider;
 
 export const DrawerStack = DrawerUnstyled.Stack;
 
+export const DrawerSwipeArea = DrawerUnstyled.SwipeArea;
+
 export const DrawerTitle = ({
   className,
   ...props
@@ -132,6 +134,7 @@ export const Drawer = {
   Root: DrawerRoot,
   RootProvider: DrawerRootProvider,
   Stack: DrawerStack,
+  SwipeArea: DrawerSwipeArea,
   Title: DrawerTitle,
   Trigger: DrawerTrigger,
 } as const;
