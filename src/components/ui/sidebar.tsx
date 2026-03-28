@@ -152,10 +152,9 @@ export const SidebarRoot = ({ children }: SidebarRootProps) => {
     return (
       <SidebarContext value={contextValue}>
         <Drawer.Root
-          defaultSnapPoint={1}
           onOpenChange={({ open }) => setOpen(open)}
           open={open}
-          swipeDirection="left"
+          swipeDirection="start"
         >
           {children}
         </Drawer.Root>
