@@ -54,7 +54,7 @@ export const DrawerDescription = ({
   className,
   ...props
 }: HTMLArkProps<"p">) => (
-  <ark.p
+  <DrawerUnstyled.Description
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
