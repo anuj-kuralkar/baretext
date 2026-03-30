@@ -54,7 +54,7 @@ export async function AppSidebar() {
             href="/"
           >
             <AvatarRoot className="h-8 w-8 rounded-lg">
-              <AvatarImage alt={name} src={image ?? ""} />
+              <AvatarImage alt={name} src={image ?? undefined} />
               <AvatarFallback className="rounded-lg">
                 <CircleUserRoundIcon />
               </AvatarFallback>
