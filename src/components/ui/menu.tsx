@@ -1,96 +1,107 @@
-import { Menu as MenuUnstyled } from "@ark-ui/react/menu";
+"use client";
 
+import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
+import { Menu as MenuUnstyled } from "@ark-ui/react/menu";
+import { CheckIcon, ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const MenuArrow = ({ className, ...props }: MenuUnstyled.ArrowProps) => (
-  <MenuUnstyled.Arrow {...props} className={cn("fill-popover", className)} />
+  <MenuUnstyled.Arrow
+    {...props}
+    className={cn("bg-popover [--arrow-size:16px] rotate-45", className)}
+  />
 );
 
 export const MenuArrowTip = ({
   className,
   ...props
 }: MenuUnstyled.ArrowTipProps) => (
-  <MenuUnstyled.ArrowTip {...props} className={cn("fill-popover", className)} />
+  <MenuUnstyled.ArrowTip
+    {...props}
+    className={cn("border-t border-l border-border -rotate-45", className)}
+  />
 );
 
 export const MenuCheckboxItem = ({
   className,
+  children,
+  inset,
   ...props
-}: MenuUnstyled.CheckboxItemProps) => (
-  <MenuUnstyled.CheckboxItem
-    {...props}
-    className={cn(
-      "relative flex items-center gap-2 rounded-sm",
-      "py-1.5 ps-8 pe-2",
-      "select-none text-sm",
-      "data-highlighted:bg-accent data-highlighted:text-accent-foreground",
-      "aria-disabled:pointer-events-none aria-disabled:opacity-50",
-      "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-      className,
-    )}
-  />
-);
+}: MenuUnstyled.CheckboxItemProps & {
+  inset?: boolean;
+}) => {
+  return (
+    <MenuUnstyled.CheckboxItem
+      className={cn(
+        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className,
+      )}
+      data-inset={inset}
+      {...props}
+    >
+      <span className="pointer-events-none absolute right-2">
+        <MenuUnstyled.ItemIndicator>
+          <CheckIcon />
+        </MenuUnstyled.ItemIndicator>
+      </span>
+      {children}
+    </MenuUnstyled.CheckboxItem>
+  );
+};
 
 export const MenuContent = ({
   className,
   ...props
-}: MenuUnstyled.ContentProps) => (
-  <MenuUnstyled.Content
-    {...props}
-    className={cn(
-      "bg-popover text-popover-foreground",
-      "max-h-(--available-height) min-w-[max(var(--reference-width),8rem)] max-w-[min(var(--available-width),20rem)]",
-      "rounded-md border p-1 shadow-md",
-      "z-[calc(var(--layer-index)+50)]",
-      "overflow-y-auto overflow-x-hidden",
-      "focus-visible:outline-none",
-      "data-[state=open]:zoom-in-95 data-[state=open]:fade-in-0 data-[state=open]:animate-in",
-      "data-[state=closed]:zoom-out-95 data-[state=closed]:fade-out-0 data-[state=closed]:animate-out",
-      "data-[placement^=top]:slide-in-from-bottom-2",
-      "data-[placement^=bottom]:slide-in-from-top-2",
-      "data-[placement^=left]:slide-in-from-right-2",
-      "data-[placement^=right]:slide-in-from-left-2",
-      className,
-    )}
-  />
-);
+}: MenuUnstyled.ContentProps) => {
+  return (
+    <MenuUnstyled.Content
+      className={cn(
+        "z-50 max-h-(--available-height) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 outline-none data-[placement^=bottom]:slide-in-from-top-2 data-[placement^=top]:slide-in-from-bottom-2 data-[placement^=left]:slide-in-from-right-2 data-[placement^=right]:slide-in-from-left-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+        "data-[nested=menu]:shadow-lg",
+        className,
+      )}
+      {...props}
+    />
+  );
+};
 
 export const MenuContext = MenuUnstyled.Context;
 
-export const MenuContextTrigger = MenuUnstyled.ContextTrigger;
-
-export const MenuIndicator = ({
+export const MenuContextTrigger = ({
   className,
   ...props
-}: MenuUnstyled.IndicatorProps) => (
-  <MenuUnstyled.Indicator className={cn("ms-auto", className)} {...props} />
-);
+}: MenuUnstyled.ContextTriggerProps) => {
+  return (
+    <MenuUnstyled.ContextTrigger
+      className={cn("select-none", className)}
+      {...props}
+    />
+  );
+};
+
+export const MenuIndicator = MenuUnstyled.Indicator;
 
 export const MenuItem = ({
   className,
-  tone,
   inset,
+  tone = "default",
   ...props
 }: MenuUnstyled.ItemProps & {
-  tone?: "default" | "critical";
   inset?: boolean;
-}) => (
-  <MenuUnstyled.Item
-    data-inset={inset || undefined}
-    data-tone={tone}
-    {...props}
-    className={cn(
-      "relative flex items-center gap-2 rounded-sm",
-      "px-2 py-1.5 data-inset:pl-8",
-      "select-none text-sm",
-      "data-highlighted:bg-accent data-highlighted:text-accent-foreground",
-      "aria-disabled:pointer-events-none aria-disabled:opacity-50",
-      "data-[tone=critical]:data-highlighted:bg-destructive/10 data-[tone=critical]:text-destructive data-[tone=critical]:*:[svg]:text-destructive!",
-      "[&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
-      className,
-    )}
-  />
-);
+  tone?: "default" | "critical";
+}) => {
+  return (
+    <MenuUnstyled.Item
+      className={cn(
+        "group/context-menu-item relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-[tone=critical]:text-destructive data-[tone=critical]:data-highlighted:bg-destructive/10 data-[tone=critical]:data-highlighted:text-destructive dark:data-[tone=critical]:data-highlighted:bg-destructive/20 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-highlighted:*:[svg]:text-accent-foreground data-[tone=critical]:*:[svg]:text-destructive",
+        className,
+      )}
+      data-inset={inset}
+      data-tone={tone}
+      {...props}
+    />
+  );
+};
 
 export const MenuItemContext = MenuUnstyled.ItemContext;
 
@@ -98,97 +109,120 @@ export const MenuItemGroup = MenuUnstyled.ItemGroup;
 
 export const MenuItemGroupLabel = ({
   className,
+  inset,
   ...props
-}: MenuUnstyled.ItemGroupLabelProps) => (
-  <MenuUnstyled.ItemGroupLabel
-    {...props}
-    className={cn(
-      "px-2 py-1.5 data-inset:pl-8",
-      "font-medium text-foreground text-sm",
-      className,
-    )}
-  />
-);
+}: MenuUnstyled.ItemGroupLabelProps & {
+  inset?: boolean;
+}) => {
+  return (
+    <MenuUnstyled.ItemGroupLabel
+      className={cn(
+        "px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7",
+        className,
+      )}
+      data-inset={inset}
+      {...props}
+    />
+  );
+};
 
-export const MenuItemIndicator = ({
-  className,
-  ...props
-}: MenuUnstyled.ItemIndicatorProps) => (
-  <MenuUnstyled.ItemIndicator
-    {...props}
-    className={cn(
-      "flex items-center justify-center",
-      "pointer-events-none absolute left-2 size-3.5",
-      className,
-    )}
-  />
-);
+export const MenuItemIndicator = MenuUnstyled.ItemIndicator;
 
 export const MenuItemText = MenuUnstyled.ItemText;
 
-export const MenuPositioner = MenuUnstyled.Positioner;
+export const MenuPositioner = ({
+  className,
+  ...props
+}: MenuUnstyled.PositionerProps) => {
+  return (
+    <MenuUnstyled.Positioner
+      className={cn("isolate z-50 outline-none", className)}
+      {...props}
+    />
+  );
+};
 
 export const MenuRadioItem = ({
   className,
+  children,
+  inset,
   ...props
-}: MenuUnstyled.RadioItemProps) => (
-  <MenuUnstyled.RadioItem
-    {...props}
-    className={cn(
-      "relative flex items-center gap-2 rounded-sm",
-      "py-1.5 ps-8 pe-2",
-      "select-none text-sm",
-      "data-highlighted:bg-accent data-highlighted:text-accent-foreground",
-      "aria-disabled:pointer-events-none aria-disabled:opacity-50",
-      "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-      className,
-    )}
-  />
-);
+}: MenuUnstyled.RadioItemProps & {
+  inset?: boolean;
+}) => {
+  return (
+    <MenuUnstyled.RadioItem
+      className={cn(
+        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className,
+      )}
+      data-inset={inset}
+      {...props}
+    >
+      <span className="pointer-events-none absolute right-2">
+        <MenuUnstyled.ItemIndicator>
+          <CheckIcon />
+        </MenuUnstyled.ItemIndicator>
+      </span>
+      {children}
+    </MenuUnstyled.RadioItem>
+  );
+};
 
-export const MenuRadioItemGroup = (props: MenuUnstyled.RadioItemGroupProps) => (
-  <MenuUnstyled.RadioItemGroup {...props} />
-);
+export const MenuRadioItemGroup = MenuUnstyled.RadioItemGroup;
 
-export const MenuRoot = (props: MenuUnstyled.RootProps) => (
-  <MenuUnstyled.Root {...props} />
-);
+export const MenuRoot = MenuUnstyled.Root;
 
-export const MenuRootProvider = (props: MenuUnstyled.RootProviderProps) => (
-  <MenuUnstyled.RootProvider {...props} />
-);
+export const MenuRootProvider = MenuUnstyled.RootProvider;
 
 export const MenuSeparator = ({
   className,
   ...props
-}: MenuUnstyled.SeparatorProps) => (
-  <MenuUnstyled.Separator
-    {...props}
-    className={cn("-mx-1 my-1 h-px bg-border", className)}
-  />
-);
+}: MenuUnstyled.SeparatorProps) => {
+  return (
+    <MenuUnstyled.Separator
+      className={cn("-mx-1 my-1 h-px bg-border", className)}
+      {...props}
+    />
+  );
+};
+
+export const MenuShortcut = ({ className, ...props }: HTMLArkProps<"span">) => {
+  return (
+    <ark.span
+      className={cn(
+        "ml-auto text-xs tracking-widest text-muted-foreground group-data-highlighted/context-menu-item:text-accent-foreground",
+        className,
+      )}
+      {...props}
+    />
+  );
+};
 
 export const MenuTrigger = MenuUnstyled.Trigger;
 
 export const MenuTriggerItem = ({
   className,
   inset,
+  children,
   ...props
-}: MenuUnstyled.TriggerItemProps & { inset?: boolean }) => (
-  <MenuUnstyled.TriggerItem
-    data-inset={inset || undefined}
-    {...props}
-    className={cn(
-      "flex items-center rounded-sm gap-2",
-      "px-2 py-1.5 data-inset:pl-8",
-      "select-none text-sm",
-      "data-highlighted:bg-accent data-highlighted:text-accent-foreground",
-      "data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
-      "[&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
-      className,
-    )}
-  />
-);
+}: MenuUnstyled.TriggerItemProps & {
+  inset?: boolean;
+}) => {
+  return (
+    <MenuUnstyled.TriggerItem
+      className={cn(
+        "flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className,
+      )}
+      data-inset={inset}
+      {...props}
+    >
+      {children}
+      <ChevronRightIcon className="ms-auto" />
+    </MenuUnstyled.TriggerItem>
+  );
+};
 
 export const Menu = {
   Arrow: MenuArrow,
@@ -210,6 +244,7 @@ export const Menu = {
   Root: MenuRoot,
   RootProvider: MenuRootProvider,
   Separator: MenuSeparator,
+  Shortcut: MenuShortcut,
   Trigger: MenuTrigger,
   TriggerItem: MenuTriggerItem,
 } as const;
