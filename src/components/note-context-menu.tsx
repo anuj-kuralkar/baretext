@@ -2,12 +2,7 @@ import { DownloadTrigger } from "@ark-ui/react/download-trigger";
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { createEditor } from "lexical";
-import {
-  ChevronRightIcon,
-  ClipboardIcon,
-  DownloadIcon,
-  Trash2,
-} from "lucide-react";
+import { ClipboardIcon, DownloadIcon, Trash2 } from "lucide-react";
 import { Menu } from "@/components/ui/menu";
 import { nodes } from "@/module/editor/nodes";
 import { deleteNoteAction } from "@/module/note/actions";
@@ -60,7 +55,6 @@ export function NoteContextMenu({
             <Menu.TriggerItem>
               <DownloadIcon />
               <Menu.ItemText>Download</Menu.ItemText>
-              <ChevronRightIcon />
             </Menu.TriggerItem>
             <Menu.Positioner>
               <Menu.Content>
@@ -100,7 +94,6 @@ export function NoteContextMenu({
             <Menu.TriggerItem>
               <ClipboardIcon />
               <Menu.ItemText>Copy</Menu.ItemText>
-              <ChevronRightIcon className="ms-auto" />
             </Menu.TriggerItem>
             <Menu.Positioner>
               <Menu.Content>
@@ -113,6 +106,8 @@ export function NoteContextMenu({
               </Menu.Content>
             </Menu.Positioner>
           </Menu.Root>
+
+          <Menu.Separator />
 
           <Menu.Item tone="critical" value="delete">
             <Trash2 />
