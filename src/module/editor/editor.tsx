@@ -31,7 +31,7 @@ export function Editor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="relative h-full flex flex-col">
+      <div className="relative h-full">
         <RichTextPlugin
           contentEditable={
             <ContentEditable
