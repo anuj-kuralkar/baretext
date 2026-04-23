@@ -36,7 +36,8 @@ export interface SidebarInsetProps {
 export interface SidebarResizeTriggerProps
   extends Omit<SplitterUnstyled.ResizeTriggerProps, "id"> {}
 
-export interface SidebarTriggerProps extends React.ComponentProps<"button"> {}
+export interface SidebarTriggerProps
+  extends Omit<React.ComponentProps<"button">, "value"> {}
 
 const SidebarContext = createContext<{
   isMobile: boolean;
@@ -199,9 +200,7 @@ const SidebarTriggerDesktop = (props: SidebarTriggerProps) => {
   );
 };
 
-const SidebarTriggerMobile = (
-  props: DrawerUnstyled.TriggerProps | DrawerUnstyled.CloseTriggerProps,
-) => {
+const SidebarTriggerMobile = (props: SidebarTriggerProps) => {
   const { open } = useDrawerContext();
   const TriggerComponent = open ? Drawer.CloseTrigger : Drawer.Trigger;
   return (
