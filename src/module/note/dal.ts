@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { type SurrealSession, surql } from "surrealdb";
 import { mapNote } from "@/module/note/mapper";
