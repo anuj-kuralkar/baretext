@@ -10,6 +10,7 @@ import {
   listNotes,
   updateNote,
 } from "@/module/note/dal";
+import { DeleteNoteSchema } from "@/module/note/schema";
 import type { Note, UpdateNote } from "@/module/note/types";
 import { getUserMe } from "@/module/user/dal";
 
@@ -25,6 +26,12 @@ export async function createNoteAction(
 }
 
 export async function deleteNoteAction(id: string): Promise<Result<void>> {
+  // Validate input before opening a DB session
+  DeleteNoteSchema.parse({ id });
+  // Ensure user is authenticated
+  const user = await getUserMe();
+  if (!user) return err("Unauthorized");
+  // SurrealDB RLS enforces ownership — the session token is scoped to the user
   return withDBSession(async (session) => {
     await deleteNote({ id }, session);
     return ok(undefined);

@@ -37,6 +37,7 @@ export async function deleteNote(
   { id }: DeleteNote,
   session: SurrealSession,
 ): Promise<void> {
+  // SurrealDB RLS PERMISSIONS enforce ownership — only the note owner can delete
   await session.query(surql`DELETE type::record(${id})`);
 }
 
