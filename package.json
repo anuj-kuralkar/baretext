@@ -15,7 +15,7 @@
     "@lexical/code-prism": "^0.43.0",
     "@lexical/react": "^0.43.0",
     "@t3-oss/env-nextjs": "^0.13.11",
-    "better-auth": "1.6.8",
+    "better-auth": "1.6.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lexical": "^0.43.0",
