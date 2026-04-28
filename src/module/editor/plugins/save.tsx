@@ -20,14 +20,15 @@ export function AutoSavePlugin({ noteId, delay = 1500 }: AutoSavePluginProps) {
   const debouncedSave = useRef(
     debounce(async (content: SerializedEditorState) => {
       setIsSaving(true);
-      const { error } = await updateNoteAction({ id: noteId, content });
-      setLastSaved(new Date());
-
-      if (error) {
-        toaster.error({
-          title: "Save Error",
-          description: error,
-        });
+      try {
+        const { error } = await updateNoteAction({ id: noteId, content });
+        if (error) {
+          toaster.error({ title: "Save Error", description: error });
+        } else {
+          setLastSaved(new Date());
+        }
+      } finally {
+        setIsSaving(false);
       }
     }, delay),
   ).current;
@@ -38,8 +39,7 @@ export function AutoSavePlugin({ noteId, delay = 1500 }: AutoSavePluginProps) {
 
   const handleChange = (editorState: EditorState) => {
     editorState.read(() => {
-      const json = editorState.toJSON();
-      debouncedSave(json);
+      debouncedSave(editorState.toJSON());
     });
   };
 
