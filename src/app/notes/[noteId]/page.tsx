@@ -5,7 +5,11 @@ import { auth } from "@/lib/auth";
 import { Editor } from "@/module/editor/editor";
 import { getNoteAction } from "@/module/note/actions";
 
-export default async function Page({ params }: { params: { noteId: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ noteId: string }>;
+}) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return redirect("/auth/login");
