@@ -12,7 +12,7 @@
   "dependencies": {
     "@alde/ba-surreal": "npm:@jsr/alde__ba-surreal@1.0.1",
     "@ark-ui/react": "^5.36.2",
-    "@lexical/code-prism": "^0.43.0",
+    "@lexical/code-prism": "^0.44.0",
     "@lexical/react": "^0.43.0",
     "@t3-oss/env-nextjs": "^0.13.11",
     "better-auth": "1.6.9",
