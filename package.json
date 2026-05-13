@@ -10,7 +10,7 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@alde/ba-surreal": "npm:@jsr/alde__ba-surreal",
+    "@alde/ba-surreal": "npm:@jsr/alde__ba-surreal@1.0.1",
     "@ark-ui/react": "^5.36.2",
     "@lexical/code-prism": "^0.43.0",
     "@lexical/react": "^0.43.0",
