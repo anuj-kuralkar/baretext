@@ -1,23 +1,13 @@
 "use client";
-import { CodeExtension } from "@lexical/code-core";
-import { CodePrismExtension } from "@lexical/code-prism";
-import {
-  configExtension,
-  defineExtension,
-  HorizontalRuleExtension,
-} from "@lexical/extension";
-import { HistoryExtension } from "@lexical/history";
-import { LinkExtension } from "@lexical/link";
-import { CheckListExtension, ListExtension } from "@lexical/list";
+import { configExtension, defineExtension } from "@lexical/extension";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { RichTextExtension } from "@lexical/rich-text";
-
 import { toaster } from "@/components/ui/toast";
 import { theme } from "@/styles/editor-theme";
 
-import { AutoSaveExtension } from "./extension/autosave";
+import { AutoSaveExtension } from "./extensions/auto-save";
+import { extensionsList } from "./extensions-list";
 import { AutoSaveIndicator } from "./save-indicator";
 
 export function Editor({
@@ -31,15 +21,7 @@ export function Editor({
     name: "baretext-editor",
     namespace: "editor",
     dependencies: [
-      HistoryExtension,
-      RichTextExtension,
-      CodeExtension,
-      CodePrismExtension,
-      LinkExtension,
-      ListExtension,
-      CheckListExtension,
-      HorizontalRuleExtension,
-
+      ...extensionsList,
       configExtension(AutoSaveExtension, { noteId }),
     ],
     $initialEditorState: content,

@@ -1,10 +1,11 @@
 import { DownloadTrigger } from "@ark-ui/react/download-trigger";
+import { buildEditorFromExtensions } from "@lexical/extension";
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
-import { createEditor } from "lexical";
 import { ClipboardIcon, DownloadIcon, Trash2 } from "lucide-react";
+
 import { Menu } from "@/components/ui/menu";
-import { nodes } from "@/module/editor/nodes";
+import { extensionsList } from "@/module/editor/extensions-list";
 import { deleteNoteAction } from "@/module/note/actions";
 import type { Note } from "@/module/note/types";
 import { getFirstTwoTextNodesText } from "@/module/note/utils";
@@ -17,24 +18,19 @@ export function NoteContextMenu({
   children: React.ReactNode;
 }) {
   const getEditor = () => {
-    const editor = createEditor({ nodes });
+    const editor = buildEditorFromExtensions(...extensionsList);
     editor.setEditorState(editor.parseEditorState(note.content));
     return editor;
   };
 
   const getMarkdown = () => {
-    const editor = createEditor({ nodes });
-    const state = editor.parseEditorState(note.content);
-    return state.read(() => $convertToMarkdownString(TRANSFORMERS));
+    const editor = getEditor();
+    return editor.read(() => $convertToMarkdownString(TRANSFORMERS));
   };
 
   const getHtml = () => {
     const editor = getEditor();
-    let html = "";
-    editor.read(() => {
-      html = $generateHtmlFromNodes(editor);
-    });
-    return html;
+    return editor.read(() => $generateHtmlFromNodes(editor));
   };
 
   const fileName = getFirstTwoTextNodesText(note.content)[0] ?? "untitled";

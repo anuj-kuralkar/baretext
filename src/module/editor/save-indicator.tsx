@@ -1,6 +1,6 @@
 "use client";
 import { useExtensionSignalValue } from "@lexical/react/useExtensionSignalValue";
-import { AutoSaveExtension } from "./extension/autosave";
+import { AutoSaveExtension } from "./extensions/auto-save";
 
 export function AutoSaveIndicator() {
   const isSaving = useExtensionSignalValue(AutoSaveExtension, "isSaving");
