@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  type Drawer as DrawerUnstyled,
-  useDrawerContext,
-} from "@ark-ui/react/drawer";
+import { useDrawerContext } from "@ark-ui/react/drawer";
 import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 import { Portal } from "@ark-ui/react/portal";
 import {

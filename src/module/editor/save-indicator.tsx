@@ -7,13 +7,13 @@ export function AutoSaveIndicator() {
   const lastSaved = useExtensionSignalValue(AutoSaveExtension, "lastSaved");
 
   return (
-    <div className="absolute bottom-4 right-4 pointer-events-none select-none">
+    <div className="pointer-events-none absolute right-4 bottom-4 select-none">
       {isSaving ? (
-        <span className="text-xs text-muted-foreground animate-pulse">
+        <span className="animate-pulse text-muted-foreground text-xs">
           Saving...
         </span>
       ) : lastSaved ? (
-        <span className="text-xs text-muted-foreground/40 font-medium">
+        <span className="font-medium text-muted-foreground/40 text-xs">
           Saved{" "}
           {(lastSaved as Date).toLocaleTimeString([], {
             hour: "2-digit",

@@ -18,10 +18,10 @@ export function ToastRoot(props: Toast.RootProps) {
   return (
     <Toast.Root
       className={cn(
-        "w-xs p-4 flex gap-2 rounded-md border text-sm shadow-md",
-        "translate-x-(--x) translate-y-(--y) z-(--z-index) opacity-(--opacity) height-(--height) scale-(--scale)",
-        "duration-400 transition-all",
-        "bg-popover border-border text-popover-foreground",
+        "flex w-xs gap-2 rounded-md border p-4 text-sm shadow-md",
+        "height-(--height) z-(--z-index) translate-x-(--x) translate-y-(--y) scale-(--scale) opacity-(--opacity)",
+        "transition-all duration-400",
+        "border-border bg-popover text-popover-foreground",
         "data-[type=error]:text-red-600 dark:data-[type=error]:text-red-400",
         "data-[type=info]:text-blue-600 dark:data-[type=info]:text-blue-400",
         "data-[type=success]:text-green-600 dark:data-[type=success]:text-green-400",
@@ -33,13 +33,13 @@ export function ToastRoot(props: Toast.RootProps) {
 }
 
 export function ToastTitle(props: Toast.TitleProps) {
-  return <Toast.Title className="font-medium leading-normal pr-5" {...props} />;
+  return <Toast.Title className="pr-5 font-medium leading-normal" {...props} />;
 }
 
 export function ToastDescription(props: Toast.DescriptionProps) {
   return (
     <Toast.Description
-      className="font-normal pr-5 text-popover-foreground"
+      className="pr-5 font-normal text-popover-foreground"
       {...props}
     />
   );
@@ -52,7 +52,7 @@ export function ToastActionTrigger({
 }: Toast.ActionTriggerProps) {
   return (
     <Toast.ActionTrigger
-      className={cn("self-start mt-1", className)}
+      className={cn("mt-1 self-start", className)}
       {...props}
       asChild
     >
@@ -68,11 +68,11 @@ export function ToastCloseTrigger({
   return (
     <Toast.CloseTrigger
       className={cn(
-        "inline-flex items-center justify-center size-6 rounded-md shadow-md transition-colors",
-        "absolute right-3 top-3",
+        "inline-flex size-6 items-center justify-center rounded-md shadow-md transition-colors",
+        "absolute top-3 right-3",
         "border border-border",
         "disabled:pointer-events-none disabled:opacity-50",
-        "outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3",
+        "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
         "hover:bg-secondary/90",
         "bg-secondary text-secondary-foreground",
         "[&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:translate-y-0.5",

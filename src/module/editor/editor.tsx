@@ -60,9 +60,9 @@ export function Editor({
         <div className="editor-inner">
           <ContentEditable
             aria-placeholder={placeholderText}
-            className="flex-1 focus:outline-none xl:p-12 md:p-8 p-4 overflow-y-auto"
+            className="flex-1 overflow-y-auto p-4 focus:outline-none md:p-8 xl:p-12"
             placeholder={
-              <div className="absolute inset-0 pointer-events-none xl:p-12 md:p-8 p-4 text-muted-foreground/50 text-sm italic">
+              <div className="pointer-events-none absolute inset-0 p-4 text-muted-foreground/50 text-sm italic md:p-8 xl:p-12">
                 {placeholderText}
               </div>
             }

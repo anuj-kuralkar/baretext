@@ -23,7 +23,7 @@ export async function Header() {
       <Link href="/">
         <div className="flex items-center gap-2">
           <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
-          <span className="text-lg font-semibold">Baretext</span>
+          <span className="font-semibold text-lg">Baretext</span>
         </div>
       </Link>
 

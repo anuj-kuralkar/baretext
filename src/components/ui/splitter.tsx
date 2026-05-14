@@ -11,7 +11,7 @@ export const SplitterResizeTrigger = ({
 }: SplitterUnstyled.ResizeTriggerProps) => (
   <SplitterUnstyled.ResizeTrigger
     className={cn(
-      "group w-2 -translate-x-1/2 flex justify-center items-center",
+      "group flex w-2 -translate-x-1/2 items-center justify-center",
       className,
     )}
     {...props}
@@ -24,7 +24,7 @@ export const SplitterResizeTriggerIndicator = ({
 }: SplitterUnstyled.ResizeTriggerIndicatorProps) => (
   <SplitterUnstyled.ResizeTriggerIndicator
     className={cn(
-      "h-full w-px group-hover:w-1 bg-border transition-all duration-150 ease-in-out",
+      "h-full w-px bg-border transition-all duration-150 ease-in-out group-hover:w-1",
       className,
     )}
     {...props}

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export const MenuArrow = ({ className, ...props }: MenuUnstyled.ArrowProps) => (
   <MenuUnstyled.Arrow
     {...props}
-    className={cn("bg-popover [--arrow-size:16px] rotate-45", className)}
+    className={cn("rotate-45 bg-popover [--arrow-size:16px]", className)}
   />
 );
 
@@ -18,7 +18,7 @@ export const MenuArrowTip = ({
 }: MenuUnstyled.ArrowTipProps) => (
   <MenuUnstyled.ArrowTip
     {...props}
-    className={cn("border-t border-l border-border -rotate-45", className)}
+    className={cn("-rotate-45 border-border border-t border-l", className)}
   />
 );
 
@@ -33,7 +33,7 @@ export const MenuCheckboxItem = ({
   return (
     <MenuUnstyled.CheckboxItem
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex cursor-default select-none items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden data-disabled:pointer-events-none data-highlighted:bg-accent data-inset:pl-7 data-highlighted:text-accent-foreground data-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       data-inset={inset}
@@ -56,7 +56,7 @@ export const MenuContent = ({
   return (
     <MenuUnstyled.Content
       className={cn(
-        "z-50 max-h-(--available-height) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 outline-none data-[placement^=bottom]:slide-in-from-top-2 data-[placement^=top]:slide-in-from-bottom-2 data-[placement^=left]:slide-in-from-right-2 data-[placement^=right]:slide-in-from-left-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+        "data-[placement^=bottom]:slide-in-from-top-2 data-[placement^=top]:slide-in-from-bottom-2 data-[placement^=left]:slide-in-from-right-2 data-[placement^=right]:slide-in-from-left-2 data-open:fade-in-0 data-open:zoom-in-95 data-closed:fade-out-0 data-closed:zoom-out-95 z-50 max-h-(--available-height) min-w-36 origin-(--transform-origin) overflow-y-auto overflow-x-hidden rounded-lg bg-popover p-1 text-popover-foreground shadow-md outline-none ring-1 ring-foreground/10 duration-100 data-closed:animate-out data-open:animate-in",
         "data-[nested=menu]:shadow-lg",
         className,
       )}
@@ -93,7 +93,7 @@ export const MenuItem = ({
   return (
     <MenuUnstyled.Item
       className={cn(
-        "group/context-menu-item relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-[tone=critical]:text-destructive data-[tone=critical]:data-highlighted:bg-destructive/10 data-[tone=critical]:data-highlighted:text-destructive dark:data-[tone=critical]:data-highlighted:bg-destructive/20 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-highlighted:*:[svg]:text-accent-foreground data-[tone=critical]:*:[svg]:text-destructive",
+        "group/context-menu-item relative flex cursor-default select-none items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden data-[tone=critical]:data-highlighted:bg-destructive/10 data-[tone=critical]:data-highlighted:text-destructive data-disabled:pointer-events-none data-highlighted:bg-accent data-inset:pl-7 data-[tone=critical]:text-destructive data-highlighted:text-accent-foreground data-disabled:opacity-50 dark:data-[tone=critical]:data-highlighted:bg-destructive/20 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[tone=critical]:*:[svg]:text-destructive data-highlighted:*:[svg]:text-accent-foreground",
         className,
       )}
       data-inset={inset}
@@ -117,7 +117,7 @@ export const MenuItemGroupLabel = ({
   return (
     <MenuUnstyled.ItemGroupLabel
       className={cn(
-        "px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7",
+        "px-1.5 py-1 font-medium text-muted-foreground text-xs data-inset:pl-7",
         className,
       )}
       data-inset={inset}
@@ -153,7 +153,7 @@ export const MenuRadioItem = ({
   return (
     <MenuUnstyled.RadioItem
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex cursor-default select-none items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden data-disabled:pointer-events-none data-highlighted:bg-accent data-inset:pl-7 data-highlighted:text-accent-foreground data-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       data-inset={inset}
@@ -191,7 +191,7 @@ export const MenuShortcut = ({ className, ...props }: HTMLArkProps<"span">) => {
   return (
     <ark.span
       className={cn(
-        "ml-auto text-xs tracking-widest text-muted-foreground group-data-highlighted/context-menu-item:text-accent-foreground",
+        "ml-auto text-muted-foreground text-xs tracking-widest group-data-highlighted/context-menu-item:text-accent-foreground",
         className,
       )}
       {...props}
@@ -212,7 +212,7 @@ export const MenuTriggerItem = ({
   return (
     <MenuUnstyled.TriggerItem
       className={cn(
-        "flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex cursor-default select-none items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden data-highlighted:bg-accent data-open:bg-accent data-inset:pl-7 data-highlighted:text-accent-foreground data-open:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       data-inset={inset}

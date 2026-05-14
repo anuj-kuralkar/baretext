@@ -11,7 +11,7 @@ export const DrawerBackdrop = ({
 }: DrawerUnstyled.BackdropProps) => (
   <DrawerUnstyled.Backdrop
     className={cn(
-      "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 duration-500",
+      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-500 data-[state=closed]:animate-out data-[state=open]:animate-in",
       "fixed inset-0 z-50 bg-black/10 supports-backdrop-filter:backdrop-blur-xs",
       className,
     )}
@@ -29,7 +29,7 @@ export const DrawerContent = ({
   <>
     <DrawerUnstyled.Content
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out ease-[cubic-bezier(0.32,0.72,0,1)] duration-500",
+        "duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=closed]:animate-out data-[state=open]:animate-in",
         "data-[state=open]:data-[swipe-direction=top]:slide-in-from-top data-[state=closed]:data-[swipe-direction=top]:slide-out-to-top",
         "data-[state=open]:data-[swipe-direction=left]:slide-in-from-left data-[state=closed]:data-[swipe-direction=left]:slide-out-to-left",
         "data-[state=open]:data-[swipe-direction=down]:slide-in-from-bottom data-[state=closed]:data-[swipe-direction=down]:slide-out-to-bottom",
@@ -55,7 +55,7 @@ export const DrawerDescription = ({
   ...props
 }: HTMLArkProps<"p">) => (
   <DrawerUnstyled.Description
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-muted-foreground text-sm", className)}
     {...props}
   />
 );
@@ -75,7 +75,7 @@ export const DrawerGrabberIndicator = ({
 }: DrawerUnstyled.GrabberIndicatorProps) => (
   <DrawerUnstyled.GrabberIndicator
     className={cn(
-      "bg-muted mx-auto mt-4 hidden h-1 w-25 shrink-0 rounded-full in-data-[swipe-direction=down]:block",
+      "mx-auto mt-4 in-data-[swipe-direction=down]:block hidden h-1 w-25 shrink-0 rounded-full bg-muted",
       className,
     )}
     {...props}
@@ -111,7 +111,7 @@ export const DrawerTitle = ({
   ...props
 }: DrawerUnstyled.TitleProps) => (
   <DrawerUnstyled.Title
-    className={cn("text-base font-medium text-foreground", className)}
+    className={cn("font-medium text-base text-foreground", className)}
     {...props}
   />
 );

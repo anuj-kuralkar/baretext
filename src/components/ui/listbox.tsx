@@ -46,7 +46,7 @@ export const ListboxEmpty = ({
 }: ListboxUnstyled.EmptyProps) => (
   <ListboxUnstyled.Empty
     {...props}
-    className={cn("px-2 py-1.5 text-sm text-muted-foreground", className)}
+    className={cn("px-2 py-1.5 text-muted-foreground text-sm", className)}
   />
 );
 
@@ -57,9 +57,9 @@ export const ListboxInput = ({
   <ListboxUnstyled.Input
     {...props}
     className={cn(
-      "bg-background border px-3 py-2 rounded-md text-sm w-full",
+      "w-full rounded-md border bg-background px-3 py-2 text-sm",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-      "disabled:opacity-50 disabled:pointer-events-none",
+      "disabled:pointer-events-none disabled:opacity-50",
       className,
     )}
   />
@@ -88,7 +88,7 @@ export const ListboxItemDescription = ({
   return (
     <p
       className={cn(
-        "text-muted-foreground [&>a:hover]:text-primary line-clamp-2 text-left text-sm leading-normal font-normal group-data-[size=xs]/item:text-xs [&>a]:underline [&>a]:underline-offset-4",
+        "line-clamp-2 text-left font-normal text-muted-foreground text-sm leading-normal group-data-[size=xs]/item:text-xs [&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
         className,
       )}
       data-part="item-description"
@@ -116,7 +116,7 @@ export const ListboxItemGroupLabel = ({
 }: ListboxUnstyled.ItemGroupLabelProps) => (
   <ListboxUnstyled.ItemGroupLabel
     {...props}
-    className={cn("px-2 py-1.5 text-sm font-medium text-foreground", className)}
+    className={cn("px-2 py-1.5 font-medium text-foreground text-sm", className)}
   />
 );
 
@@ -142,7 +142,7 @@ export const ListBoxItemTitle = ({
   return (
     <div
       className={cn(
-        "line-clamp-1 flex w-fit items-center gap-2 text-sm leading-snug font-medium underline-offset-4",
+        "line-clamp-1 flex w-fit items-center gap-2 font-medium text-sm leading-snug underline-offset-4",
         className,
       )}
       data-part="item-title"
@@ -157,7 +157,7 @@ export const ListboxLabel = ({
 }: ListboxUnstyled.LabelProps) => (
   <ListboxUnstyled.Label
     {...props}
-    className={cn("px-2 py-1.5 text-sm font-medium text-foreground", className)}
+    className={cn("px-2 py-1.5 font-medium text-foreground text-sm", className)}
   />
 );
 
