@@ -1,7 +1,11 @@
 "use client";
 import { CodeExtension } from "@lexical/code-core";
 import { CodePrismExtension } from "@lexical/code-prism";
-import { defineExtension, HorizontalRuleExtension } from "@lexical/extension";
+import {
+  configExtension,
+  defineExtension,
+  HorizontalRuleExtension,
+} from "@lexical/extension";
 import { HistoryExtension } from "@lexical/history";
 import { LinkExtension } from "@lexical/link";
 import { CheckListExtension, ListExtension } from "@lexical/list";
@@ -13,7 +17,8 @@ import { RichTextExtension } from "@lexical/rich-text";
 import { toaster } from "@/components/ui/toast";
 import { theme } from "@/styles/editor-theme";
 
-import { AutoSavePlugin } from "./plugins/save";
+import { AutoSaveExtension } from "./extension/autosave";
+import { AutoSaveIndicator } from "./save-indicator";
 
 export function Editor({
   noteId,
@@ -34,6 +39,8 @@ export function Editor({
       ListExtension,
       CheckListExtension,
       HorizontalRuleExtension,
+
+      configExtension(AutoSaveExtension, { noteId }),
     ],
     $initialEditorState: content,
     theme,
@@ -61,8 +68,8 @@ export function Editor({
             }
           />
         </div>
+        <AutoSaveIndicator />
         <MarkdownShortcutPlugin />
-        <AutoSavePlugin noteId={noteId} />
       </div>
     </LexicalExtensionComposer>
   );
