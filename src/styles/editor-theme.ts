@@ -21,14 +21,27 @@ export const theme: EditorThemeClasses = {
     ul: "mb-4 ps-6 list-disc text-neutral-900 dark:text-neutral-100",
     ol: "mb-4 ps-6 list-decimal text-neutral-900 dark:text-neutral-100",
 
-    listitem: "ps-1 marker:text-neutral-400 dark:marker:text-neutral-500",
+    listitem:
+      "ps-1 marker:text-neutral-400 dark:marker:text-neutral-500 focus:outline-none",
+
+    checklist: "my-3 ps-0 list-none cursor-pointer",
 
     listitemChecked:
-      "text-neutral-400 dark:text-neutral-600 line-through decoration-neutral-400/50",
+      "relative pl-7 select-none text-neutral-400 dark:text-neutral-500 line-through decoration-neutral-400/40 " +
+      "before:content-[''] before:absolute before:left-0 before:top-[6px] " +
+      "before:size-4 before:rounded-[4px] before:border before:transition-colors " +
+      "before:bg-primary before:border-primary " +
+      "after:content-[''] after:absolute after:left-0 after:top-[6px] " +
+      "after:size-4 after:bg-primary-foreground " +
+      "after:[mask-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwb2x5bGluZSBwb2ludHM9IjIwIDYgOSAxNyA0IDEyIi8+PC9zdmc+')] " +
+      "after:[mask-size:70%] after:[mask-repeat:no-repeat] after:[mask-position:center]",
 
-    listitemUnchecked: "",
-
-    checklist: "my-3 ps-0 list-none",
+    listitemUnchecked:
+      "relative pl-7 select-none text-neutral-900 dark:text-neutral-100 " +
+      "before:content-[''] before:absolute before:left-0 before:top-[6px] " +
+      "before:size-4 before:rounded-[4px] before:border before:transition-colors " +
+      "before:border-input before:bg-white dark:before:bg-input/30 " +
+      "after:hidden",
 
     nested: {
       listitem: "list-none",

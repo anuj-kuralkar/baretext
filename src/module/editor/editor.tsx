@@ -1,8 +1,10 @@
 "use client";
 import { configExtension, defineExtension } from "@lexical/extension";
+import { CHECK_LIST, TRANSFORMERS } from "@lexical/markdown";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+
 import { toaster } from "@/components/ui/toast";
 import { theme } from "@/styles/editor-theme";
 
@@ -51,7 +53,7 @@ export function Editor({
           />
         </div>
         <AutoSaveIndicator />
-        <MarkdownShortcutPlugin />
+        <MarkdownShortcutPlugin transformers={[...TRANSFORMERS, CHECK_LIST]} />
       </div>
     </LexicalExtensionComposer>
   );
