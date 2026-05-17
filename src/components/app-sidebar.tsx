@@ -42,7 +42,7 @@ export async function AppSidebar() {
       <SidebarContent>
         <div className="mb-2 flex items-center justify-between rounded bg-muted px-4 py-2">
           <div className="flex-1">Notes</div>
-          <CreateNoteButton />
+          <CreateNoteButton iconOnly />
         </div>
         <NoteList notes={notes ?? []} />
       </SidebarContent>

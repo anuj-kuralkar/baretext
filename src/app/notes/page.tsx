@@ -1,19 +1,29 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { CreateNoteButton } from "@/components/create-note-button";
 import { Empty } from "@/components/ui/empty";
 import { auth } from "@/lib/auth";
+import { listNotesAction } from "@/module/note/actions";
 
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return redirect("/auth/login");
+  if (!session) redirect("/auth/login");
+
+  const { data: notes } = await listNotesAction();
+
+  if (notes?.length) {
+    redirect(`/notes/${encodeURIComponent(notes[0].id)}`);
   }
+
   return (
-    <Empty.Root>
+    <Empty.Root className="h-full">
       <Empty.Header>
-        <Empty.Title>Create a new note</Empty.Title>
-        <Empty.Description>Start by creating a new note.</Empty.Description>
+        <Empty.Title>No notes yet</Empty.Title>
+        <Empty.Description>
+          Create your first note to get started.
+        </Empty.Description>
       </Empty.Header>
+      <CreateNoteButton />
     </Empty.Root>
   );
 }
