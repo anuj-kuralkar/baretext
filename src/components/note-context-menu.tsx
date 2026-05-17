@@ -1,10 +1,15 @@
+"use client";
+
 import { DownloadTrigger } from "@ark-ui/react/download-trigger";
 import { buildEditorFromExtensions } from "@lexical/extension";
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { ClipboardIcon, DownloadIcon, Trash2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { startTransition } from "react";
 
 import { Menu } from "@/components/ui/menu";
+import { toaster } from "@/components/ui/toast";
 import { extensionsList } from "@/module/editor/extensions-list";
 import { deleteNoteAction } from "@/module/note/actions";
 import type { Note } from "@/module/note/types";
@@ -17,6 +22,9 @@ export function NoteContextMenu({
   note: Note;
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const { noteId } = useParams<{ noteId: string }>();
+
   const getEditor = () => {
     const editor = buildEditorFromExtensions(...extensionsList);
     editor.setEditorState(editor.parseEditorState(note.content));
@@ -33,13 +41,27 @@ export function NoteContextMenu({
     return editor.read(() => $generateHtmlFromNodes(editor));
   };
 
+  const handleDelete = () => {
+    startTransition(async () => {
+      const { error } = await deleteNoteAction(note.id);
+      if (error) {
+        toaster.error({ title: "Could not delete note", description: error });
+        return;
+      }
+      // If the user is viewing the deleted note, navigate away
+      if (noteId && decodeURIComponent(noteId) === note.id) {
+        router.push("/notes");
+      }
+    });
+  };
+
   const fileName = getFirstTwoTextNodesText(note.content)[0] ?? "untitled";
 
   return (
     <Menu.Root
       onSelect={(details) => {
         if (details.value === "delete") {
-          deleteNoteAction(note.id);
+          handleDelete();
         }
       }}
     >
