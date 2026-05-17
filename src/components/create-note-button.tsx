@@ -8,7 +8,11 @@ import { Spinner } from "@/components/ui/spinner";
 import { toaster } from "@/components/ui/toast";
 import { createNoteAction } from "@/module/note/actions";
 
-export const CreateNoteButton = () => {
+export const CreateNoteButton = ({
+  iconOnly = false,
+}: {
+  iconOnly?: boolean;
+}) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -30,9 +34,10 @@ export const CreateNoteButton = () => {
       aria-label="Create new note"
       disabled={isPending}
       onClick={handleCreateNote}
-      size="icon"
+      size={iconOnly ? "icon" : "default"}
       variant="outline"
     >
+      {!iconOnly && "New Note"}
       {isPending ? <Spinner /> : <SquarePenIcon />}
     </Button>
   );
