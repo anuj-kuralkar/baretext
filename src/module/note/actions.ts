@@ -1,6 +1,7 @@
 "use server";
 
 import type { SerializedEditorState } from "lexical";
+import { revalidatePath } from "next/cache";
 import { withDBSession } from "@/lib/db-session";
 import { err, ok, type Result } from "@/lib/result";
 import {
@@ -21,6 +22,7 @@ export async function createNoteAction(
   if (!user) return err("Unauthorized");
   return withDBSession(async (session) => {
     const note = await createNote({ content, userId: user.id }, session);
+    revalidatePath("/notes");
     return ok(note);
   });
 }
@@ -34,6 +36,7 @@ export async function deleteNoteAction(id: string): Promise<Result<void>> {
   // SurrealDB RLS enforces ownership — the session token is scoped to the user
   return withDBSession(async (session) => {
     await deleteNote({ id }, session);
+    revalidatePath("/notes");
     return ok(undefined);
   });
 }
