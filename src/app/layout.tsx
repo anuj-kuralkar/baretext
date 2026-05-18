@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import "@/styles/globals.css";
 import { Geist } from "next/font/google";
+import { DevelopmentBanner } from "@/components/development-banner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppToaster } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
+          <DevelopmentBanner />
           {children}
           <AppToaster />
         </ThemeProvider>
