@@ -1,7 +1,7 @@
 DEFINE TABLE note SCHEMAFULL
   PERMISSIONS
     FOR select, update, delete
-      WHERE array::flatten(SELECT VALUE <-owns<-user FROM note) CONTAINS $auth.id
+      WHERE array::flatten(SELECT VALUE <-owns<-user FROM note) CONTAINS $auth.id;
 
 DEFINE FIELD content ON TABLE note TYPE object FLEXIBLE DEFAULT {
   root: {
