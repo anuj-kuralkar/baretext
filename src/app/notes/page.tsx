@@ -11,6 +11,8 @@ export default async function Page() {
 
   const { data: notes } = await listNotesAction();
 
+  console.log(notes);
+
   if (notes?.length) {
     redirect(`/notes/${encodeURIComponent(notes[0].id)}`);
   }
