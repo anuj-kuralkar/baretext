@@ -1,7 +1,27 @@
 version: 2
 updates:
   - package-ecosystem: "bun"
-    directory: "/" 
+    directory: "/"
     schedule:
       interval: "weekly"
-      
+
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+
+      lexical:
+        patterns:
+          - "@lexical/*"
+          - "lexical"
+
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+
+      commitlint:
+        patterns:
+          - "commitlint"
+          - "@commitlint/*"
