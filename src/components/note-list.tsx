@@ -7,7 +7,8 @@ import type { Note } from "@/module/note/types";
 import { getFirstTwoTextNodesText } from "@/module/note/utils";
 
 export function NoteList({ notes }: { notes: Note[] }) {
-  const { noteId } = useParams<{ noteId: string }>();
+  const { noteId: noteIdEncoded } = useParams<{ noteId: string }>();
+  const noteId = decodeURIComponent(noteIdEncoded);
 
   const collection = createListCollection({
     items: notes,
@@ -30,7 +31,7 @@ export function NoteList({ notes }: { notes: Note[] }) {
                 className="h-32"
                 item={note}
                 key={note.id}
-                variant="muted"
+                variant={note.id === noteId ? "outline" : "muted"}
               >
                 <Listbox.ItemText>
                   <Listbox.ItemTitle>
