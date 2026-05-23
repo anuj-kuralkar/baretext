@@ -19,7 +19,7 @@ export default async function Page({
       <SidebarResizeTrigger />
       <SidebarInset>
         <div className="flex h-dvh min-h-0 flex-col">
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1">
               <PanelLeftIcon className="size-4" />
             </SidebarTrigger>
