@@ -22,7 +22,6 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    nextCookies(),
     jwt({
       jwt: {
         definePayload({ user }) {
@@ -35,5 +34,6 @@ export const auth = betterAuth({
         },
       },
     }),
+    nextCookies(),
   ],
 });
