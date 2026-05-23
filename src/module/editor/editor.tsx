@@ -9,6 +9,7 @@ import { toaster } from "@/components/ui/toast";
 import { theme } from "@/styles/editor-theme";
 
 import { AutoSaveExtension } from "./extensions/auto-save";
+import { MarkdownPasteExtension } from "./extensions/markdown-paste";
 import { extensionsList } from "./extensions-list";
 import { AutoSaveIndicator } from "./save-indicator";
 
@@ -25,6 +26,7 @@ export function Editor({
     dependencies: [
       ...extensionsList,
       configExtension(AutoSaveExtension, { noteId }),
+      MarkdownPasteExtension,
     ],
     $initialEditorState: content,
     theme,
