@@ -23,20 +23,18 @@ export async function AppSidebar() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const { name, email, image } = session?.user ?? {};
+  const { name, image } = session?.user ?? {};
   const { data: notes } = await listNotesAction();
 
   return (
     <SidebarPanel>
       <SidebarHeader>
-        <Button asChild className="h-12 w-full" size="lg" variant="ghost">
-          <Link className="flex items-center gap-2" href="/">
-            <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">Baretext</span>
-            </div>
-          </Link>
-        </Button>
+        <Link className="flex h-10 items-center gap-2 px-2 py-1" href="/">
+          <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-medium">Baretext</span>
+          </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
@@ -48,23 +46,18 @@ export async function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-        <Button asChild className="h-12 w-full" size="lg" variant="ghost">
-          <Link
-            className="flex items-center gap-2 px-1 py-1.5 text-left text-sm"
-            href="/"
-          >
-            <AvatarRoot className="h-8 w-8 rounded-lg">
-              <AvatarImage alt={name} src={image ?? undefined} />
-              <AvatarFallback className="rounded-lg">
-                <CircleUserRoundIcon />
-              </AvatarFallback>
-            </AvatarRoot>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{name}</span>
-              <span className="truncate text-xs">{email}</span>
-            </div>
-          </Link>
-        </Button>
+        <Link
+          className="flex items-center gap-2 px-1 py-1.5 text-left text-sm"
+          href="/"
+        >
+          <AvatarRoot className="h-8 w-8 rounded-lg">
+            <AvatarImage alt={name} src={image ?? undefined} />
+            <AvatarFallback className="rounded-lg">
+              <CircleUserRoundIcon />
+            </AvatarFallback>
+          </AvatarRoot>
+          <span className="truncate font-medium">{name}</span>
+        </Link>
       </SidebarFooter>
     </SidebarPanel>
   );
