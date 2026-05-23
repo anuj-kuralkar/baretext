@@ -1,5 +1,3 @@
-"use client";
-
 import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 import { Menu as MenuUnstyled } from "@ark-ui/react/menu";
 import { CheckIcon, ChevronRightIcon } from "lucide-react";

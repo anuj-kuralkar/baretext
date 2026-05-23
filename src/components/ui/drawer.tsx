@@ -1,5 +1,3 @@
-"use client";
-
 import { Drawer as DrawerUnstyled } from "@ark-ui/react/drawer";
 import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 

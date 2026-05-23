@@ -1,4 +1,3 @@
-"use client";
 import { Listbox as ListboxUnstyled } from "@ark-ui/react/listbox";
 import { cva, type VariantProps } from "class-variance-authority";
 

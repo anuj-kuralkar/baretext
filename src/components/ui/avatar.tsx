@@ -1,5 +1,3 @@
-"use client";
-
 import { Avatar as AvatarUnstyled } from "@ark-ui/react/avatar";
 import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 
