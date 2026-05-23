@@ -50,8 +50,14 @@ export const AutoSaveExtension = defineExtension({
       }
     }, config.delay);
 
+    const isHydrated = { current: false };
+
     const removeUpdateListener = editor.registerUpdateListener(
       ({ editorState, dirtyElements, dirtyLeaves }) => {
+        if (!isHydrated.current) {
+          isHydrated.current = true;
+          return;
+        }
         if (dirtyElements.size === 0 && dirtyLeaves.size === 0) return;
         debouncedSave(editorState.toJSON());
       },
