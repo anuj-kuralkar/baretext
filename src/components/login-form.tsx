@@ -1,7 +1,7 @@
 "use client";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { loginWithOAuth } from "@/module/auth/actions";
 
 function LoginWithOAuthForm() {
@@ -32,14 +32,14 @@ function LoginWithOAuthForm() {
 export function LoginForm() {
   return (
     <div className="flex flex-col gap-6">
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Login</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card.Root>
+        <Card.Header className="text-center">
+          <Card.Title className="text-xl">Login</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <LoginWithOAuthForm />
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </div>
   );
 }
