@@ -39,7 +39,9 @@ export default async function NotesLayout({
             <div className="flex-1">Notes</div>
             <CreateNoteButton iconOnly />
           </div>
-          <NoteList notes={notes ?? []} />
+          <div className="p-2">
+            <NoteList notes={notes ?? []} />
+          </div>
         </SidebarContent>
 
         <SidebarFooter>
