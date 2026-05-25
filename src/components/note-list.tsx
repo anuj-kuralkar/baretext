@@ -1,14 +1,26 @@
 "use client";
 import { createListCollection } from "@ark-ui/react/listbox";
 import { redirect, useParams } from "next/navigation";
+import { use } from "react";
+
 import { NoteContextMenu } from "@/components/note-context-menu";
 import { Listbox } from "@/components/ui/listbox";
+import type { Result } from "@/lib/result";
 import type { Note } from "@/module/note/types";
 import { getFirstTwoTextNodesText } from "@/module/note/utils";
 
-export function NoteList({ notes }: { notes: Note[] }) {
+export function NoteList({
+  notesPromise,
+}: {
+  notesPromise: Promise<Result<Note[]>>;
+}) {
   const { noteId: noteIdEncoded } = useParams<{ noteId: string }>();
   const noteId = decodeURIComponent(noteIdEncoded);
+
+  const { data: notes, error } = use(notesPromise);
+  if (error || !notes) {
+    return <div>Error {error}</div>;
+  }
 
   const collection = createListCollection({
     items: notes,

@@ -1,5 +1,6 @@
 import { PanelLeftIcon } from "lucide-react";
 import { headers } from "next/headers";
+import { Suspense } from "react";
 import { BrandLink } from "@/components/brand-link";
 import { CreateNoteButton } from "@/components/create-note-button";
 import { NoteList } from "@/components/note-list";
@@ -25,7 +26,7 @@ export default async function NotesLayout({
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const { data: notes } = await listNotesAction();
+  const notesPromise = listNotesAction();
 
   return (
     <SidebarRoot>
@@ -40,7 +41,9 @@ export default async function NotesLayout({
             <CreateNoteButton iconOnly />
           </div>
           <div className="p-2">
-            <NoteList notes={notes ?? []} />
+            <Suspense fallback={"loading..."}>
+              <NoteList notesPromise={notesPromise} />
+            </Suspense>
           </div>
         </SidebarContent>
 
