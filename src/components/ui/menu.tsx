@@ -3,31 +3,32 @@ import { Menu as MenuUnstyled } from "@ark-ui/react/menu";
 import { CheckIcon, ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const MenuArrow = ({ className, ...props }: MenuUnstyled.ArrowProps) => (
-  <MenuUnstyled.Arrow
-    {...props}
-    className={cn("rotate-45 bg-popover [--arrow-size:16px]", className)}
-  />
-);
+export function Arrow({ className, ...props }: MenuUnstyled.ArrowProps) {
+  return (
+    <MenuUnstyled.Arrow
+      {...props}
+      className={cn("rotate-45 bg-popover [--arrow-size:16px]", className)}
+    />
+  );
+}
 
-export const MenuArrowTip = ({
-  className,
-  ...props
-}: MenuUnstyled.ArrowTipProps) => (
-  <MenuUnstyled.ArrowTip
-    {...props}
-    className={cn("-rotate-45 border-border border-t border-l", className)}
-  />
-);
+export function ArrowTip({ className, ...props }: MenuUnstyled.ArrowTipProps) {
+  return (
+    <MenuUnstyled.ArrowTip
+      {...props}
+      className={cn("-rotate-45 border-border border-t border-l", className)}
+    />
+  );
+}
 
-export const MenuCheckboxItem = ({
+export function CheckboxItem({
   className,
   children,
   inset,
   ...props
 }: MenuUnstyled.CheckboxItemProps & {
   inset?: boolean;
-}) => {
+}) {
   return (
     <MenuUnstyled.CheckboxItem
       className={cn(
@@ -45,12 +46,9 @@ export const MenuCheckboxItem = ({
       {children}
     </MenuUnstyled.CheckboxItem>
   );
-};
+}
 
-export const MenuContent = ({
-  className,
-  ...props
-}: MenuUnstyled.ContentProps) => {
+export function Content({ className, ...props }: MenuUnstyled.ContentProps) {
   return (
     <MenuUnstyled.Content
       className={cn(
@@ -61,25 +59,29 @@ export const MenuContent = ({
       {...props}
     />
   );
-};
+}
 
-export const MenuContext = MenuUnstyled.Context;
+export function Context(props: MenuUnstyled.ContextProps) {
+  return <MenuUnstyled.Context {...props} />;
+}
 
-export const MenuContextTrigger = ({
+export function ContextTrigger({
   className,
   ...props
-}: MenuUnstyled.ContextTriggerProps) => {
+}: MenuUnstyled.ContextTriggerProps) {
   return (
     <MenuUnstyled.ContextTrigger
       className={cn("select-none", className)}
       {...props}
     />
   );
-};
+}
 
-export const MenuIndicator = MenuUnstyled.Indicator;
+export function Indicator(props: MenuUnstyled.IndicatorProps) {
+  return <MenuUnstyled.Indicator {...props} />;
+}
 
-export const MenuItem = ({
+export function Item({
   className,
   inset,
   tone = "default",
@@ -87,7 +89,7 @@ export const MenuItem = ({
 }: MenuUnstyled.ItemProps & {
   inset?: boolean;
   tone?: "default" | "critical";
-}) => {
+}) {
   return (
     <MenuUnstyled.Item
       className={cn(
@@ -99,19 +101,23 @@ export const MenuItem = ({
       {...props}
     />
   );
-};
+}
 
-export const MenuItemContext = MenuUnstyled.ItemContext;
+export function ItemContext(props: MenuUnstyled.ItemContextProps) {
+  return <MenuUnstyled.ItemContext {...props} />;
+}
 
-export const MenuItemGroup = MenuUnstyled.ItemGroup;
+export function ItemGroup(props: MenuUnstyled.ItemGroupProps) {
+  return <MenuUnstyled.ItemGroup {...props} />;
+}
 
-export const MenuItemGroupLabel = ({
+export function ItemGroupLabel({
   className,
   inset,
   ...props
 }: MenuUnstyled.ItemGroupLabelProps & {
   inset?: boolean;
-}) => {
+}) {
   return (
     <MenuUnstyled.ItemGroupLabel
       className={cn(
@@ -122,32 +128,36 @@ export const MenuItemGroupLabel = ({
       {...props}
     />
   );
-};
+}
 
-export const MenuItemIndicator = MenuUnstyled.ItemIndicator;
+export function ItemIndicator(props: MenuUnstyled.ItemIndicatorProps) {
+  return <MenuUnstyled.ItemIndicator {...props} />;
+}
 
-export const MenuItemText = MenuUnstyled.ItemText;
+export function ItemText(props: MenuUnstyled.ItemTextProps) {
+  return <MenuUnstyled.ItemText {...props} />;
+}
 
-export const MenuPositioner = ({
+export function Positioner({
   className,
   ...props
-}: MenuUnstyled.PositionerProps) => {
+}: MenuUnstyled.PositionerProps) {
   return (
     <MenuUnstyled.Positioner
       className={cn("isolate z-50 outline-none", className)}
       {...props}
     />
   );
-};
+}
 
-export const MenuRadioItem = ({
+export function RadioItem({
   className,
   children,
   inset,
   ...props
 }: MenuUnstyled.RadioItemProps & {
   inset?: boolean;
-}) => {
+}) {
   return (
     <MenuUnstyled.RadioItem
       className={cn(
@@ -165,27 +175,33 @@ export const MenuRadioItem = ({
       {children}
     </MenuUnstyled.RadioItem>
   );
-};
+}
 
-export const MenuRadioItemGroup = MenuUnstyled.RadioItemGroup;
+export function RadioItemGroup(props: MenuUnstyled.RadioItemGroupProps) {
+  return <MenuUnstyled.RadioItemGroup {...props} />;
+}
 
-export const MenuRoot = MenuUnstyled.Root;
+export function Root(props: MenuUnstyled.RootProps) {
+  return <MenuUnstyled.Root {...props} />;
+}
 
-export const MenuRootProvider = MenuUnstyled.RootProvider;
+export function RootProvider(props: MenuUnstyled.RootProviderProps) {
+  return <MenuUnstyled.RootProvider {...props} />;
+}
 
-export const MenuSeparator = ({
+export function Separator({
   className,
   ...props
-}: MenuUnstyled.SeparatorProps) => {
+}: MenuUnstyled.SeparatorProps) {
   return (
     <MenuUnstyled.Separator
       className={cn("-mx-1 my-1 h-px bg-border", className)}
       {...props}
     />
   );
-};
+}
 
-export const MenuShortcut = ({ className, ...props }: HTMLArkProps<"span">) => {
+export function Shortcut({ className, ...props }: HTMLArkProps<"span">) {
   return (
     <ark.span
       className={cn(
@@ -195,18 +211,20 @@ export const MenuShortcut = ({ className, ...props }: HTMLArkProps<"span">) => {
       {...props}
     />
   );
-};
+}
 
-export const MenuTrigger = MenuUnstyled.Trigger;
+export function Trigger(props: MenuUnstyled.TriggerProps) {
+  return <MenuUnstyled.Trigger {...props} />;
+}
 
-export const MenuTriggerItem = ({
+export function TriggerItem({
   className,
   inset,
   children,
   ...props
 }: MenuUnstyled.TriggerItemProps & {
   inset?: boolean;
-}) => {
+}) {
   return (
     <MenuUnstyled.TriggerItem
       className={cn(
@@ -220,29 +238,4 @@ export const MenuTriggerItem = ({
       <ChevronRightIcon className="ms-auto" />
     </MenuUnstyled.TriggerItem>
   );
-};
-
-export const Menu = {
-  Arrow: MenuArrow,
-  ArrowTip: MenuArrowTip,
-  CheckboxItem: MenuCheckboxItem,
-  Content: MenuContent,
-  Context: MenuContext,
-  ContextTrigger: MenuContextTrigger,
-  Indicator: MenuIndicator,
-  Item: MenuItem,
-  ItemContext: MenuItemContext,
-  ItemGroup: MenuItemGroup,
-  ItemGroupLabel: MenuItemGroupLabel,
-  ItemIndicator: MenuItemIndicator,
-  ItemText: MenuItemText,
-  Positioner: MenuPositioner,
-  RadioItem: MenuRadioItem,
-  RadioItemGroup: MenuRadioItemGroup,
-  Root: MenuRoot,
-  RootProvider: MenuRootProvider,
-  Separator: MenuSeparator,
-  Shortcut: MenuShortcut,
-  Trigger: MenuTrigger,
-  TriggerItem: MenuTriggerItem,
-} as const;
+}

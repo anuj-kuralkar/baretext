@@ -1,6 +1,68 @@
 import { cn } from "@/lib/utils";
 
-export function CardRoot({
+export function Action({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        className,
+      )}
+      data-card-action
+      {...props}
+    />
+  );
+}
+
+export function Content({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn("px-4 group-data-[size=sm]/card:px-3", className)}
+      data-card-content
+      {...props}
+    />
+  );
+}
+
+export function Description({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn("text-muted-foreground text-sm", className)}
+      data-card-description
+      {...props}
+    />
+  );
+}
+
+export function Footer({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
+        className,
+      )}
+      data-card-footer
+      {...props}
+    />
+  );
+}
+
+export function Header({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 has-data-card-action:grid-cols-[1fr_auto] has-data-card-description:grid-rows-[auto_auto] group-data-[size=sm]/card:px-3 [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
+        className,
+      )}
+      data-card-header
+      {...props}
+    />
+  );
+}
+
+export function Root({
   className,
   size = "default",
   ...props
@@ -18,26 +80,7 @@ export function CardRoot({
   );
 }
 
-export function CardHeader({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 has-data-card-action:grid-cols-[1fr_auto] has-data-card-description:grid-rows-[auto_auto] group-data-[size=sm]/card:px-3 [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
-        className,
-      )}
-      data-card-header
-      {...props}
-    />
-  );
-}
-
-export function CardTitle({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function Title({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
@@ -49,71 +92,3 @@ export function CardTitle({
     />
   );
 }
-
-export function CardDescription({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("text-muted-foreground text-sm", className)}
-      data-card-description
-      {...props}
-    />
-  );
-}
-
-export function CardAction({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className,
-      )}
-      data-card-action
-      {...props}
-    />
-  );
-}
-
-export function CardContent({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("px-4 group-data-[size=sm]/card:px-3", className)}
-      data-card-content
-      {...props}
-    />
-  );
-}
-
-export function CardFooter({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
-        className,
-      )}
-      data-card-footer
-      {...props}
-    />
-  );
-}
-
-export const Card = {
-  Root: CardRoot,
-  Header: CardHeader,
-  Title: CardTitle,
-  Description: CardDescription,
-  Action: CardAction,
-  Content: CardContent,
-  Footer: CardFooter,
-};

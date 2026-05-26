@@ -18,38 +18,17 @@ const alertVariants = cva(
   },
 );
 
-export function AlertRoot({
-  className,
-  variant,
-  ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
+export function Action({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn(alertVariants({ variant }), className)}
-      data-alert-root="alert"
-      role="alert"
+      className={cn("absolute top-2 right-2", className)}
+      data-alert-action="alert"
       {...props}
     />
   );
 }
 
-export function AlertTitle({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
-        className,
-      )}
-      data-alert-title="alert"
-      {...props}
-    />
-  );
-}
-
-export function AlertDescription({
+export function Description({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -65,22 +44,30 @@ export function AlertDescription({
   );
 }
 
-export function AlertAction({
+export function Root({
   className,
+  variant,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
   return (
     <div
-      className={cn("absolute top-2 right-2", className)}
-      data-alert-action="alert"
+      className={cn(alertVariants({ variant }), className)}
+      data-alert-root="alert"
+      role="alert"
       {...props}
     />
   );
 }
 
-export const Alert = {
-  Root: AlertRoot,
-  Title: AlertTitle,
-  Description: AlertDescription,
-  Action: AlertAction,
-};
+export function Title({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
+        className,
+      )}
+      data-alert-title="alert"
+      {...props}
+    />
+  );
+}

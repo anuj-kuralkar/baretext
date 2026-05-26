@@ -4,7 +4,7 @@ import { redirect, useParams } from "next/navigation";
 import { use } from "react";
 
 import { NoteContextMenu } from "@/components/note-context-menu";
-import { Listbox } from "@/components/ui/listbox";
+import * as Listbox from "@/components/ui/listbox";
 import type { Result } from "@/lib/result";
 import type { Note } from "@/module/note/types";
 import { getFirstTwoTextNodesText } from "@/module/note/utils";

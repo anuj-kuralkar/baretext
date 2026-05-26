@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { CreateNoteButton } from "@/components/create-note-button";
-import { Empty } from "@/components/ui/empty";
+import * as Empty from "@/components/ui/empty";
 import { auth } from "@/lib/auth";
 import { listNotesAction } from "@/module/note/actions";
 

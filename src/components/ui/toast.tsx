@@ -14,38 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function ToastRoot(props: Toast.RootProps) {
-  return (
-    <Toast.Root
-      className={cn(
-        "flex w-xs gap-2 rounded-md border p-4 text-sm shadow-md",
-        "height-(--height) z-(--z-index) translate-x-(--x) translate-y-(--y) scale-(--scale) opacity-(--opacity)",
-        "transition-all duration-400",
-        "border-border bg-popover text-popover-foreground",
-        "data-[type=error]:text-red-600 dark:data-[type=error]:text-red-400",
-        "data-[type=info]:text-blue-600 dark:data-[type=info]:text-blue-400",
-        "data-[type=success]:text-green-600 dark:data-[type=success]:text-green-400",
-        "data-[type=warning]:text-yellow-600 dark:data-[type=warning]:text-yellow-400",
-      )}
-      {...props}
-    />
-  );
-}
-
-export function ToastTitle(props: Toast.TitleProps) {
-  return <Toast.Title className="pr-5 font-medium leading-normal" {...props} />;
-}
-
-export function ToastDescription(props: Toast.DescriptionProps) {
-  return (
-    <Toast.Description
-      className="pr-5 font-normal text-popover-foreground"
-      {...props}
-    />
-  );
-}
-
-export function ToastActionTrigger({
+export function ActionTrigger({
   className,
   children,
   ...props
@@ -61,10 +30,35 @@ export function ToastActionTrigger({
   );
 }
 
-export function ToastCloseTrigger({
-  className,
-  ...props
-}: Toast.CloseTriggerProps) {
+export function AppToaster() {
+  return (
+    <Toaster toaster={toaster}>
+      {(toast) => {
+        const ToastIcon = toast.type
+          ? iconMap[toast.type as keyof typeof iconMap]
+          : undefined;
+
+        return (
+          <Root key={toast.id}>
+            {ToastIcon && <ToastIcon />}
+            <div className="flex flex-col gap-1">
+              <Title>{toast.title}</Title>
+              <Description>{toast.description}</Description>
+              {toast.action && (
+                <ActionTrigger>{toast.action?.label}</ActionTrigger>
+              )}
+            </div>
+            <CloseTrigger>
+              <XIcon />
+            </CloseTrigger>
+          </Root>
+        );
+      }}
+    </Toaster>
+  );
+}
+
+export function CloseTrigger({ className, ...props }: Toast.CloseTriggerProps) {
   return (
     <Toast.CloseTrigger
       className={cn(
@@ -93,47 +87,39 @@ const iconMap = {
   ),
 } as const;
 
+export function Description(props: Toast.DescriptionProps) {
+  return (
+    <Toast.Description
+      className="pr-5 font-normal text-popover-foreground"
+      {...props}
+    />
+  );
+}
+
+export function Root(props: Toast.RootProps) {
+  return (
+    <Toast.Root
+      className={cn(
+        "flex w-xs gap-2 rounded-md border p-4 text-sm shadow-md",
+        "height-(--height) z-(--z-index) translate-x-(--x) translate-y-(--y) scale-(--scale) opacity-(--opacity)",
+        "transition-all duration-400",
+        "border-border bg-popover text-popover-foreground",
+        "data-[type=error]:text-red-600 dark:data-[type=error]:text-red-400",
+        "data-[type=info]:text-blue-600 dark:data-[type=info]:text-blue-400",
+        "data-[type=success]:text-green-600 dark:data-[type=success]:text-green-400",
+        "data-[type=warning]:text-yellow-600 dark:data-[type=warning]:text-yellow-400",
+      )}
+      {...props}
+    />
+  );
+}
+
+export function Title(props: Toast.TitleProps) {
+  return <Toast.Title className="pr-5 font-medium leading-normal" {...props} />;
+}
+
 export const toaster = createToaster({
   placement: "top",
   gap: 16,
   overlap: true,
 });
-
-export function AppToaster() {
-  return (
-    <Toaster toaster={toaster}>
-      {(toast) => {
-        const ToastIcon = toast.type
-          ? iconMap[toast.type as keyof typeof iconMap]
-          : undefined;
-
-        return (
-          <ToastRoot key={toast.id}>
-            {ToastIcon && <ToastIcon />}
-            <div className="flex flex-col gap-1">
-              <ToastTitle>{toast.title}</ToastTitle>
-              <ToastDescription>{toast.description}</ToastDescription>
-              {toast.action && (
-                <ToastActionTrigger>{toast.action?.label}</ToastActionTrigger>
-              )}
-            </div>
-            <ToastCloseTrigger>
-              <XIcon />
-            </ToastCloseTrigger>
-          </ToastRoot>
-        );
-      }}
-    </Toaster>
-  );
-}
-
-const ToastStyled = {
-  Root: ToastRoot,
-  ActionTrigger: ToastActionTrigger,
-  CloseTrigger: ToastCloseTrigger,
-  Description: ToastDescription,
-  Title: ToastTitle,
-  Context: Toast.Context,
-};
-
-export { ToastStyled as Toast };

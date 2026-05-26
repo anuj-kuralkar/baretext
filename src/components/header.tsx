@@ -3,11 +3,7 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
+import * as Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 
@@ -37,12 +33,12 @@ export async function Header() {
       </nav>
 
       {user ? (
-        <AvatarRoot>
-          <AvatarImage alt="User Avatar" src={user.image ?? undefined} />
-          <AvatarFallback>
+        <Avatar.Root>
+          <Avatar.Image alt="User Avatar" src={user.image ?? undefined} />
+          <Avatar.Fallback>
             <CircleUserRoundIcon />
-          </AvatarFallback>
-        </AvatarRoot>
+          </Avatar.Fallback>
+        </Avatar.Root>
       ) : (
         <Button asChild>
           <Link href="/auth/login">Login</Link>

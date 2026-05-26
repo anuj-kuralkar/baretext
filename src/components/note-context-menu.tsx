@@ -8,7 +8,7 @@ import { ClipboardIcon, DownloadIcon, Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { startTransition } from "react";
 
-import { Menu } from "@/components/ui/menu";
+import * as Menu from "@/components/ui/menu";
 import { toaster } from "@/components/ui/toast";
 import { extensionsList } from "@/module/editor/extensions-list";
 import { deleteNoteAction } from "@/module/note/actions";

@@ -3,28 +3,32 @@ import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 
 import { cn } from "@/lib/utils/index";
 
-export const DrawerBackdrop = ({
+export function Backdrop({
   className,
   ...props
-}: DrawerUnstyled.BackdropProps) => (
-  <DrawerUnstyled.Backdrop
-    className={cn(
-      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-500 data-[state=closed]:animate-out data-[state=open]:animate-in",
-      "fixed inset-0 z-50 bg-black/10 supports-backdrop-filter:backdrop-blur-xs",
-      className,
-    )}
-    {...props}
-  />
-);
+}: DrawerUnstyled.BackdropProps) {
+  return (
+    <DrawerUnstyled.Backdrop
+      className={cn(
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-500 data-[state=closed]:animate-out data-[state=open]:animate-in",
+        "fixed inset-0 z-50 bg-black/10 supports-backdrop-filter:backdrop-blur-xs",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-export const DrawerCloseTrigger = DrawerUnstyled.CloseTrigger;
+export function CloseTrigger(props: DrawerUnstyled.CloseTriggerProps) {
+  return <DrawerUnstyled.CloseTrigger {...props} />;
+}
 
-export const DrawerContent = ({
+export function Content({
   className,
   children,
   ...props
-}: DrawerUnstyled.ContentProps) => (
-  <>
+}: DrawerUnstyled.ContentProps) {
+  return (
     <DrawerUnstyled.Content
       className={cn(
         "duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=closed]:animate-out data-[state=open]:animate-in",
@@ -43,96 +47,99 @@ export const DrawerContent = ({
     >
       {children}
     </DrawerUnstyled.Content>
-  </>
-);
+  );
+}
 
-export const DrawerContext = DrawerUnstyled.Context;
+export function Context(props: DrawerUnstyled.ContextProps) {
+  return <DrawerUnstyled.Context {...props} />;
+}
 
-export const DrawerDescription = ({
+export function Description({ className, ...props }: HTMLArkProps<"p">) {
+  return (
+    <DrawerUnstyled.Description
+      className={cn("text-muted-foreground text-sm", className)}
+      {...props}
+    />
+  );
+}
+
+export function Footer({ className, ...props }: HTMLArkProps<"div">) {
+  return (
+    <ark.div
+      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+      {...props}
+    />
+  );
+}
+
+export function Grabber(props: DrawerUnstyled.GrabberProps) {
+  return <DrawerUnstyled.Grabber {...props} />;
+}
+
+export function GrabberIndicator({
   className,
   ...props
-}: HTMLArkProps<"p">) => (
-  <DrawerUnstyled.Description
-    className={cn("text-muted-foreground text-sm", className)}
-    {...props}
-  />
-);
+}: DrawerUnstyled.GrabberIndicatorProps) {
+  return (
+    <DrawerUnstyled.GrabberIndicator
+      className={cn(
+        "mx-auto mt-4 in-data-[swipe-direction=down]:block hidden h-1 w-25 shrink-0 rounded-full bg-muted",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-export const DrawerFooter = ({ className, ...props }: HTMLArkProps<"div">) => (
-  <ark.div
-    className={cn("mt-auto flex flex-col gap-2 p-4", className)}
-    {...props}
-  />
-);
+export function Header({ className, ...props }: HTMLArkProps<"div">) {
+  return (
+    <ark.div
+      className={cn(
+        "flex flex-col gap-0.5 p-4 in-data-[swipe-direction=down]:text-center in-data-[swipe-direction=up]:text-center md:gap-0.5 md:text-left",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-export const DrawerGrabber = DrawerUnstyled.Grabber;
+export function Indent(props: DrawerUnstyled.IndentProps) {
+  return <DrawerUnstyled.Indent {...props} />;
+}
 
-export const DrawerGrabberIndicator = ({
-  className,
-  ...props
-}: DrawerUnstyled.GrabberIndicatorProps) => (
-  <DrawerUnstyled.GrabberIndicator
-    className={cn(
-      "mx-auto mt-4 in-data-[swipe-direction=down]:block hidden h-1 w-25 shrink-0 rounded-full bg-muted",
-      className,
-    )}
-    {...props}
-  />
-);
+export function IndentBackground(props: DrawerUnstyled.IndentBackgroundProps) {
+  return <DrawerUnstyled.IndentBackground {...props} />;
+}
 
-export const DrawerHeader = ({ className, ...props }: HTMLArkProps<"div">) => (
-  <ark.div
-    className={cn(
-      "flex flex-col gap-0.5 p-4 in-data-[swipe-direction=down]:text-center in-data-[swipe-direction=up]:text-center md:gap-0.5 md:text-left",
-      className,
-    )}
-    {...props}
-  />
-);
+export function Positioner(props: DrawerUnstyled.PositionerProps) {
+  return <DrawerUnstyled.Positioner {...props} />;
+}
 
-export const DrawerIndent = DrawerUnstyled.Indent;
+export function Root(props: DrawerUnstyled.RootProps) {
+  return <DrawerUnstyled.Root {...props} />;
+}
 
-export const DrawerIndentBackground = DrawerUnstyled.IndentBackground;
+export function RootProvider(props: DrawerUnstyled.RootProviderProps) {
+  return <DrawerUnstyled.RootProvider {...props} />;
+}
 
-export const DrawerPositioner = DrawerUnstyled.Positioner;
+export function Stack(props: DrawerUnstyled.StackProps) {
+  return <DrawerUnstyled.Stack {...props} />;
+}
 
-export const DrawerRoot = DrawerUnstyled.Root;
+export function SwipeArea(props: DrawerUnstyled.SwipeAreaProps) {
+  return <DrawerUnstyled.SwipeArea {...props} />;
+}
 
-export const DrawerRootProvider = DrawerUnstyled.RootProvider;
+export function Title({ className, ...props }: DrawerUnstyled.TitleProps) {
+  return (
+    <DrawerUnstyled.Title
+      className={cn("font-medium text-base text-foreground", className)}
+      {...props}
+    />
+  );
+}
 
-export const DrawerStack = DrawerUnstyled.Stack;
-
-export const DrawerSwipeArea = DrawerUnstyled.SwipeArea;
-
-export const DrawerTitle = ({
-  className,
-  ...props
-}: DrawerUnstyled.TitleProps) => (
-  <DrawerUnstyled.Title
-    className={cn("font-medium text-base text-foreground", className)}
-    {...props}
-  />
-);
-
-export const DrawerTrigger = DrawerUnstyled.Trigger;
-
-export const Drawer = {
-  Backdrop: DrawerBackdrop,
-  CloseTrigger: DrawerCloseTrigger,
-  Content: DrawerContent,
-  Context: DrawerContext,
-  Description: DrawerDescription,
-  Footer: DrawerFooter,
-  Grabber: DrawerGrabber,
-  GrabberIndicator: DrawerGrabberIndicator,
-  Header: DrawerHeader,
-  Indent: DrawerIndent,
-  IndentBackground: DrawerIndentBackground,
-  Positioner: DrawerPositioner,
-  Root: DrawerRoot,
-  RootProvider: DrawerRootProvider,
-  Stack: DrawerStack,
-  SwipeArea: DrawerSwipeArea,
-  Title: DrawerTitle,
-  Trigger: DrawerTrigger,
-} as const;
+export function Trigger(props: DrawerUnstyled.TriggerProps) {
+  return <DrawerUnstyled.Trigger {...props} />;
+}

@@ -1,4 +1,4 @@
-import { Empty } from "@/components/ui/empty";
+import * as Empty from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function Loading() {

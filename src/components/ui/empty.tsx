@@ -2,20 +2,36 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils/index";
 
-function EmptyRoot({ className, ...props }: React.ComponentProps<"div">) {
+export function Content({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-1 flex-col items-center justify-center gap-6 text-balance rounded-lg border-dashed p-6 text-center md:p-12",
+        "flex w-full min-w-0 max-w-sm flex-col items-center gap-4 text-balance text-sm",
         className,
       )}
-      data-part="empty"
+      data-part="empty-content"
       {...props}
     />
   );
 }
 
-function EmptyHeader({ className, ...props }: React.ComponentProps<"div">) {
+export function Description({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  return (
+    <div
+      className={cn(
+        "text-muted-foreground text-sm/relaxed [&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
+        className,
+      )}
+      data-part="empty-description"
+      {...props}
+    />
+  );
+}
+
+export function Header({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
@@ -43,7 +59,7 @@ const emptyMediaVariants = cva(
   },
 );
 
-function EmptyMedia({
+export function Media({
   className,
   variant = "default",
   ...props
@@ -58,7 +74,20 @@ function EmptyMedia({
   );
 }
 
-function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
+export function Root({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "flex min-w-0 flex-1 flex-col items-center justify-center gap-6 text-balance rounded-lg border-dashed p-6 text-center md:p-12",
+        className,
+      )}
+      data-part="empty"
+      {...props}
+    />
+  );
+}
+
+export function Title({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn("font-medium text-lg tracking-tight", className)}
@@ -67,38 +96,3 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
     />
   );
 }
-
-function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
-  return (
-    <div
-      className={cn(
-        "text-muted-foreground text-sm/relaxed [&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
-        className,
-      )}
-      data-part="empty-description"
-      {...props}
-    />
-  );
-}
-
-function EmptyContent({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "flex w-full min-w-0 max-w-sm flex-col items-center gap-4 text-balance text-sm",
-        className,
-      )}
-      data-part="empty-content"
-      {...props}
-    />
-  );
-}
-
-export const Empty = {
-  Root: EmptyRoot,
-  Header: EmptyHeader,
-  Title: EmptyTitle,
-  Description: EmptyDescription,
-  Content: EmptyContent,
-  Media: EmptyMedia,
-};

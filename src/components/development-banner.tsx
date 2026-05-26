@@ -3,7 +3,7 @@
 import { Construction, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Alert } from "@/components/ui/alert";
+import * as Alert from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
 export function DevelopmentBanner() {

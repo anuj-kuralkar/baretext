@@ -4,16 +4,7 @@ import { Suspense } from "react";
 import { BrandLink } from "@/components/brand-link";
 import { CreateNoteButton } from "@/components/create-note-button";
 import { NoteList } from "@/components/note-list";
-import {
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-  SidebarPanel,
-  SidebarResizeTrigger,
-  SidebarRoot,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import * as Sidebar from "@/components/ui/sidebar";
 import { UserSettingsLink } from "@/components/user-settings-link";
 import { auth } from "@/lib/auth";
 import { listNotesAction } from "@/module/note/actions";
@@ -29,13 +20,13 @@ export default async function NotesLayout({
   const notesPromise = listNotesAction();
 
   return (
-    <SidebarRoot>
-      <SidebarPanel>
-        <SidebarHeader>
+    <Sidebar.Root>
+      <Sidebar.Panel>
+        <Sidebar.Header>
           <BrandLink />
-        </SidebarHeader>
+        </Sidebar.Header>
 
-        <SidebarContent>
+        <Sidebar.Content>
           <div className="mb-2 flex items-center justify-between rounded bg-muted px-4 py-2">
             <div className="flex-1">Notes</div>
             <CreateNoteButton iconOnly />
@@ -45,28 +36,28 @@ export default async function NotesLayout({
               <NoteList notesPromise={notesPromise} />
             </Suspense>
           </div>
-        </SidebarContent>
+        </Sidebar.Content>
 
-        <SidebarFooter>
+        <Sidebar.Footer>
           <UserSettingsLink
             image={session?.user.image}
             name={session?.user.name ?? ""}
           />
-        </SidebarFooter>
-      </SidebarPanel>
+        </Sidebar.Footer>
+      </Sidebar.Panel>
 
-      <SidebarResizeTrigger />
-      <SidebarInset>
+      <Sidebar.ResizeTrigger />
+      <Sidebar.Inset>
         <div className="flex h-dvh min-h-0 flex-col">
           <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1">
+            <Sidebar.Trigger className="-ml-1">
               <PanelLeftIcon className="size-4" />
-            </SidebarTrigger>
+            </Sidebar.Trigger>
           </header>
 
           <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
         </div>
-      </SidebarInset>
-    </SidebarRoot>
+      </Sidebar.Inset>
+    </Sidebar.Root>
   );
 }

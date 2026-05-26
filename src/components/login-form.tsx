@@ -1,7 +1,7 @@
 "use client";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import * as Card from "@/components/ui/card";
 import { loginWithOAuth } from "@/module/auth/actions";
 
 function LoginWithOAuthForm() {
