@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { requireSession } from "@/lib/session";
 import { Editor } from "@/module/editor/editor";
 import { getNoteAction } from "@/module/note/actions";
 
@@ -10,10 +9,7 @@ export default async function Page({
 }: {
   params: Promise<{ noteId: string }>;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return redirect("/auth/login");
-  }
+  await requireSession();
   const { noteId } = await params;
   const id = decodeURIComponent(noteId);
   const { data: note } = await getNoteAction(id);

@@ -1,13 +1,11 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { CreateNoteButton } from "@/components/create-note-button";
 import * as Empty from "@/components/ui/empty";
-import { auth } from "@/lib/auth";
+import { requireSession } from "@/lib/session";
 import { listNotesAction } from "@/module/note/actions";
 
 export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/auth/login");
+  await requireSession();
 
   const { data: notes } = await listNotesAction();
 

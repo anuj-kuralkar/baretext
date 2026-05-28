@@ -1,12 +1,11 @@
 import { PanelLeftIcon } from "lucide-react";
-import { headers } from "next/headers";
 import { Suspense } from "react";
 import { BrandLink } from "@/components/brand-link";
 import { CreateNoteButton } from "@/components/create-note-button";
 import { NoteList } from "@/components/note-list";
 import * as Sidebar from "@/components/ui/sidebar";
 import { UserSettingsLink } from "@/components/user-settings-link";
-import { auth } from "@/lib/auth";
+import { requireSession } from "@/lib/session";
 import { listNotesAction } from "@/module/note/actions";
 
 export default async function NotesLayout({
@@ -14,9 +13,7 @@ export default async function NotesLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await requireSession();
   const notesPromise = listNotesAction();
 
   return (
@@ -40,8 +37,8 @@ export default async function NotesLayout({
 
         <Sidebar.Footer>
           <UserSettingsLink
-            image={session?.user.image}
-            name={session?.user.name ?? ""}
+            image={session.user.image}
+            name={session.user.name ?? ""}
           />
         </Sidebar.Footer>
       </Sidebar.Panel>
