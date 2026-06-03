@@ -11,7 +11,7 @@ export async function Header() {
   const user = session?.user;
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border/50 bg-background/80 px-4 backdrop-blur-md">
       <Link href="/">
         <div className="flex items-center gap-2">
           <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
