@@ -3,20 +3,20 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    GOOGLE_CLIENT_ID: z.string().min(1),
-    GOOGLE_CLIENT_SECRET: z.string().min(1),
+    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+    GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
 
-    GITHUB_CLIENT_ID: z.string().min(1),
-    GITHUB_CLIENT_SECRET: z.string().min(1),
+    GITHUB_CLIENT_ID: z.string().min(1).optional(),
+    GITHUB_CLIENT_SECRET: z.string().min(1).optional(),
 
-    BETTER_AUTH_SECRET: z.string().min(1),
-    BETTER_AUTH_URL: z.url().min(1),
+    BETTER_AUTH_SECRET: z.string().min(1).optional(),
+    BETTER_AUTH_URL: z.string().url().optional(),
 
-    SURREALDB_ENDPOINT: z.url(),
-    SURREALDB_NAMESPACE: z.string().min(1),
-    SURREALDB_DATABASE: z.string().min(1),
-    SURREALDB_USERNAME: z.string().min(1),
-    SURREALDB_PASSWORD: z.string().min(1),
+    SURREALDB_ENDPOINT: z.string().url().optional(),
+    SURREALDB_NAMESPACE: z.string().min(1).optional(),
+    SURREALDB_DATABASE: z.string().min(1).optional(),
+    SURREALDB_USERNAME: z.string().min(1).optional(),
+    SURREALDB_PASSWORD: z.string().min(1).optional(),
   },
   runtimeEnv: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

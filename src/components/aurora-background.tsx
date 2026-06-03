@@ -10,8 +10,6 @@ export function AuroraBackground() {
         colorB="#3b82f6"
         colorC="#06b6d4"
         speed={0.4}
-        blend={0.6}
-        amplitude={1.0}
       />
     </Shader>
   );

@@ -15,8 +15,9 @@ import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   return (
-    <main className="relative min-h-dvh bg-background dark">
-      <AuroraBackground />
+    <div className="dark">
+      <main className="relative min-h-dvh bg-background text-foreground">
+        <AuroraBackground />
 
       <div className="relative z-10 grid min-h-dvh grid-rows-[auto_1fr]">
         <Header />
@@ -27,8 +28,7 @@ export default async function Home() {
               {/* Copy */}
               <div className="space-y-8">
                 <h1 className="max-w-xl text-balance font-bold text-5xl tracking-tight sm:text-6xl lg:text-7xl">
-                  Write without{" "}
-                  <span className="text-gradient">limits</span>
+                  Write without <span className="text-gradient">limits</span>
                 </h1>
 
                 <p className="max-w-md text-pretty text-lg text-muted-foreground sm:text-xl">
@@ -91,6 +91,7 @@ export default async function Home() {
           </div>
         </section>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
