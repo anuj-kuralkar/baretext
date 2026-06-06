@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import "@/styles/globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist } from "next/font/google";
 import { DevelopmentBanner } from "@/components/development-banner";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -36,6 +37,7 @@ export default function RootLayout({
           <DevelopmentBanner />
           {children}
           <AppToaster />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

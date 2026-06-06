@@ -10,6 +10,7 @@
         "@lexical/code-prism": "^0.44.0",
         "@lexical/react": "^0.44.0",
         "@t3-oss/env-nextjs": "^0.13.11",
+        "@vercel/speed-insights": "^2.0.0",
         "better-auth": "1.6.11",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -462,6 +463,8 @@
     "@types/trusted-types": ["@types/trusted-types@2.0.7", "", {}, "sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw=="],
 
     "@types/validate-npm-package-name": ["@types/validate-npm-package-name@4.0.2", "", {}, "sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw=="],
+
+    "@vercel/speed-insights": ["@vercel/speed-insights@2.0.0", "", { "peerDependencies": { "@sveltejs/kit": "^1 || ^2", "next": ">= 13", "nuxt": ">= 3", "react": "^18 || ^19 || ^19.0.0-rc", "svelte": ">= 4", "vue": "^3", "vue-router": "^4" }, "optionalPeers": ["@sveltejs/kit", "next", "nuxt", "react", "svelte", "vue", "vue-router"] }, "sha512-jwkNcrTeafWxjmWq4AHBaptSqZiJkYU5adLC9QBSqeim0GcqDMgN5Ievh8OG1rJ6W3A4l1oiP7qr9CWxGuzu3w=="],
 
     "@zag-js/accordion": ["@zag-js/accordion@1.40.0", "", { "dependencies": { "@zag-js/anatomy": "1.40.0", "@zag-js/core": "1.40.0", "@zag-js/dom-query": "1.40.0", "@zag-js/types": "1.40.0", "@zag-js/utils": "1.40.0" } }, "sha512-YDdyvZJ6fr92RZazyXQq+juT3ZA0ubjDISptb5YPgMoTPdnjKNiICPpMeCeVj1ncYRDkHXrOdChS/5CtuX/K6g=="],
 
