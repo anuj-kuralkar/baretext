@@ -1,8 +1,9 @@
+import { ark, type HTMLArkProps } from "@ark-ui/react/factory";
 import { cn } from "@/lib/utils";
 
-export function Action({ className, ...props }: React.ComponentProps<"div">) {
+export function Action({ className, ...props }: HTMLArkProps<"div">) {
   return (
-    <div
+    <ark.div
       className={cn(
         "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
         className,
@@ -13,9 +14,9 @@ export function Action({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-export function Content({ className, ...props }: React.ComponentProps<"div">) {
+export function Content({ className, ...props }: HTMLArkProps<"div">) {
   return (
-    <div
+    <ark.div
       className={cn("px-4 group-data-[size=sm]/card:px-3", className)}
       data-card-content
       {...props}
@@ -23,12 +24,9 @@ export function Content({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-export function Description({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function Description({ className, ...props }: HTMLArkProps<"div">) {
   return (
-    <div
+    <ark.div
       className={cn("text-muted-foreground text-sm", className)}
       data-card-description
       {...props}
@@ -36,9 +34,9 @@ export function Description({
   );
 }
 
-export function Footer({ className, ...props }: React.ComponentProps<"div">) {
+export function Footer({ className, ...props }: HTMLArkProps<"div">) {
   return (
-    <div
+    <ark.div
       className={cn(
         "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
         className,
@@ -49,9 +47,9 @@ export function Footer({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-export function Header({ className, ...props }: React.ComponentProps<"div">) {
+export function Header({ className, ...props }: HTMLArkProps<"div">) {
   return (
-    <div
+    <ark.div
       className={cn(
         "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 has-data-card-action:grid-cols-[1fr_auto] has-data-card-description:grid-rows-[auto_auto] group-data-[size=sm]/card:px-3 [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
         className,
@@ -66,9 +64,9 @@ export function Root({
   className,
   size = "default",
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: HTMLArkProps<"div"> & { size?: "default" | "sm" }) {
   return (
-    <div
+    <ark.div
       className={cn(
         "group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-card-foreground text-sm ring-1 ring-foreground/10 has-[>img:first-child]:pt-0 has-data-card-footer:pb-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-card-footer:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         className,
@@ -80,9 +78,9 @@ export function Root({
   );
 }
 
-export function Title({ className, ...props }: React.ComponentProps<"div">) {
+export function Title({ className, ...props }: HTMLArkProps<"div">) {
   return (
-    <div
+    <ark.div
       className={cn(
         "font-medium text-base leading-snug group-data-[size=sm]/card:text-sm",
         className,
