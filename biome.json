@@ -9,8 +9,8 @@
     }
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": ["**"]
+    "ignoreUnknown": true,
+    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
   },
   "formatter": {
     "enabled": true,
