@@ -27,7 +27,7 @@
       <feComposite in="SourceGraphic" in2="blur" />
     </filter>
   </defs>
-  <path d="M0 0h512v512H0z" />
+  <rect width="512" height="512" rx="160" />
   <path d="M60 256h392" filter="url(#a)" stroke="url(#b)" stroke-linecap="round" stroke-width="16" transform="rotate(-60 256 256)" />
   <path d="m188 373.78 136-235.56" stroke="#fff" stroke-linecap="round" stroke-width="4" />
   <rect fill="url(#c)" height="288" mask="url(#d)" rx="56" transform="translate(-14 -8)" width="288" x="112" y="112" />
