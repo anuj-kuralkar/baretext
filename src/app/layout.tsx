@@ -27,7 +27,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <body>
+      <body className="group/body overscroll-none antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

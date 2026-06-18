@@ -1,89 +1,57 @@
-import {
-  ArrowRight,
-  CloudIcon,
-  CodeIcon,
-  FolderIcon,
-  LayoutIcon,
-  PlayCircle,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { Background } from "@/components/background";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   return (
-    <main className="grid min-h-dvh grid-rows-[auto_1fr] bg-background">
+    <div className="group/layout relative z-10 flex min-h-svh flex-col bg-background">
       <Header />
+      <main className="flex min-h-0 flex-1 flex-col">
+        <Background />
+        <div className="flex flex-1 flex-col">
+          <section className="border-grid md:**:[.container]:pb-8 lg:**:[.container]:pb-12">
+            <div className="mx-auto w-full 3xl:fixed:max-w-[calc(var(--breakpoint-2xl)+2rem)] px-2">
+              <div className="mx-auto flex 3xl:max-w-screen-2xl max-w-350 flex-col items-center gap-2 px-6 py-8 text-center md:py-16 lg:px-8 lg:py-20 xl:gap-4">
+                <h1 className="max-w-4xl text-balance font-semibold text-3xl text-primary leading-tighter tracking-tight lg:font-semibold lg:leading-[1.1] xl:text-5xl xl:tracking-tighter">
+                  Your thoughts, beautifully organized.
+                </h1>
 
-      <section className="relative flex items-center">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-24">
-          <div className="grid items-center gap-16 lg:grid-cols-[1fr_1.6fr]">
-            {/* Copy */}
-            <div className="space-y-7">
-              <h1 className="max-w-xl text-balance font-semibold text-4xl tracking-tight sm:text-5xl lg:text-6xl">
-                Markdown notes,
-                <br />
-                without the noise.
-              </h1>
+                <p className="max-w-4xl text-balance text-base text-foreground sm:text-lg">
+                  A simple place to write, organize, and revisit your notes.
+                  Easy to get started with, comfortable to use every day.
+                </p>
 
-              <p className="max-w-md text-pretty text-md text-muted-foreground sm:text-lg">
-                A calm place to write, organize, and revisit your thoughts. Pure
-                Markdown. No distractions.
-              </p>
-
-              {/* Features */}
-              <ul className="grid grid-cols-2 gap-x-6 gap-y-4 pt-2 text-muted-foreground text-sm">
-                <li className="flex items-center gap-3">
-                  <CloudIcon className="size-4 shrink-0 text-foreground" />
-                  Cloud sync
-                </li>
-                <li className="flex items-center gap-3">
-                  <CodeIcon className="size-4 shrink-0 text-foreground" />
-                  Syntax highlighting
-                </li>
-                <li className="flex items-center gap-3">
-                  <FolderIcon className="size-4 shrink-0 text-foreground" />
-                  Simple folders
-                </li>
-                <li className="flex items-center gap-3">
-                  <LayoutIcon className="size-4 shrink-0 text-foreground" />
-                  Zero clutter
-                </li>
-              </ul>
-
-              {/* CTAs */}
-              <div className="flex flex-wrap gap-4 pt-4">
-                <Button asChild size="lg">
-                  <Link href="/notes">
-                    Start writing
-                    <ArrowRight className="ml-2 size-4" />
-                  </Link>
-                </Button>
-
-                <Button size="lg" variant="outline">
-                  <PlayCircle className="mr-2 size-4" />
-                  Watch demo
-                </Button>
+                <div className="flex w-full items-center justify-center gap-2 pt-2">
+                  <Button asChild size="lg">
+                    <Link href="/notes">
+                      Start writing
+                      <ArrowRight className="ml-2 size-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
+          </section>
 
-            {/* Screenshot */}
-            <div className="relative">
-              <div className="relative aspect-4/3 overflow-visible">
+          <div className="mx-auto w-full 3xl:fixed:max-w-[calc(var(--breakpoint-2xl)+2rem)] flex-1 px-2 pt-0 pb-4">
+            <div className="mx-auto 3xl:max-w-screen-2xl max-w-350 overflow-hidden px-4 md:px-0 lg:max-w-none lg:px-8">
+              <section className="mx-auto max-w-4xl overflow-hidden">
                 <Image
-                  alt="Minimal markdown notes editor"
-                  className="object-contain"
-                  fill
+                  alt="Editor preview"
+                  height={1575}
                   priority
                   src="/app-screenshot.png"
+                  width={2160}
                 />
-              </div>
+              </section>
             </div>
           </div>
         </div>
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }
