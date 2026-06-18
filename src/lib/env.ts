@@ -12,6 +12,8 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string().min(1),
     BETTER_AUTH_URL: z.url().min(1),
 
+    UPSTASH_REDIS_REST_URL: z.string().url().min(1),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
     SURREALDB_ENDPOINT: z.url(),
     SURREALDB_NAMESPACE: z.string().min(1),
     SURREALDB_DATABASE: z.string().min(1),
@@ -28,6 +30,8 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
 
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     SURREALDB_ENDPOINT: process.env.SURREALDB_ENDPOINT,
     SURREALDB_NAMESPACE: process.env.SURREALDB_NAMESPACE,
     SURREALDB_DATABASE: process.env.SURREALDB_DATABASE,

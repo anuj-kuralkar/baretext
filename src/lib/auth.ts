@@ -5,10 +5,12 @@ import { jwt } from "better-auth/plugins/jwt";
 
 import { getDatabase } from "@/lib/db";
 import { env } from "@/lib/env";
+import { redisSecondaryStorage } from "@/lib/redis-storage";
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   database: surrealDBAdapter({ db: await getDatabase() }),
+  secondaryStorage: redisSecondaryStorage,
   socialProviders: {
     google: {
       enabled: true,

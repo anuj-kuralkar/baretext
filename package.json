@@ -15,6 +15,7 @@
     "@lexical/code-prism": "^0.45.0",
     "@lexical/react": "^0.45.0",
     "@t3-oss/env-nextjs": "^0.13.11",
+    "@upstash/redis": "^1.38.0",
     "@vercel/speed-insights": "^2.0.0",
     "better-auth": "1.6.19",
     "class-variance-authority": "^0.7.1",
