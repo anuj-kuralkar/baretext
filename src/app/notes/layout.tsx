@@ -19,7 +19,7 @@ export default async function NotesLayout({
   return (
     <Sidebar.Root>
       <Sidebar.Panel>
-        <Sidebar.Header>
+        <Sidebar.Header className="items-start">
           <BrandLink />
         </Sidebar.Header>
 

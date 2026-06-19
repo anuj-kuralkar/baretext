@@ -1,7 +1,7 @@
 import { CircleUserRoundIcon, FileIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
+import { BrandLink } from "@/components/brand-link";
 import * as Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/session";
@@ -12,12 +12,7 @@ export async function Header() {
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-      <Link href="/">
-        <div className="flex items-center gap-2">
-          <Image alt="Baretext" height={32} src="/baretext.svg" width={32} />
-          <span className="font-semibold text-lg">Baretext</span>
-        </div>
-      </Link>
+      <BrandLink />
 
       <nav className="ml-auto">
         <Button asChild>
