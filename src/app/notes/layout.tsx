@@ -2,7 +2,7 @@ import { PanelLeftIcon } from "lucide-react";
 import { Suspense } from "react";
 import { BrandLink } from "@/components/brand-link";
 import { CreateNoteButton } from "@/components/create-note-button";
-import { NoteList } from "@/components/note-list";
+import { NoteList, NoteListSkeleton } from "@/components/note-list";
 import * as Sidebar from "@/components/ui/sidebar";
 import { UserSettingsLink } from "@/components/user-settings-link";
 import { requireSession } from "@/lib/session";
@@ -24,12 +24,12 @@ export default async function NotesLayout({
         </Sidebar.Header>
 
         <Sidebar.Content>
-          <div className="mb-2 flex items-center justify-between rounded bg-muted px-4 py-2">
+          <div className="flex items-center justify-between rounded bg-muted px-4 py-2">
             <div className="flex-1">Notes</div>
             <CreateNoteButton iconOnly />
           </div>
-          <div className="p-2">
-            <Suspense fallback={"loading..."}>
+          <div className="flex h-full p-2">
+            <Suspense fallback={<NoteListSkeleton />}>
               <NoteList notesPromise={notesPromise} />
             </Suspense>
           </div>
