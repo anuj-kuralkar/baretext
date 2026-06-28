@@ -5,7 +5,6 @@ DEFINE TABLE IF NOT EXISTS user SCHEMAFULL
     FOR update, delete
       WHERE id = $auth.id;
 
-DEFINE TABLE IF NOT EXISTS user SCHEMAFULL;
 DEFINE FIELD IF NOT EXISTS name ON user TYPE string;
 DEFINE FIELD IF NOT EXISTS email ON user TYPE string ASSERT string::is_email($value);
 DEFINE INDEX IF NOT EXISTS user_email_unique ON user FIELDS email UNIQUE;
