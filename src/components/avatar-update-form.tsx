@@ -76,7 +76,7 @@ export function AvatarUpdateForm({ src }: { src: string | undefined }) {
                       )}
 
                       <div
-                        className="absolute inset-0 z-10 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity duration-200 group-focus-visible/trigger:opacity-100 group-hover/trigger:opacity-100 group-data-dragging/dropzone:opacity-100 data-[pending=true]:opacity-100"
+                        className="absolute inset-0 z-10 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity duration-200 group-hover/trigger:opacity-100 group-focus-visible/trigger:opacity-100 data-[pending=true]:opacity-100 group-data-dragging/dropzone:opacity-100"
                         data-pending={isPending}
                       >
                         {isPending ? (

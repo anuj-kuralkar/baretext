@@ -1,7 +1,6 @@
 import { AvatarUpdateForm } from "@/components/avatar-update-form";
 import { EmailUpdateForm } from "@/components/email-update-form";
 import { NameUpdateForm } from "@/components/name-update-form";
-import { env } from "@/lib/env";
 import { requireSession } from "@/lib/session";
 
 export default async function Page() {
