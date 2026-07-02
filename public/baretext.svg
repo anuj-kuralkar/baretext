@@ -1,0 +1,35 @@
+<svg aria-label="Baretext logo" role="img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" >
+  <title>Baretext logo</title>
+  <defs>
+    <linearGradient id="b" x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" />
+      <stop offset="25%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="75%" stop-color="#e879f9" />
+      <stop offset="100%" />
+    </linearGradient>
+    <linearGradient id="c" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff" />
+      <stop offset="100%" stop-color="#d4d4d8" />
+    </linearGradient>
+    <linearGradient id="e" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#a1a1aa" />
+      <stop offset="100%" stop-color="#3f3f46" />
+    </linearGradient>
+    <mask id="d">
+      <path d="m-366.908 422.908 500-866.026 394.908 228L28 650.908z" fill="#fff" />
+    </mask>
+    <mask id="f">
+      <path d="m28 650.908 500-866.026 394.908 228-500 866.026z" fill="#fff" />
+    </mask>
+    <filter height="140%" id="a" width="140%" x="-20%" y="-20%">
+      <feGaussianBlur result="blur" stdDeviation="16" />
+      <feComposite in="SourceGraphic" in2="blur" />
+    </filter>
+  </defs>
+  <rect height="512" rx="160" width="512" />
+  <path d="M60 256h392" filter="url(#a)" stroke="url(#b)" stroke-linecap="round" stroke-width="16" transform="rotate(-60 256 256)" />
+  <path d="m188 373.78 136-235.56" stroke="#fff" stroke-linecap="round" stroke-width="4" />
+  <rect fill="url(#c)" height="288" mask="url(#d)" rx="56" transform="translate(-14 -8)" width="288" x="112" y="112" />
+  <rect fill="url(#e)" height="288" mask="url(#f)" rx="56" transform="translate(14 8)" width="288" x="112" y="112" />
+</svg>
