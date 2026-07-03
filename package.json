@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "test:browser": "vitest"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -35,11 +36,15 @@
     "@types/node": "^26.1.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/browser-playwright": "^4.1.9",
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "^1.0.0-rc.4",
     "lefthook": "^2.1.9",
     "tailwindcss": "^4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9",
+    "vitest-browser-react": "^2.2.0"
   },
   "ignoreScripts": [
     "sharp",
