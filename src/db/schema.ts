@@ -1,5 +1,12 @@
-import { defineRelations } from "drizzle-orm";
-import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { defineRelations, sql } from "drizzle-orm";
+import {
+  boolean,
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -73,25 +80,49 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const dbRelations = defineRelations({ user, session, account }, (r) => ({
-  user: {
-    sessions: r.many.session(),
-    accounts: r.many.account(),
-  },
-  session: {
-    user: r.one.user({
-      from: r.session.userId,
-      to: r.user.id,
-    }),
-  },
-  account: {
-    user: r.one.user({
-      from: r.account.userId,
-      to: r.user.id,
-    }),
-  },
-}));
+export const note = pgTable("note", {
+  id: uuid("id").primaryKey().default(sql`uuidv7()`),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+});
+
+export const dbRelations = defineRelations(
+  { user, session, account, note },
+  (r) => ({
+    user: {
+      sessions: r.many.session(),
+      accounts: r.many.account(),
+      notes: r.many.note(),
+    },
+    session: {
+      user: r.one.user({
+        from: r.session.userId,
+        to: r.user.id,
+      }),
+    },
+    account: {
+      user: r.one.user({
+        from: r.account.userId,
+        to: r.user.id,
+      }),
+    },
+    note: {
+      user: r.one.user({
+        from: r.note.userId,
+        to: r.user.id,
+      }),
+    },
+  }),
+);
 
 export const userRelations = dbRelations.user;
 export const sessionRelations = dbRelations.session;
 export const accountRelations = dbRelations.account;
+export const noteRelations = dbRelations.note;
