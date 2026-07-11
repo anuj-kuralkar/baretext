@@ -1,6 +1,7 @@
 "use client";
 
 import { PlusIcon, SearchIcon } from "lucide-react";
+import { NoteCreateTrigger } from "@/components/notes/note-create-trigger";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -25,7 +26,15 @@ export function NoteListActions() {
       <Tooltip>
         <TooltipTrigger
           render={
-            <Button variant="outline" size="icon-sm" aria-label="New Note" />
+            <NoteCreateTrigger
+              render={
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="New Note"
+                />
+              }
+            />
           }
         >
           <PlusIcon />

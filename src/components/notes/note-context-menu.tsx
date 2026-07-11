@@ -1,5 +1,6 @@
 import { Copy, Download, FileCode, FileText, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
+import { NoteDeleteTrigger } from "@/components/notes/note-delete-trigger";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -64,14 +65,13 @@ export function NoteContextMenu({ children, noteId }: NoteContextMenuProps) {
         </ContextMenuSub>
 
         <ContextMenuSeparator />
-
-        <ContextMenuItem
-          variant="destructive"
-          onClick={() => console.log("Delete", noteId)}
+        <NoteDeleteTrigger
+          noteId={noteId}
+          render={<ContextMenuItem variant="destructive" />}
         >
           <Trash2 className="mr-2 h-4 w-4" />
           Delete
-        </ContextMenuItem>
+        </NoteDeleteTrigger>
       </ContextMenuContent>
     </ContextMenu>
   );

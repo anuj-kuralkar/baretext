@@ -32,6 +32,7 @@ export const noteCollection = createCollection(
     onInsert: async ({ transaction }) => {
       const modified = transaction.mutations[0].modified;
       const { txid } = await createNoteAction({
+        id: modified.id,
         content: modified.content,
         userId: modified.userId,
       });

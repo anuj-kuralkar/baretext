@@ -7,17 +7,19 @@ import { z } from "zod";
 import { note } from "@/db/schema";
 import { db } from "@/lib/db";
 
-const noteInsertSchema = createInsertSchema(note);
+const noteInsertSchema = createInsertSchema(note, {
+  id: z.string(),
+});
 const noteUpdateSchema = createUpdateSchema(note, {
   id: z.string(),
 });
 type NoteInsert = z.infer<typeof noteInsertSchema>;
 type NoteUpdate = z.infer<typeof noteUpdateSchema>;
 
-export async function createNoteAction({ content, userId }: NoteInsert) {
+export async function createNoteAction({ id, content, userId }: NoteInsert) {
   const result = await db
     .insert(note)
-    .values({ content, userId })
+    .values({ id, content, userId })
     .returning({ txid: sql<string>`pg_current_xact_id()::xid::text` });
 
   const txid = result[0].txid;

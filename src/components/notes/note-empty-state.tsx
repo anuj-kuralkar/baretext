@@ -1,4 +1,7 @@
+"use client";
+
 import { NotebookPen, Plus } from "lucide-react";
+import { NoteCreateTrigger } from "@/components/notes/note-create-trigger";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -8,7 +11,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-
 export function NoteEmptyState() {
   return (
     <Empty className="h-full">
@@ -25,10 +27,10 @@ export function NoteEmptyState() {
       </EmptyHeader>
 
       <EmptyContent>
-        <Button>
+        <NoteCreateTrigger render={<Button />}>
           <Plus />
           New note
-        </Button>
+        </NoteCreateTrigger>
       </EmptyContent>
     </Empty>
   );
