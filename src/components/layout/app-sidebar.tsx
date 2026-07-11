@@ -29,9 +29,12 @@ import Link from "next/link";
 import { BrandLink } from "@/components/brand-link";
 import { buttonVariants } from "@/components/ui/button";
 import { UserCard } from "@/components/user/user-card";
+import { authClient } from "@/lib/auth/client";
 
 export function AppSidebar() {
   const { noteId } = useParams<{ noteId: string }>();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
 
   return (
     <Sidebar>
@@ -49,10 +52,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="flex-row items-center justify-between">
-        <UserCard
-          image="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-          name="John Doe"
-        />
+        <UserCard image={user?.image ?? undefined} name={user?.name} />
         <Link
           href="/settings/profile"
           className={buttonVariants({ size: "icon-sm", variant: "outline" })}

@@ -2,8 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 
 interface UserCardProps {
-  image: string;
-  name: string;
+  image?: string;
+  name?: string;
 }
 
 export function UserCard({ image, name }: UserCardProps) {
