@@ -1,7 +1,7 @@
 import { ELECTRIC_PROTOCOL_QUERY_PARAMS } from "@electric-sql/client";
 import { QueryBuilder } from "drizzle-orm/pg-core/query-builders";
 import { sql } from "drizzle-orm/sql";
-import { note } from "@/db/schema";
+import { note, ydocUpdate } from "@/db/schema";
 import { auth } from "@/lib/auth/server";
 import { env } from "@/lib/env/server";
 
@@ -26,6 +26,10 @@ export async function GET(request: Request) {
     note: {
       tableDef: note,
       whereExpr: sql`${sql.identifier(note.userId.name)} = ${session.user.id}`,
+    },
+    ydoc_update: {
+      tableDef: ydocUpdate,
+      whereExpr: sql`${sql.identifier(ydocUpdate.userId.name)} = ${session.user.id} AND ${sql.identifier(ydocUpdate.room.name)} = ${url.searchParams.get("room")}`,
     },
   } as const;
 

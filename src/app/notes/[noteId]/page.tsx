@@ -1,3 +1,5 @@
+import { Editor } from "@/components/notes/editor";
+
 export default async function NotePage({
   params,
 }: {
@@ -5,11 +7,8 @@ export default async function NotePage({
 }) {
   const { noteId } = await params;
   return (
-    <div className="flex h-full items-center justify-center">
-      <div className="text-center text-muted-foreground">
-        <p className="text-sm">Editor placeholder</p>
-        <p className="mt-1 text-xs">Note ID: {noteId}</p>
-      </div>
+    <div className="flex h-full w-full flex-col">
+      <Editor noteId={noteId} />
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import { defineRelations, sql } from "drizzle-orm";
 import {
   boolean,
+  bytea,
   index,
   pgTable,
+  serial,
   text,
   timestamp,
   uuid,
@@ -95,8 +97,19 @@ export const note = pgTable("note", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
+export const ydocUpdate = pgTable("ydoc_update", {
+  id: serial("id").primaryKey(),
+  room: uuid("room")
+    .notNull()
+    .references(() => note.id, { onDelete: "cascade" }),
+  update: bytea("update").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+});
+
 export const dbRelations = defineRelations(
-  { user, session, account, note },
+  { user, session, account, note, ydocUpdate },
   (r) => ({
     user: {
       sessions: r.many.session(),
