@@ -38,8 +38,8 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
       },
       sendUrl:
         typeof window !== "undefined"
-          ? new URL("/api/yjs/update", window.location.origin).toString()
-          : "/api/yjs/update",
+          ? new URL("/api/yjs", window.location.origin).toString()
+          : "/api/yjs",
       getUpdateFromRow: (row) => row.update,
     },
     resumeState: resumeProvider.load(),
