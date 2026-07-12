@@ -1,5 +1,6 @@
 "use client";
 
+import { CodePrismExtension } from "@lexical/code-prism";
 import { configExtension, defineExtension } from "@lexical/extension";
 import {
   MdastCommonMarkExtension,
@@ -29,6 +30,7 @@ export function Editor({ noteId }: { noteId: string }) {
         MdastCommonMarkExtension,
         MdastGfmExtension,
         MdastShortcutsExtension,
+        CodePrismExtension,
         ReactExtension,
       ],
       theme,
