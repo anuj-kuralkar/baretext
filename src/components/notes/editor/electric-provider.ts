@@ -5,6 +5,7 @@ import {
 } from "@electric-sql/y-electric";
 import type { Provider } from "@lexical/yjs";
 import type { Decoder } from "lib0/decoding";
+import { IndexeddbPersistence } from "y-indexeddb";
 import type * as Y from "yjs";
 
 type DestroyableProvider = Provider & { destroy?: () => void };
@@ -22,6 +23,7 @@ function createDummyAwareness() {
 }
 
 export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
+  const indexeddbProvider = new IndexeddbPersistence(roomId, doc);
   const resumeProvider = new LocalStorageResumeStateProvider(roomId);
   const electricProvider = new ElectricProvider<{ update: Decoder }>({
     doc,
@@ -58,11 +60,11 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
   const unsubscribeResumeState =
     resumeProvider.subscribeToResumeState(electricProvider);
 
-  // Cast and inject properties required by Lexical's CollaborationPlugin
   const provider = electricProvider as unknown as DestroyableProvider;
   provider.awareness = createDummyAwareness();
   provider.destroy = () => {
     unsubscribeResumeState();
+    indexeddbProvider.destroy();
     electricProvider.destroy();
   };
 

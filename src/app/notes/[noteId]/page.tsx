@@ -8,7 +8,7 @@ export default async function NotePage({
   const { noteId } = await params;
   return (
     <div className="flex h-full w-full flex-col">
-      <Editor noteId={noteId} />
+      <Editor key={noteId} noteId={noteId} />
     </div>
   );
 }
