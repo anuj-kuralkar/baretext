@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { SearchIcon, SquarePenIcon } from "lucide-react";
 import { NoteCreateTrigger } from "@/components/notes/note-create-trigger";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +37,7 @@ export function NoteListActions() {
             />
           }
         >
-          <PlusIcon />
+          <SquarePenIcon />
         </TooltipTrigger>
         <TooltipContent side="top">New Note</TooltipContent>
       </Tooltip>
