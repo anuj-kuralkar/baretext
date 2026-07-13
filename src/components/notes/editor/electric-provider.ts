@@ -7,6 +7,7 @@ import type { Provider } from "@lexical/yjs";
 import type { Decoder } from "lib0/decoding";
 import { IndexeddbPersistence } from "y-indexeddb";
 import type * as Y from "yjs";
+import { env } from "@/lib/env/client";
 
 type DestroyableProvider = Provider & { destroy?: () => void };
 
@@ -29,13 +30,8 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
     doc,
     documentUpdates: {
       shape: {
-        url:
-          typeof window !== "undefined"
-            ? new URL(
-                `/api/shape?table=ydoc_update&room=${roomId}`,
-                window.location.origin,
-              ).toString()
-            : `/api/shape?table=ydoc_update&room=${roomId}`,
+        url: env.NEXT_PUBLIC_ELECTRIC_PROXY,
+        params: { table: "ydoc_update", room: roomId },
         parser: parseToDecoder,
       },
       sendUrl:
