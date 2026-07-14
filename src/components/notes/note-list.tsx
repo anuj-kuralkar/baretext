@@ -91,13 +91,13 @@ function NotePreview({ note, isActive }: NotePreviewProps) {
     <Link
       href={`/notes/${note.id}`}
       className={cn(
-        "flex flex-col items-start gap-2 whitespace-nowrap rounded-lg border p-4 text-sm leading-tight hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        "flex flex-col items-start gap-2 overflow-hidden rounded-lg border p-4 text-sm leading-tight hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         isActive &&
           "border-transparent bg-sidebar-accent text-sidebar-accent-foreground",
       )}
     >
-      <span className="font-medium">{title}</span>
-      <span className="line-clamp-2 w-65 whitespace-break-spaces text-xs">
+      <span className="w-full truncate font-medium">{title}</span>
+      <span className="line-clamp-2 whitespace-break-spaces text-xs">
         {description}
       </span>
       <span className="text-xs">{relativeTime}</span>
