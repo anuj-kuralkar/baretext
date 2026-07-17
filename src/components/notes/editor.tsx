@@ -6,6 +6,7 @@ import {
   MdastCommonMarkExtension,
   MdastExtension,
   MdastGfmExtension,
+  MdastHtmlExtension,
   MdastShortcutsExtension,
 } from "@lexical/mdast";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -69,6 +70,7 @@ export function Editor({ noteId }: { noteId: string }) {
         MdastCommonMarkExtension,
         MdastGfmExtension,
         MdastShortcutsExtension,
+        MdastHtmlExtension,
         CodePrismExtension,
         ReactExtension,
       ],
