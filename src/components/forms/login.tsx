@@ -1,6 +1,6 @@
 "use client";
 
-import { Fingerprint } from "lucide-react";
+import { FingerprintIcon } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
@@ -18,6 +18,17 @@ import { authClient } from "@/lib/auth/client";
 
 export function LoginForm() {
   const [isPending, startTransition] = useTransition();
+
+  const handlePasskeyLogin = () => {
+    startTransition(async () => {
+      const { error } = await authClient.signIn.passkey();
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Logged in with Passkey");
+    });
+  };
 
   const handleLogin = (provider: "google" | "github") => {
     startTransition(async () => {
@@ -76,9 +87,18 @@ export function LoginForm() {
           <span className="text-muted-foreground text-xs">Or</span>
           <Separator />
         </div>
-        <Button variant="outline" className="w-full" disabled>
-          <Fingerprint data-icon="inline-start" />
-          Passkey
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handlePasskeyLogin}
+          disabled={isPending}
+        >
+          {isPending ? (
+            <Spinner data-icon="inline-start" />
+          ) : (
+            <FingerprintIcon data-icon="inline-start" />
+          )}
+          Sign in with Passkey
         </Button>
       </CardContent>
     </Card>

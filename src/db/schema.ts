@@ -3,6 +3,7 @@ import {
   boolean,
   bytea,
   index,
+  integer,
   pgTable,
   serial,
   text,
@@ -82,6 +83,29 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const passkey = pgTable(
+  "passkey",
+  {
+    id: text("id").primaryKey(),
+    name: text("name"),
+    publicKey: text("public_key").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    credentialID: text("credential_id").notNull(),
+    counter: integer("counter").notNull(),
+    deviceType: text("device_type").notNull(),
+    backedUp: boolean("backed_up").notNull(),
+    transports: text("transports"),
+    createdAt: timestamp("created_at"),
+    aaguid: text("aaguid"),
+  },
+  (table) => [
+    index("passkey_userId_idx").on(table.userId),
+    index("passkey_credentialID_idx").on(table.credentialID),
+  ],
+);
+
 export const note = pgTable("note", {
   id: uuid("id").primaryKey().default(sql`uuidv7()`),
   content: text("content").notNull(),
@@ -109,12 +133,13 @@ export const ydocUpdate = pgTable("ydoc_update", {
 });
 
 export const dbRelations = defineRelations(
-  { user, session, account, note, ydocUpdate },
+  { user, session, account, note, ydocUpdate, passkey },
   (r) => ({
     user: {
       sessions: r.many.session(),
       accounts: r.many.account(),
       notes: r.many.note(),
+      passkeys: r.many.passkey(),
     },
     session: {
       user: r.one.user({
@@ -134,6 +159,12 @@ export const dbRelations = defineRelations(
         to: r.user.id,
       }),
     },
+    passkey: {
+      user: r.one.user({
+        from: r.passkey.userId,
+        to: r.user.id,
+      }),
+    },
   }),
 );
 
@@ -141,3 +172,4 @@ export const userRelations = dbRelations.user;
 export const sessionRelations = dbRelations.session;
 export const accountRelations = dbRelations.account;
 export const noteRelations = dbRelations.note;
+export const passkeyRelations = dbRelations.passkey;

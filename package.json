@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@better-auth/passkey": "^1.6.23",
     "@electric-sql/client": "^1.5.23",
     "@electric-sql/y-electric": "^0.1.50",
     "@lexical/code": "^0.47.0",
