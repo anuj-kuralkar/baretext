@@ -4,12 +4,15 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { requireSession } from "@/lib/session";
 
-export default function NotesLayout({
+export default async function NotesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await requireSession();
+
   return (
     <SidebarProvider>
       <AppSidebar />
