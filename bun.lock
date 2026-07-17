@@ -7,7 +7,7 @@
       "dependencies": {
         "@base-ui/react": "^1.6.0",
         "@better-auth/passkey": "^1.6.23",
-        "@electric-sql/client": "^1.5.23",
+        "@electric-sql/client": "^1.5.24",
         "@electric-sql/y-electric": "^0.1.50",
         "@lexical/code": "^0.48.0",
         "@lexical/code-prism": "^0.48.0",
@@ -21,8 +21,8 @@
         "@lexical/yjs": "^0.48.0",
         "@neondatabase/serverless": "^1.1.0",
         "@t3-oss/env-nextjs": "^0.13.11",
-        "@tanstack/electric-db-collection": "^0.3.12",
-        "@tanstack/react-db": "^0.1.92",
+        "@tanstack/electric-db-collection": "^0.3.14",
+        "@tanstack/react-db": "^0.1.94",
         "better-auth": "^1.6.23",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -174,7 +174,7 @@
 
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.12.0", "", {}, "sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ=="],
 
-    "@electric-sql/client": ["@electric-sql/client@1.5.23", "", { "dependencies": { "@microsoft/fetch-event-source": "^2.0.1" }, "optionalDependencies": { "@rollup/rollup-darwin-arm64": "^4.18.1" }, "bin": { "intent": "bin/intent.mjs" } }, "sha512-3b0ddP8/J7dIHNFwoXzuFcow40aXvKtGss1rpiF5H4AGvuYWHR7A/hCe7xE86wbvdJP3PNcpDAmtUNF1cc+vlQ=="],
+    "@electric-sql/client": ["@electric-sql/client@1.5.24", "", { "dependencies": { "@microsoft/fetch-event-source": "^2.0.1" }, "optionalDependencies": { "@rollup/rollup-darwin-arm64": "^4.18.1" }, "bin": { "intent": "bin/intent.mjs" } }, "sha512-ItOjBFTfiZvYosglF9Dn4TSqE59yL/psoemHJ7vX8gvEUmElHB2QdP5eQC6q9/lswyv7oqhkZT0Kk8kuq2P5vA=="],
 
     "@electric-sql/y-electric": ["@electric-sql/y-electric@0.1.50", "", { "dependencies": { "@electric-sql/client": "1.5.24", "lib0": "^0.2.65", "y-protocols": "^1.0.5", "yjs": "^13.6.6" }, "bin": { "intent": "bin/intent.mjs" } }, "sha512-5Zm8lNz49Qnv5Yds3YPyZoA6OiqFK7dy0NdTSL6joBEZaE2C46JfwbxB2qoVY49u08JDijEP8tZYY2OhhsLLnw=="],
 
@@ -516,15 +516,15 @@
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.3.3", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.3.3", "@tailwindcss/oxide": "4.3.3", "postcss": "^8.5.16", "tailwindcss": "4.3.3" } }, "sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg=="],
 
-    "@tanstack/db": ["@tanstack/db@0.6.14", "", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@tanstack/db-ivm": "0.1.18", "@tanstack/pacer-lite": "^0.2.1" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-Kqma/PcWhn2e21iJPM/FMKwdMuJUYII9zkKPUsD42/ceEOYRtimbBSe+xll7EY805xE2HuQ3NGSSU8UiYXpHUw=="],
+    "@tanstack/db": ["@tanstack/db@0.6.16", "", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@tanstack/db-ivm": "0.1.18", "@tanstack/pacer-lite": "^0.2.1" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-6tZ4sAyh7g4G5awO4Q4D/UQVPoPEBsqqDBImjCZNTRJznrpwGqFJZxozov197k8ty8QxZC++eGcbo+BBKF3nzw=="],
 
     "@tanstack/db-ivm": ["@tanstack/db-ivm@0.1.18", "", { "dependencies": { "fractional-indexing": "^3.2.0", "sorted-btree": "^1.8.1" }, "peerDependencies": { "typescript": ">=4.7" } }, "sha512-+pZJiRKdoKRM5Epq9T7otD9ZJl82pRFauo7LKuJGrarjVKQ7r+QQlPe3kGdN9LEKSnuNGIWjX9OOY4M8kH4eLw=="],
 
-    "@tanstack/electric-db-collection": ["@tanstack/electric-db-collection@0.3.12", "", { "dependencies": { "@electric-sql/client": "^1.5.15", "@standard-schema/spec": "^1.1.0", "@tanstack/db": "0.6.14", "@tanstack/store": "^0.9.2", "debug": "^4.4.3" } }, "sha512-jxVcWdNfdBS1W9CLhP98tNIo/pZd5l5JT/dN2YXYBsnvIDyQ4mV1EEzH/VGVfhZSLnL4fkWDBpoT79omW5Funw=="],
+    "@tanstack/electric-db-collection": ["@tanstack/electric-db-collection@0.3.14", "", { "dependencies": { "@electric-sql/client": "^1.5.15", "@standard-schema/spec": "^1.1.0", "@tanstack/db": "0.6.16", "@tanstack/store": "^0.9.2", "debug": "^4.4.3" } }, "sha512-r0tknthqxwetQ/ofGTFnNfyO7JgCkLEA4TtTpmi9XsXd6z0YHS2FB1YC5zBt27QcqCkaSfCZeSPsYFRicCdilA=="],
 
     "@tanstack/pacer-lite": ["@tanstack/pacer-lite@0.2.2", "", {}, "sha512-eQ1MyLKCHyXiH7NbdmB80W77OhiMgGBUb+qDx/8WMGbwg5Lf/NlfD0TfNYAqY77i8V3AxoDoYdICrQE5ADw4Yw=="],
 
-    "@tanstack/react-db": ["@tanstack/react-db@0.1.92", "", { "dependencies": { "@tanstack/db": "0.6.14", "use-sync-external-store": "^1.6.0" }, "peerDependencies": { "react": ">=16.8.0" } }, "sha512-Ymgwu+4Wq5n2ij/iCh8WxBla0dD8eP1/aivkNWfVe2GIQO9e3AM0vwtSIiOB6r5oFqJbE0x8sY7rQHPzljwf/Q=="],
+    "@tanstack/react-db": ["@tanstack/react-db@0.1.94", "", { "dependencies": { "@tanstack/db": "0.6.16", "use-sync-external-store": "^1.6.0" }, "peerDependencies": { "react": ">=16.8.0" } }, "sha512-ZtSMBOCdR/ElcBxg84uboXrqQ+kqiOwlq6kTy+o54UDywYr/by02jmWKHqayrnoiPVlrx83WNHDaomfe141f4A=="],
 
     "@tanstack/store": ["@tanstack/store@0.9.3", "", {}, "sha512-8reSzl/qGWGGVKhBoxXPMWzATSbZLZFWhwBAFO9NAyp0TxzfBP0mIrGb8CP8KrQTmvzXlR/vFPPUrHTLBGyFyw=="],
 
@@ -1369,8 +1369,6 @@
     "@dotenvx/dotenvx/execa": ["execa@5.1.1", "", { "dependencies": { "cross-spawn": "^7.0.3", "get-stream": "^6.0.0", "human-signals": "^2.1.0", "is-stream": "^2.0.0", "merge-stream": "^2.0.0", "npm-run-path": "^4.0.1", "onetime": "^5.1.2", "signal-exit": "^3.0.3", "strip-final-newline": "^2.0.0" } }, "sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg=="],
 
     "@dotenvx/dotenvx/open": ["open@8.4.2", "", { "dependencies": { "define-lazy-prop": "^2.0.0", "is-docker": "^2.1.1", "is-wsl": "^2.2.0" } }, "sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ=="],
-
-    "@electric-sql/y-electric/@electric-sql/client": ["@electric-sql/client@1.5.24", "", { "dependencies": { "@microsoft/fetch-event-source": "^2.0.1" }, "optionalDependencies": { "@rollup/rollup-darwin-arm64": "^4.18.1" }, "bin": { "intent": "bin/intent.mjs" } }, "sha512-ItOjBFTfiZvYosglF9Dn4TSqE59yL/psoemHJ7vX8gvEUmElHB2QdP5eQC6q9/lswyv7oqhkZT0Kk8kuq2P5vA=="],
 
     "@floating-ui/react/@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.9", "", { "dependencies": { "@floating-ui/dom": "^1.8.0" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-JDjEFGCpImxDCA7JJKviA0M9+RtmJdj0m/NVU5IMgBK+AmZouAQQ7/+2GLH0GXXY0YMw9oXPB8hKdbPYg5QLYg=="],
 
