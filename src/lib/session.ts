@@ -13,7 +13,7 @@ export const getSession = cache(async () => {
 export const requireSession = async () => {
   const session = await getSession();
   if (!session) {
-    redirect("/auth/login");
+    redirect("/login");
   }
   return session;
 };
