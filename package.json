@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.2",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.1.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -59,7 +59,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "^1.0.0-rc.4",
     "lefthook": "^2.1.9",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9",
     "vitest-browser-react": "^2.2.0"
