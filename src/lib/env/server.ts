@@ -15,6 +15,9 @@ export const env = createEnv({
     BETTER_AUTH_URL: z.url().optional(),
 
     ELECTRIC_URL: z.url(),
+
+    UPSTASH_REDIS_REST_URL: z.url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
   },
   experimental__runtimeEnv: process.env,
 });
