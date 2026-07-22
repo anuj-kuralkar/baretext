@@ -1,5 +1,4 @@
 import { configExtension, defineExtension } from "@lexical/extension";
-import { LexicalCollaboration } from "@lexical/react/LexicalCollaborationContext";
 import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
 import { ReactExtension } from "@lexical/react/ReactExtension";
 import { useExtensionDependency } from "@lexical/react/useExtensionComponent";
@@ -23,13 +22,11 @@ export function CollaborationExtensionComponent() {
   };
 
   return (
-    <LexicalCollaboration>
-      <CollaborationPlugin
-        id={noteId}
-        providerFactory={providerFactory}
-        shouldBootstrap={true}
-      />
-    </LexicalCollaboration>
+    <CollaborationPlugin
+      id={noteId}
+      providerFactory={providerFactory}
+      shouldBootstrap={true}
+    />
   );
 }
 
