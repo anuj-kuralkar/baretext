@@ -30,7 +30,7 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
     doc,
     documentUpdates: {
       shape: {
-        url: env.NEXT_PUBLIC_ELECTRIC_PROXY,
+        url: new URL("/api/shape", env.NEXT_PUBLIC_APP_URL).toString(),
         params: { table: "ydoc_update", room: roomId },
         parser: parseToDecoder,
       },

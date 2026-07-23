@@ -18,7 +18,7 @@ export const noteCollection = createCollection(
     schema: noteSelectSchema,
     getKey: (row) => row.id,
     shapeOptions: {
-      url: env.NEXT_PUBLIC_ELECTRIC_PROXY,
+      url: new URL("/api/shape", env.NEXT_PUBLIC_APP_URL).toString(),
       params: {
         table: "note",
       },

@@ -12,12 +12,11 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(1),
 
     BETTER_AUTH_SECRET: z.string().min(1),
-    BETTER_AUTH_URL: z.url().optional(),
-
-    ELECTRIC_URL: z.url(),
 
     UPSTASH_REDIS_REST_URL: z.url(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
+
+    ELECTRIC_URL: z.url(),
   },
   experimental__runtimeEnv: process.env,
 });
