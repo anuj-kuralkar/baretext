@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { env } from "@/lib/env/server";
 
 export const auth = betterAuth({
+  appName: "Baretext",
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
