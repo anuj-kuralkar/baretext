@@ -34,10 +34,7 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
         params: { table: "ydoc_update", room: roomId },
         parser: parseToDecoder,
       },
-      sendUrl:
-        typeof window !== "undefined"
-          ? new URL("/api/yjs", window.location.origin).toString()
-          : "/api/yjs",
+      sendUrl: new URL("/api/yjs", window.location.origin).toString(),
       getUpdateFromRow: (row) => row.update,
     },
     resumeState: resumeProvider.load(),
