@@ -3,19 +3,18 @@
 import { LexicalCollaboration } from "@lexical/react/LexicalCollaborationContext";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
-import { usePacedMutations } from "@tanstack/react-db";
-import { useMemo } from "react";
 import * as Y from "yjs";
 
 import { createEditorExtension } from "./editor/core-extension";
-import { createNoteMutationConfig } from "./editor/mutations";
+import { updateNotePreview } from "./editor/mutations";
 
 export function Editor({ noteId }: { noteId: string }) {
-  const mutate = usePacedMutations(createNoteMutationConfig(noteId));
-  const editorExtension = useMemo(
-    () => createEditorExtension({ noteId, doc: new Y.Doc(), mutate }),
-    [noteId, mutate],
-  );
+  const mutate = (text: string) => updateNotePreview({ id: noteId, text });
+  const editorExtension = createEditorExtension({
+    noteId,
+    doc: new Y.Doc(),
+    mutate,
+  });
 
   const placeholderText =
     "Try typing # for heading, > for quote, * for list...";

@@ -1,44 +1,36 @@
-import {
-  debounceStrategy,
-  type PacedMutationsConfig,
-} from "@tanstack/react-db";
-import type { z } from "zod";
+import { createPacedMutations, debounceStrategy } from "@tanstack/db";
+
 import { updateNoteAction } from "@/actions/note";
-import { noteCollection, type noteSelectSchema } from "@/collections/note";
+import { type Note, noteCollection } from "@/collections/note";
 
-export function createNoteMutationConfig(
-  noteId: string,
-): PacedMutationsConfig<string, Record<string, unknown>> {
-  return {
-    onMutate: (text: string) => {
-      try {
-        noteCollection.update(noteId, (draft) => {
-          draft.content = text;
-        });
-      } catch (error) {
-        // TanStack DB throws if the note isn't in the local cache yet (e.g., direct navigation)
-        console.debug(
-          `Skipped optimistic update: Note ${noteId} not in local cache.`,
-          error,
-        );
-      }
-    },
-    mutationFn: async ({ transaction }) => {
-      const mutation = transaction.mutations[0];
-      if (!mutation) return; // Abort if onMutate failed
+export const updateNotePreview = createPacedMutations<
+  { id: string; text: string },
+  Note
+>({
+  onMutate: ({ id, text }) => {
+    noteCollection.update(id, (draft) => {
+      draft.content = text;
+    });
+  },
+  mutationFn: async ({ transaction }) => {
+    await Promise.all(
+      transaction.mutations.map(async (mutation) => {
+        if (mutation?.type !== "update") return;
 
-      const changes = mutation.changes as Partial<
-        z.infer<typeof noteSelectSchema>
-      >;
-      const original = mutation.original as z.infer<typeof noteSelectSchema>;
-      if (changes.content !== undefined) {
-        await updateNoteAction({
-          id: noteId,
-          content: changes.content,
-          userId: original.userId,
-        });
-      }
-    },
-    strategy: debounceStrategy({ wait: 500 }),
-  };
-}
+        const changes = mutation.changes;
+        const original = mutation.original;
+
+        if (!("userId" in original)) return;
+
+        if (changes.content !== undefined) {
+          await updateNoteAction({
+            id: original.id,
+            content: changes.content,
+            userId: original.userId,
+          });
+        }
+      }),
+    );
+  },
+  strategy: debounceStrategy({ wait: 500 }),
+});
