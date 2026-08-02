@@ -1,10 +1,12 @@
 import cors from "@elysia/cors";
 import { Elysia } from "elysia";
-import { betterAuth } from "./auth/index";
 import { env as envClient } from "./lib/env/client";
+import { betterAuth } from "./modules/auth/index";
+import { noteModule } from "./modules/note/index";
 
 const app = new Elysia()
   .use(betterAuth)
+  .use(noteModule)
   .use(
     cors({
       origin: envClient.PUBLIC_APP_URL,
@@ -13,7 +15,6 @@ const app = new Elysia()
       allowedHeaders: ["Content-Type", "Authorization"],
     }),
   )
-  .get("/user", { auth: true }, ({ user }) => user)
   .listen(3000);
 
 console.log(

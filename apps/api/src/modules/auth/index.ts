@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { auth } from "../lib/auth/server";
+import { auth } from "../../lib/auth/server";
 
 export const betterAuth = new Elysia({ name: "better-auth" })
   .mount(auth.handler)
