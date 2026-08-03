@@ -1,14 +1,10 @@
 import { snakeCamelMapper } from "@electric-sql/client";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
 import { createCollection } from "@tanstack/react-db";
+import { note } from "api/src/db/schema";
 import { createSelectSchema } from "drizzle-orm/zod";
 import type z from "zod";
-import {
-  createNoteAction,
-  deleteNoteAction,
-  updateNoteAction,
-} from "@/actions/note";
-import { note } from "@/db/schema";
+import { api } from "@/lib/api";
 import { env } from "@/lib/env/client";
 
 export const noteSelectSchema = createSelectSchema(note);
@@ -33,28 +29,40 @@ export const noteCollection = createCollection(
 
     onInsert: async ({ transaction }) => {
       const modified = transaction.mutations[0].modified;
-      const { txid } = await createNoteAction({
+      const { data, error } = await api.notes.post({
         id: modified.id,
         content: modified.content,
-        userId: modified.userId,
       });
-      return { txid };
+      if (error) {
+        const message =
+          typeof error.value === "string" ? error.value : error.value?.detail;
+        throw new Error(message || "Failed to create note");
+      }
+      return { txid: data.txid };
     },
 
     onUpdate: async ({ transaction }) => {
       const { original, modified } = transaction.mutations[0];
-      const { txid } = await updateNoteAction({
-        id: original.id,
+      const { data, error } = await api.notes({ id: original.id }).patch({
         content: modified.content,
-        userId: original.userId,
       });
-      return { txid };
+      if (error) {
+        const message =
+          typeof error.value === "string" ? error.value : error.value?.detail;
+        throw new Error(message || "Failed to update note");
+      }
+      return { txid: data.txid };
     },
 
     onDelete: async ({ transaction }) => {
       const original = transaction.mutations[0].original;
-      const { txid } = await deleteNoteAction(original.id);
-      return { txid };
+      const { data, error } = await api.notes({ id: original.id }).delete();
+      if (error) {
+        const message =
+          typeof error.value === "string" ? error.value : error.value?.detail;
+        throw new Error(message || "Failed to delete note");
+      }
+      return { txid: data.txid };
     },
   }),
 );
