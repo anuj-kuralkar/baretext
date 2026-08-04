@@ -16,7 +16,7 @@ export const noteCollection = createCollection(
     schema: noteSelectSchema,
     getKey: (row) => row.id,
     shapeOptions: {
-      url: new URL("/api/shape", env.NEXT_PUBLIC_APP_URL).toString(),
+      url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
       params: {
         table: "note",
       },
@@ -34,9 +34,7 @@ export const noteCollection = createCollection(
         content: modified.content,
       });
       if (error) {
-        const message =
-          typeof error.value === "string" ? error.value : error.value?.detail;
-        throw new Error(message || "Failed to create note");
+        throw error;
       }
       return { txid: data.txid };
     },
@@ -47,9 +45,7 @@ export const noteCollection = createCollection(
         content: modified.content,
       });
       if (error) {
-        const message =
-          typeof error.value === "string" ? error.value : error.value?.detail;
-        throw new Error(message || "Failed to update note");
+        throw error;
       }
       return { txid: data.txid };
     },
@@ -58,9 +54,7 @@ export const noteCollection = createCollection(
       const original = transaction.mutations[0].original;
       const { data, error } = await api.notes({ id: original.id }).delete();
       if (error) {
-        const message =
-          typeof error.value === "string" ? error.value : error.value?.detail;
-        throw new Error(message || "Failed to delete note");
+        throw error;
       }
       return { txid: data.txid };
     },
