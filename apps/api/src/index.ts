@@ -3,10 +3,12 @@ import { Elysia } from "elysia";
 import { env as envClient } from "./lib/env/client";
 import { betterAuth } from "./modules/auth/index";
 import { noteModule } from "./modules/note/index";
+import { shapeModule } from "./modules/shape/index";
 
 const app = new Elysia()
   .use(betterAuth)
   .use(noteModule)
+  .use(shapeModule)
   .use(
     cors({
       origin: envClient.PUBLIC_APP_URL,
