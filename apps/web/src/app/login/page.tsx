@@ -1,13 +1,10 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { BrandLink } from "@/components/brand-link";
 import { LoginForm } from "@/components/forms/login";
-import { auth } from "@/lib/auth/server";
+import { getSession } from "@/lib/session";
 
 export default async function LoginPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (session) {
     redirect("/");
