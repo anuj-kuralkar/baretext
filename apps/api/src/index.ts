@@ -17,7 +17,7 @@ const app = new Elysia()
       allowedHeaders: ["Content-Type", "Authorization"],
     }),
   )
-  .listen(3000);
+  .listen(3001);
 
 export type App = typeof app;
 
