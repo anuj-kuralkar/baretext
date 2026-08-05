@@ -1,7 +1,7 @@
 import { createPacedMutations, debounceStrategy } from "@tanstack/db";
 
-import { updateNoteAction } from "@/actions/note";
 import { type Note, noteCollection } from "@/collections/note";
+import { api } from "@/lib/api";
 
 export const updateNotePreview = createPacedMutations<
   { id: string; text: string },
@@ -23,10 +23,8 @@ export const updateNotePreview = createPacedMutations<
         if (!("userId" in original)) return;
 
         if (changes.content !== undefined) {
-          await updateNoteAction({
-            id: original.id,
+          await api.notes({ id: original.id }).patch({
             content: changes.content,
-            userId: original.userId,
           });
         }
       }),

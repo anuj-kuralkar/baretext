@@ -12,7 +12,7 @@
       "name": "api",
       "version": "1.0.50",
       "dependencies": {
-        "@better-auth/passkey": "^1.6.25",
+        "@better-auth/passkey": "^1.6.26",
         "@electric-sql/client": "^1.5.25",
         "@elysia/cors": "2.0.0-beta.1",
         "@neondatabase/serverless": "^1.1.0",
@@ -36,11 +36,10 @@
         "@better-auth/passkey": "^1.6.23",
         "@electric-sql/client": "^1.5.24",
         "@electric-sql/y-electric": "^0.1.50",
-        "@lexical/code": "^0.48.0",
+        "@elysia/eden": "2.0.0-beta.1",
         "@lexical/code-prism": "^0.48.0",
         "@lexical/extension": "^0.48.0",
         "@lexical/hashtag": "^0.48.0",
-        "@lexical/history": "^0.48.0",
         "@lexical/list": "^0.48.0",
         "@lexical/mdast": "^0.48.0",
         "@lexical/react": "^0.48.0",
@@ -51,7 +50,7 @@
         "@tanstack/db": "^0.6.17",
         "@tanstack/electric-db-collection": "^0.3.14",
         "@tanstack/react-db": "^0.1.94",
-        "@upstash/redis": "^1.38.0",
+        "api": "workspace:*",
         "better-auth": "^1.6.23",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -171,7 +170,7 @@
 
     "@better-auth/mongo-adapter": ["@better-auth/mongo-adapter@1.6.25", "", { "peerDependencies": { "@better-auth/core": "^1.6.25", "@better-auth/utils": "0.4.2", "mongodb": "^6.0.0 || ^7.0.0" }, "optionalPeers": ["mongodb"] }, "sha512-ZtMmjcOdXR2Ziqx5y8ptTOaNpe0snNfALbBUPXJsgeyeRkDJDYzyLZ8MpuvNBTNllNeIFDbiXWAK5k+pEBZrUQ=="],
 
-    "@better-auth/passkey": ["@better-auth/passkey@1.6.25", "", { "dependencies": { "@simplewebauthn/browser": "^13.2.2", "@simplewebauthn/server": "^13.2.3", "zod": "^4.3.6" }, "peerDependencies": { "@better-auth/core": "^1.6.25", "@better-auth/utils": "0.4.2", "@better-fetch/fetch": "1.3.1", "better-auth": "^1.6.25", "better-call": "1.3.7", "nanostores": "^1.0.1" } }, "sha512-dom99kbrXXMf6h/f3AAq0o0C43l7UOiUBJ+cs6UmfTWAekCCdoRCmY4TjFNPcIq2EGXm3DtqnLG26v4RnCYi5w=="],
+    "@better-auth/passkey": ["@better-auth/passkey@1.6.26", "", { "dependencies": { "@simplewebauthn/browser": "^13.2.2", "@simplewebauthn/server": "^13.2.3", "zod": "^4.3.6" }, "peerDependencies": { "@better-auth/core": "^1.6.26", "@better-auth/utils": "0.4.2", "@better-fetch/fetch": "1.3.1", "better-auth": "^1.6.26", "better-call": "1.3.7", "nanostores": "^1.0.1" } }, "sha512-qEnXvh5QPHVnqigNBJq/Qur+U9eCa2t4kgdJL+xKEZ4IOxvx55WiGkneNAzIuR7n5saTF6iWtmsbSwMAkWAl9w=="],
 
     "@better-auth/prisma-adapter": ["@better-auth/prisma-adapter@1.6.25", "", { "peerDependencies": { "@better-auth/core": "^1.6.25", "@better-auth/utils": "0.4.2", "@prisma/client": "^5.0.0 || ^6.0.0 || ^7.0.0", "prisma": "^5.0.0 || ^6.0.0 || ^7.0.0" }, "optionalPeers": ["@prisma/client", "prisma"] }, "sha512-ym7B6Iqcry+/4aQnYpFwqP/GBIiXvjrm/5B6+0qmx8mkTY/apHFTpHuGzUYYNf4vPTtzF3eYY2+s2GOsomKaRg=="],
 
@@ -212,6 +211,8 @@
     "@electric-sql/y-electric": ["@electric-sql/y-electric@0.1.51", "", { "dependencies": { "@electric-sql/client": "1.5.25", "lib0": "^0.2.65", "y-protocols": "^1.0.5", "yjs": "^13.6.6" }, "bin": { "intent": "bin/intent.mjs" } }, "sha512-iywuMapcl+2ZjtBp1SbwVubl2WtgYjfUg+bvwAynrKEIKLun25H18d9Dxn6Q1iOtjv1wYN3oyha5+2EVvo4CGQ=="],
 
     "@elysia/cors": ["@elysia/cors@2.0.0-beta.1", "", { "peerDependencies": { "elysia": ">= 2.0.0-beta.1" } }, "sha512-dHb21xI4Dm7wcf5+rWLiLSwJARLAewnOzRjRk0wRMfBiLGA1t/CXsblzKUtwYRFhQCteUEGdhEace+6PF0UUKw=="],
+
+    "@elysia/eden": ["@elysia/eden@2.0.0-beta.1", "", { "peerDependencies": { "elysia": ">= 2.0.0-exp.23" } }, "sha512-ftoVvxWo9CCct64b2FVod4psLvdBXI9yL4oI+3UswlS7gBOG9TFEjOzPf4ywXFZMuKX+2EZw49w3BFQk34GWyw=="],
 
     "@emnapi/runtime": ["@emnapi/runtime@1.11.3", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA=="],
 
@@ -348,8 +349,6 @@
     "@lexical/a11y": ["@lexical/a11y@0.48.0", "", { "dependencies": { "@lexical/extension": "0.48.0", "@lexical/utils": "0.48.0", "lexical": "0.48.0" }, "peerDependencies": { "typescript": ">=5.2" }, "optionalPeers": ["typescript"] }, "sha512-18W4ehyipkUim4YVoDZitoH63Om3j6iCN4c84zdqE9RgkWf/PE4rvI/8BHTm6Ni7NkVE14nimXgkpaP5ok15zA=="],
 
     "@lexical/clipboard": ["@lexical/clipboard@0.48.0", "", { "dependencies": { "@lexical/extension": "0.48.0", "@lexical/html": "0.48.0", "@lexical/internal": "0.48.0", "@lexical/list": "0.48.0", "@lexical/selection": "0.48.0", "@lexical/utils": "0.48.0", "@types/trusted-types": "^2.0.7", "lexical": "0.48.0" }, "peerDependencies": { "typescript": ">=5.2" }, "optionalPeers": ["typescript"] }, "sha512-xO2trk6+yBl8XXa/VNe20kXczmPxFoWtUHjidbBLEtlGBj+mo63pJj6H5o/WlZsoMKmIOJxwxsn2ejrS8G0/7A=="],
-
-    "@lexical/code": ["@lexical/code@0.48.0", "", { "dependencies": { "@lexical/code-core": "0.48.0", "@lexical/code-prism": "0.48.0", "@lexical/extension": "0.48.0", "lexical": "0.48.0" }, "peerDependencies": { "typescript": ">=5.2" }, "optionalPeers": ["typescript"] }, "sha512-jLC0ixACXF36r+FqCprjBmnhN/DNxNSB9sutk5G7FAqICdtBWKghm4VSjWjL/qJZ6Bco2vG5bxyjJJtxXv5WQA=="],
 
     "@lexical/code-core": ["@lexical/code-core@0.48.0", "", { "dependencies": { "@lexical/extension": "0.48.0", "@lexical/html": "0.48.0", "@lexical/internal": "0.48.0", "@lexical/utils": "0.48.0", "lexical": "0.48.0" }, "peerDependencies": { "typescript": ">=5.2" }, "optionalPeers": ["typescript"] }, "sha512-+O1Ge06AuSo6+r8R2Xk6SkWG07H5/e4K/Scw9aqCM/BRjITxgvFTHTNvgQbaobCsP0uBJiwW1+ZGeWAWcBCY4w=="],
 
