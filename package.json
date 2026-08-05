@@ -1,9 +1,15 @@
 {
   "name": "baretext",
   "version": "0.0.1",
-  "workspaces": [
-    "apps/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "apps/*"
+    ],
+    "catalog": {
+      "@biomejs/biome": "2.5.7",
+      "typescript": "^7.0.2"
+    }
+  },
   "scripts": {
     "dev:web": "bun --filter web dev",
     "dev:api": "bun --filter api dev",
@@ -11,10 +17,6 @@
     "build:api": "bun --filter api build",
     "lint": "biome check",
     "format": "biome format --write"
-  },
-  "catalog": {
-    "@biomejs/biome": "2.5.6",
-    "typescript": "^7.0.2"
   },
   "devDependencies": {
     "lefthook": "^2.1.10"
