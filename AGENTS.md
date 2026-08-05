@@ -11,6 +11,8 @@
 
 - **Framework:** Next.js
 - **Language:** TypeScript
+- **API Framework:** ElysiaJS
+- **Schema Validation:** TypeBox
 - **Authentication:** Better Auth
 - **Database:** Neon (Serverless Postgres)
 - **ORM:** Drizzle ORM
@@ -25,12 +27,12 @@
 
 Below are the available scripts and their purposes:
 
-- `bun dev`: Starts the Next.js development server.
-- `bun build`: Builds the Next.js application for production.
-- `bun start`: Starts the Next.js production server.
-- `bun lint`: Runs the Biome linter (`biome check`). MUST be used for linting.
-- `bun format`: Runs the Biome formatter and automatically formats code (`biome format --write`). MUST be used for formatting.
-- `bun test:browser`: Runs the browser tests using Vitest.
+- `bun dev:web`: Starts the Next.js development server for the web app.
+- `bun dev:api`: Starts the ElysiaJS development server in watch mode for the API.
+- `bun build:web`: Builds the Next.js web application for production.
+- `bun build:api`: Builds the API for production.
+- `bun lint`: Runs the Biome linter across the workspace (`biome check`). MUST be used for linting.
+- `bun format`: Runs the Biome formatter across the workspace (`biome format --write`). MUST be used for formatting.
 
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
