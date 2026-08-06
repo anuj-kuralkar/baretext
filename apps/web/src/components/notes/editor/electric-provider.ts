@@ -30,11 +30,11 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
     doc,
     documentUpdates: {
       shape: {
-        url: new URL("/api/shape", env.NEXT_PUBLIC_APP_URL).toString(),
+        url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
         params: { table: "ydoc_update", room: roomId },
         parser: parseToDecoder,
       },
-      sendUrl: new URL("/api/yjs", window.location.origin).toString(),
+      sendUrl: new URL("/yjs", env.NEXT_PUBLIC_API_URL).toString(),
       getUpdateFromRow: (row) => row.update,
     },
     resumeState: resumeProvider.load(),
