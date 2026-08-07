@@ -1,22 +1,27 @@
 import cors from "@elysia/cors";
 import { Elysia } from "elysia";
-import { env as envClient } from "./lib/env/client";
 import { betterAuth } from "./modules/auth/index";
 import { noteModule } from "./modules/note/index";
 import { shapeModule } from "./modules/shape/index";
 
 const app = new Elysia()
+  .use(
+    cors({
+      origin: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization", "x-room-id"],
+      exposeHeaders: [
+        "electric-offset",
+        "electric-handle",
+        "electric-schema",
+        "electric-cursor",
+      ],
+    }),
+  )
   .use(betterAuth)
   .use(noteModule)
   .use(shapeModule)
-  .use(
-    cors({
-      origin: envClient.PUBLIC_APP_URL,
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      credentials: true,
-      allowedHeaders: ["Content-Type", "Authorization"],
-    }),
-  )
   .listen(3001);
 
 export type App = typeof app;

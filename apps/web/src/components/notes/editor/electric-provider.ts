@@ -33,6 +33,16 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
         url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
         params: { table: "ydoc_update", room: roomId },
         parser: parseToDecoder,
+        fetchClient: (url, init) => {
+          return fetch(url, {
+            ...init,
+            credentials: "include",
+            headers: {
+              ...init?.headers,
+              "x-room-id": roomId,
+            },
+          });
+        },
       },
       sendUrl: new URL("/yjs", env.NEXT_PUBLIC_API_URL).toString(),
       getUpdateFromRow: (row) => row.update,
@@ -42,6 +52,7 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
     fetchClient: (url, init) => {
       return fetch(url, {
         ...init,
+        credentials: "include",
         headers: {
           ...init?.headers,
           "x-room-id": roomId,

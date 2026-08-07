@@ -56,6 +56,11 @@ export const shapeModule = new Elysia({ prefix: "/shape" })
     const headers = new Headers(response.headers);
     headers.delete("content-encoding");
     headers.delete("content-length");
+    headers.delete("access-control-allow-origin");
+    headers.delete("access-control-allow-methods");
+    headers.delete("access-control-allow-headers");
+    headers.delete("access-control-expose-headers");
+    headers.delete("access-control-allow-credentials");
     headers.set(
       "Access-Control-Expose-Headers",
       "electric-offset, electric-handle, electric-schema, electric-cursor",
