@@ -3,6 +3,7 @@ import { Elysia } from "elysia";
 import { betterAuth } from "./modules/auth/index";
 import { noteModule } from "./modules/note/index";
 import { shapeModule } from "./modules/shape/index";
+import { yjsModule } from "./modules/yjs/index";
 
 const app = new Elysia()
   .use(
@@ -22,6 +23,7 @@ const app = new Elysia()
   .use(betterAuth)
   .use(noteModule)
   .use(shapeModule)
+  .use(yjsModule)
   .listen(3001);
 
 export type App = typeof app;
