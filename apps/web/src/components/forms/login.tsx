@@ -2,7 +2,6 @@
 
 import { FingerprintIcon } from "lucide-react";
 import { useTransition } from "react";
-import { toast } from "sonner";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 
 export function LoginForm() {
@@ -23,10 +23,10 @@ export function LoginForm() {
     startTransition(async () => {
       const { error } = await authClient.signIn.passkey();
       if (error) {
-        toast.error(error.message);
+        toast.add({ type: "error", title: error.message });
         return;
       }
-      toast.success("Logged in with Passkey");
+      toast.add({ type: "success", title: "Logged in with Passkey" });
     });
   };
 
@@ -38,7 +38,9 @@ export function LoginForm() {
         errorCallbackURL: "/login",
       });
       if (error) {
-        toast.error(error.code ?? error.status, {
+        toast.add({
+          type: "error",
+          title: error.code ?? error.status,
           description: error.message ?? error.statusText,
         });
       }

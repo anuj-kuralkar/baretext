@@ -4,8 +4,8 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
-import { toast } from "sonner";
 import { noteCollection } from "@/collections/note";
+import { toast } from "@/components/ui/toast";
 
 export interface NoteDeleteTriggerProps
   extends useRender.ComponentProps<"div"> {
@@ -29,7 +29,7 @@ export function NoteDeleteTrigger({
 
         tx.isPersisted.promise.catch((error) => {
           console.error("Failed to persist note deletion:", error);
-          toast.error("Failed to sync note deletion");
+          toast.add({ type: "error", title: "Failed to sync note deletion" });
         });
 
         if (pathname === `/notes/${noteId}`) {
@@ -37,7 +37,7 @@ export function NoteDeleteTrigger({
         }
       } catch (error) {
         console.error("Failed to delete note locally:", error);
-        toast.error("Failed to delete note");
+        toast.add({ type: "error", title: "Failed to delete note" });
       }
     });
   };

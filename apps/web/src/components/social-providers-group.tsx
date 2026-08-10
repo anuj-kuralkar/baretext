@@ -3,7 +3,6 @@
 import type { Account } from "better-auth";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { toast } from "sonner";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,7 @@ import {
   ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 
 type SocialProviderConfig = {
@@ -47,7 +47,9 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
         callbackURL: "/settings/account",
       });
       if (error) {
-        toast.error(error.code ?? error.status, {
+        toast.add({
+          type: "error",
+          title: error.code ?? error.status,
           description: error.message ?? error.statusText,
         });
       }
@@ -62,11 +64,18 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
       if (error) {
         const errCode =
           "code" in error ? String(error.code) : String(error.status);
-        toast.error(errCode, {
-          description: error.message ?? error.statusText,
+        toast.add({
+          type: "error",
+          title: errCode,
+          description:
+            ("message" in error ? String(error.message) : undefined) ??
+            "An unknown error occurred.",
         });
       } else {
-        toast.success(`Successfully unlinked ${providerId}`);
+        toast.add({
+          type: "success",
+          title: `Successfully unlinked ${providerId}`,
+        });
         router.refresh();
       }
     });

@@ -4,8 +4,8 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import { toast } from "sonner";
 import { noteCollection } from "@/collections/note";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 
 export interface NoteCreateTriggerProps
@@ -36,13 +36,13 @@ export function NoteCreateTrigger({
 
         tx.isPersisted.promise.catch((error) => {
           console.error("Failed to persist note:", error);
-          toast.error("Failed to sync note creation");
+          toast.add({ type: "error", title: "Failed to sync note creation" });
         });
 
         router.push(`/notes/${newId}`);
       } catch (error) {
         console.error("Failed to create note locally:", error);
-        toast.error("Failed to create note");
+        toast.add({ type: "error", title: "Failed to create note" });
       }
     });
   };

@@ -3,7 +3,6 @@
 import { getAuthenticatorName } from "@better-auth/passkey";
 import { FingerprintIcon } from "lucide-react";
 import { useTransition } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -14,6 +13,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 
 export function PasskeysGroup() {
@@ -24,10 +24,10 @@ export function PasskeysGroup() {
     startTransition(async () => {
       const { data, error } = await authClient.passkey.addPasskey();
       if (error) {
-        toast.error(error.message);
+        toast.add({ type: "error", title: error.message });
       }
       if (data) {
-        toast.success("Passkey added successfully");
+        toast.add({ type: "success", title: "Passkey added successfully" });
       }
     });
   };
@@ -38,10 +38,10 @@ export function PasskeysGroup() {
         id,
       });
       if (error) {
-        toast.error(error.message);
+        toast.add({ type: "error", title: error.message });
       }
       if (data) {
-        toast.success("Passkey deleted successfully");
+        toast.add({ type: "success", title: "Passkey deleted successfully" });
       }
     });
   };

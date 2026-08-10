@@ -3,7 +3,6 @@
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 
 export function LogoutCard() {
@@ -23,7 +23,9 @@ export function LogoutCard() {
     startTransition(async () => {
       const { error } = await authClient.signOut();
       if (error) {
-        toast.error(error.code ?? error.status, {
+        toast.add({
+          type: "error",
+          title: error.code ?? error.status,
           description: error.message ?? error.statusText,
         });
       } else {
