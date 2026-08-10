@@ -33,32 +33,19 @@ export function createElectricProvider(doc: Y.Doc, roomId: string): Provider {
         url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
         params: { table: "ydoc_update", room: roomId },
         parser: parseToDecoder,
-        fetchClient: (url, init) => {
-          return fetch(url, {
-            ...init,
-            credentials: "include",
-            headers: {
-              ...init?.headers,
-              "x-room-id": roomId,
-            },
-          });
+        headers: {
+          "x-room-id": roomId,
         },
+        fetchClient: ((url, init) =>
+          fetch(url, { ...init, credentials: "include" })) as typeof fetch,
       },
       sendUrl: new URL("/yjs", env.NEXT_PUBLIC_API_URL).toString(),
       getUpdateFromRow: (row) => row.update,
     },
     resumeState: resumeProvider.load(),
     debounceMs: 100,
-    fetchClient: (url, init) => {
-      return fetch(url, {
-        ...init,
-        credentials: "include",
-        headers: {
-          ...init?.headers,
-          "x-room-id": roomId,
-        },
-      });
-    },
+    fetchClient: ((url, init) =>
+      fetch(url, { ...init, credentials: "include" })) as typeof fetch,
   });
 
   const unsubscribeResumeState =

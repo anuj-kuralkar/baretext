@@ -17,9 +17,8 @@ export const noteCollection = createCollection(
     getKey: (row) => row.id,
     shapeOptions: {
       url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
-      fetchClient: (url, init) => {
-        return fetch(url, { ...init, credentials: "include" });
-      },
+      fetchClient: ((url, init) =>
+        fetch(url, { ...init, credentials: "include" })) as typeof fetch,
       params: {
         table: "note",
       },
