@@ -11,15 +11,12 @@ export const yjsModule = new Elysia({ prefix: "/yjs" })
   .put(
     "/",
     {
-      headers: "updateHeaders",
+      query: "updateQuery",
       auth: true,
     },
-    async ({ request, user, headers }) => {
-      const roomId = headers["x-room-id"];
+    async ({ request, user, query: { room } }) => {
       const buffer = Buffer.from(await request.arrayBuffer());
-
-      await YjsService.saveUpdate(roomId, buffer, user.id);
-
+      await YjsService.saveUpdate(room, buffer, user.id);
       return new Response("ok", { status: 200 });
     },
   );

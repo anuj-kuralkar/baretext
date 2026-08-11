@@ -1,8 +1,8 @@
 import { t, type UnwrapSchema } from "elysia";
 
 export const YjsModel = {
-  updateHeaders: t.Object({
-    "x-room-id": t.String(),
+  updateQuery: t.Object({
+    room: t.String(),
   }),
 } as const;
 
