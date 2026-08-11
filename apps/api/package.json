@@ -6,13 +6,13 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "@better-auth/passkey": "^1.6.26",
+    "@better-auth/passkey": "^1.6.27",
     "@electric-sql/client": "^1.5.25",
     "@elysia/cors": "2.0.0-beta.1",
     "@neondatabase/serverless": "^1.1.0",
     "@t3-oss/env-core": "^0.13.11",
     "@upstash/redis": "^1.38.2",
-    "better-auth": "^1.6.25",
+    "better-auth": "^1.6.27",
     "drizzle-orm": "^1.0.0-rc.4",
     "elysia": "2.0.0-beta.1",
     "typebox": "1.2.19"
