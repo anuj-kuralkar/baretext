@@ -9,7 +9,7 @@ const app = new Elysia()
   .use(
     cors({
       origin: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization", "x-room-id"],
       exposeHeaders: [
