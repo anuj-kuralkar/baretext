@@ -1,6 +1,7 @@
 "use client";
 
 import { FingerprintIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import { authClient } from "@/lib/auth/client";
 
 export function LoginForm() {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handlePasskeyLogin = () => {
     startTransition(async () => {
@@ -26,7 +28,7 @@ export function LoginForm() {
         toast.add({ type: "error", title: error.message });
         return;
       }
-      toast.add({ type: "success", title: "Logged in with Passkey" });
+      router.push("/");
     });
   };
 
