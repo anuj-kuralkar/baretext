@@ -1,10 +1,18 @@
-import { createInsertSchema, createUpdateSchema } from "drizzle-orm/typebox";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-orm/typebox";
 import { t, type UnwrapSchema } from "elysia";
+import type { Static } from "typebox";
 import { note } from "../../db/schema";
+
+export const selectNoteSchema = createSelectSchema(note);
+export type Note = Static<typeof selectNoteSchema>;
 
 const insertNoteSchema = createInsertSchema(note);
 
-const updateNoteSchema = createUpdateSchema(note, {
+export const updateNoteSchema = createUpdateSchema(note, {
   content: t.String(),
 });
 

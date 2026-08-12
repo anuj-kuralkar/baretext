@@ -1,6 +1,7 @@
 import { createPacedMutations, debounceStrategy } from "@tanstack/db";
+import type { Note } from "api/src/modules/note/model";
 
-import { type Note, noteCollection } from "@/collections/note";
+import { noteCollection } from "@/collections/note";
 import { api } from "@/lib/api";
 
 export const updateNotePreview = createPacedMutations<

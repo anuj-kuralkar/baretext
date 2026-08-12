@@ -1,19 +1,14 @@
 import { snakeCamelMapper } from "@electric-sql/client";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
 import { createCollection } from "@tanstack/react-db";
-import { note } from "api/src/db/schema";
-import { createSelectSchema } from "drizzle-orm/zod";
-import type z from "zod";
+import { selectNoteSchema } from "api/src/modules/note/model";
 import { api } from "@/lib/api";
 import { env } from "@/lib/env/client";
-
-export const noteSelectSchema = createSelectSchema(note);
-export type Note = z.infer<typeof noteSelectSchema>;
 
 export const noteCollection = createCollection(
   electricCollectionOptions({
     id: "note",
-    schema: noteSelectSchema,
+    schema: selectNoteSchema,
     getKey: (row) => row.id,
     shapeOptions: {
       url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),

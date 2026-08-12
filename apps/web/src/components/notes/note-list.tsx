@@ -1,14 +1,13 @@
 "use client";
 
 import { useLiveQuery } from "@tanstack/react-db";
+import type { Note } from "api/src/modules/note/model";
 import Link from "next/link";
-import type { z } from "zod";
-import { noteCollection, type noteSelectSchema } from "@/collections/note";
+
+import { noteCollection } from "@/collections/note";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import { NoteContextMenu } from "./note-context-menu";
-
-type Note = z.infer<typeof noteSelectSchema>;
 
 export interface NoteListProps {
   active?: string;
