@@ -2,6 +2,7 @@
 
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
+import { safeRandomUUID } from "@tanstack/db";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { noteCollection } from "@/collections/note";
@@ -24,7 +25,7 @@ export function NoteCreateTrigger({
   const handleCreate = () => {
     startTransition(() => {
       try {
-        const newId = crypto.randomUUID();
+        const newId = safeRandomUUID();
 
         const tx = noteCollection.insert({
           id: newId,
