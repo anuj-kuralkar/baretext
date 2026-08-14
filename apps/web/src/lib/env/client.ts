@@ -4,7 +4,7 @@ import { Type } from "typebox";
 
 export const env = createEnv({
   client: {
-    NEXT_PUBLIC_API_URL: StandardSchemaV1(Type.String({ format: "url" })),
+    NEXT_PUBLIC_API_URL: StandardSchemaV1(Type.String({ format: "uri" })),
   },
   runtimeEnv: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
