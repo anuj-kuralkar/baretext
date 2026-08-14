@@ -2,13 +2,14 @@ import { snakeCamelMapper } from "@electric-sql/client";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
 import { createCollection } from "@tanstack/react-db";
 import { selectNoteSchema } from "api/src/modules/note/model";
+import { StandardSchemaV1 } from "api/utils/standard-schema";
 import { api } from "@/lib/api";
 import { env } from "@/lib/env/client";
 
 export const noteCollection = createCollection(
   electricCollectionOptions({
     id: "note",
-    schema: selectNoteSchema,
+    schema: StandardSchemaV1(selectNoteSchema),
     getKey: (row) => row.id,
     shapeOptions: {
       url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
