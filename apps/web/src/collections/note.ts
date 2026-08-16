@@ -8,7 +8,7 @@ import { env } from "@/lib/env/client";
 export const noteCollection = createCollection(
   electricCollectionOptions({
     id: "note",
-    schema: selectNoteSchema,
+    schema: selectNoteSchema.omit({ userId: true }),
     getKey: (row) => row.id,
     shapeOptions: {
       url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
@@ -29,6 +29,8 @@ export const noteCollection = createCollection(
       const { data, error } = await api.notes.post({
         id: modified.id,
         content: modified.content,
+        createdAt: modified.createdAt,
+        updatedAt: modified.updatedAt,
       });
       if (error) {
         throw error;
@@ -40,6 +42,7 @@ export const noteCollection = createCollection(
       const { original, modified } = transaction.mutations[0];
       const { data, error } = await api.notes({ id: original.id }).patch({
         content: modified.content,
+        updatedAt: modified.updatedAt,
       });
       if (error) {
         throw error;

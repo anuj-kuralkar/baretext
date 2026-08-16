@@ -15,23 +15,24 @@ export const noteModule = new Elysia({ prefix: "/notes" })
       auth: true,
     },
     async ({ body, user }) =>
-      NoteService.createNote(body.id, body.content, user.id),
+      NoteService.createNote({ ...body, userId: user.id }),
   )
   .patch(
     "/:id",
     {
-      params: "idParam",
+      params: "noteId",
       body: "updateBody",
       auth: true,
     },
     async ({ params: { id }, body, user }) =>
-      NoteService.updateNote(id, body.content, user.id),
+      NoteService.updateNote({ id, ...body, userId: user.id }),
   )
   .delete(
     "/:id",
     {
-      params: "idParam",
+      params: "noteId",
       auth: true,
     },
-    async ({ params: { id }, user }) => NoteService.deleteNote(id, user.id),
+    async ({ params: { id }, user }) =>
+      NoteService.deleteNote({ id, userId: user.id }),
   );

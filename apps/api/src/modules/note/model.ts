@@ -6,20 +6,27 @@ import {
 import type { UnwrapSchema } from "elysia";
 import { z } from "zod";
 import { note } from "../../db/schema";
+import { isoDatetimeToDate } from "../../lib/utils";
 
 export const selectNoteSchema = createSelectSchema(note);
-export type Note = z.Infer<typeof selectNoteSchema>;
 
-const insertNoteSchema = createInsertSchema(note);
+export const insertNoteSchema = createInsertSchema(note, {
+  createdAt: isoDatetimeToDate,
+  updatedAt: isoDatetimeToDate,
+}).omit({ userId: true });
 
 export const updateNoteSchema = createUpdateSchema(note, {
   content: z.string(),
-});
+  updatedAt: isoDatetimeToDate,
+}).omit({ id: true, createdAt: true, userId: true });
+
+export const noteSchema = selectNoteSchema.omit({ userId: true });
+export type Note = z.Infer<typeof noteSchema>;
 
 export const NoteModel = {
-  createBody: insertNoteSchema.pick(["id", "content"]),
-  updateBody: updateNoteSchema.pick(["content"]),
-  idParam: z.object({
+  createBody: insertNoteSchema,
+  updateBody: updateNoteSchema,
+  noteId: z.object({
     id: z.uuid(),
   }),
 } as const;

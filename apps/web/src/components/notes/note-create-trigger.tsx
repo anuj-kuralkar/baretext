@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 import { noteCollection } from "@/collections/note";
 import { toast } from "@/components/ui/toast";
-import { authClient } from "@/lib/auth/client";
 
 export interface NoteCreateTriggerProps
   extends useRender.ComponentProps<"div"> {
@@ -19,7 +18,6 @@ export function NoteCreateTrigger({
   ...props
 }: NoteCreateTriggerProps) {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
   const [isPending, startTransition] = React.useTransition();
 
   const handleCreate = () => {
@@ -30,7 +28,6 @@ export function NoteCreateTrigger({
         const tx = noteCollection.insert({
           id: newId,
           content: "",
-          userId: session?.user?.id ?? "",
           createdAt: new Date(),
           updatedAt: new Date(),
         });
