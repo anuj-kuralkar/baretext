@@ -1,24 +1,23 @@
 import { createEnv } from "@t3-oss/env-core";
-import { Type } from "typebox";
-import { StandardSchemaV1 } from "../../../utils/standard-schema";
+import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    DATABASE_URL: StandardSchemaV1(Type.String({ format: "uri" })),
+    DATABASE_URL: z.url(),
 
-    GITHUB_CLIENT_ID: StandardSchemaV1(Type.String({ minLength: 1 })),
-    GITHUB_CLIENT_SECRET: StandardSchemaV1(Type.String({ minLength: 1 })),
+    GITHUB_CLIENT_ID: z.string(),
+    GITHUB_CLIENT_SECRET: z.string(),
 
-    GOOGLE_CLIENT_ID: StandardSchemaV1(Type.String({ minLength: 1 })),
-    GOOGLE_CLIENT_SECRET: StandardSchemaV1(Type.String({ minLength: 1 })),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
 
-    BETTER_AUTH_URL: StandardSchemaV1(Type.String({ format: "uri" })),
-    BETTER_AUTH_SECRET: StandardSchemaV1(Type.String({ minLength: 1 })),
+    BETTER_AUTH_URL: z.url(),
+    BETTER_AUTH_SECRET: z.string(),
 
-    UPSTASH_REDIS_REST_URL: StandardSchemaV1(Type.String({ format: "uri" })),
-    UPSTASH_REDIS_REST_TOKEN: StandardSchemaV1(Type.String({ minLength: 1 })),
+    UPSTASH_REDIS_REST_URL: z.url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string(),
 
-    ELECTRIC_URL: StandardSchemaV1(Type.String({ format: "uri" })),
+    ELECTRIC_URL: z.url(),
   },
   runtimeEnv: process.env,
 });

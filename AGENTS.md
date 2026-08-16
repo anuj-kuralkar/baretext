@@ -12,7 +12,7 @@
 - **Framework:** Next.js
 - **Language:** TypeScript
 - **API Framework:** ElysiaJS
-- **Schema Validation:** TypeBox
+- **Schema Validation:** Zod
 - **Authentication:** Better Auth
 - **Database:** Neon (Serverless Postgres)
 - **ORM:** Drizzle ORM
