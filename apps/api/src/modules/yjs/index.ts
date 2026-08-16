@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, status } from "elysia";
 import { betterAuth } from "../auth";
 import { YjsModel } from "./model";
 import { YjsService } from "./service";
@@ -17,6 +17,6 @@ export const yjsModule = new Elysia({ prefix: "/yjs" })
     async ({ request, user, query: { room } }) => {
       const buffer = Buffer.from(await request.arrayBuffer());
       await YjsService.saveUpdate(room, buffer, user.id);
-      return new Response("ok", { status: 200 });
+      return status(200);
     },
   );
