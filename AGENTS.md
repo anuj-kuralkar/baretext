@@ -39,3 +39,7 @@ Below are the available scripts and their purposes:
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
+
+<!-- BEGIN:electricsql-agent-rules -->
+You MUST read https://electric-sql.com/AGENTS.md for general information on developing wth Electric and TanStack DB.
+<!-- END:electricsql-agent-rules -->

@@ -5,7 +5,7 @@ import {
   index,
   integer,
   pgTable,
-  serial,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -122,15 +122,30 @@ export const note = pgTable("note", {
 });
 
 export const ydocUpdate = pgTable("ydoc_update", {
-  id: serial("id").primaryKey(),
-  room: uuid("room")
+  id: uuid("id").primaryKey().default(sql`uuidv7()`),
+  noteId: uuid("note_id")
     .notNull()
     .references(() => note.id, { onDelete: "cascade" }),
-  update: bytea("update").notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+  op: bytea("update").notNull(),
 });
+
+export const ydocAwareness = pgTable(
+  "ydoc_awareness",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    noteId: uuid("note_id")
+      .notNull()
+      .references(() => note.id, { onDelete: "cascade" }),
+    op: bytea("update").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.noteId] })],
+);
 
 export const dbRelations = defineRelations(
   { user, session, account, note, ydocUpdate, passkey },
@@ -159,6 +174,12 @@ export const dbRelations = defineRelations(
         to: r.user.id,
       }),
     },
+    ydocUpdate: {
+      note: r.one.note({
+        from: r.ydocUpdate.noteId,
+        to: r.note.id,
+      }),
+    },
     passkey: {
       user: r.one.user({
         from: r.passkey.userId,
@@ -172,4 +193,5 @@ export const userRelations = dbRelations.user;
 export const sessionRelations = dbRelations.session;
 export const accountRelations = dbRelations.account;
 export const noteRelations = dbRelations.note;
+export const ydocUpdateRelations = dbRelations.ydocUpdate;
 export const passkeyRelations = dbRelations.passkey;

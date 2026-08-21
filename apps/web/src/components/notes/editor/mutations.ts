@@ -24,7 +24,7 @@ export const updateNotePreview = createPacedMutations<
 
         if (!("id" in original)) return;
 
-        if (changes.content !== undefined) {
+        if (changes.content !== undefined && changes.updatedAt !== undefined) {
           await api.notes({ id: original.id }).patch({
             content: changes.content,
             updatedAt: changes.updatedAt,

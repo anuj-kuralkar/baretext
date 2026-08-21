@@ -1,9 +1,15 @@
-import { t, type UnwrapSchema } from "elysia";
+import type { UnwrapSchema } from "elysia";
+import { z } from "zod";
 
 export const YjsModel = {
-  updateQuery: t.Object({
-    room: t.String(),
+  updateQuery: z.object({
+    room: z.string(),
   }),
+  awarenessQuery: z.object({
+    room: z.string(),
+  }),
+  updateBody: z.any(),
+  awarenessBody: z.any(),
 } as const;
 
 export type YjsModel = {

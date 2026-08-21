@@ -9,14 +9,26 @@ export const yjsModule = new Elysia({ prefix: "/yjs" })
   .use(betterAuth)
   .use(yjsModels)
   .put(
-    "/",
+    "/update",
     {
       query: "updateQuery",
       auth: true,
     },
+    async ({ request, query: { room } }) => {
+      const buffer = Buffer.from(await request.arrayBuffer());
+      await YjsService.saveUpdate(room, buffer);
+      return status(200);
+    },
+  )
+  .put(
+    "/awareness",
+    {
+      query: "awarenessQuery",
+      auth: true,
+    },
     async ({ request, user, query: { room } }) => {
       const buffer = Buffer.from(await request.arrayBuffer());
-      await YjsService.saveUpdate(room, buffer, user.id);
+      await YjsService.saveAwareness(room, buffer, user.id);
       return status(200);
     },
   );

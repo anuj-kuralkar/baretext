@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 // biome-ignore lint/correctness/noUnusedImports: validate env at build
-import { env } from "@/lib/env/server";
+import { env } from "@/lib/env/client";
 
 const nextConfig: NextConfig = {
   /* config options here */
