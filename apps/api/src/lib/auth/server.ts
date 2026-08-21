@@ -12,6 +12,11 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
+  advanced: {
+    database: {
+      joins: true,
+    },
+  },
   secondaryStorage: redisSecondaryStorage,
   socialProviders: {
     github: {
