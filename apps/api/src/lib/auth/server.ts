@@ -12,6 +12,7 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
+  trustedOrigins: [env.WEB_URL],
   advanced: {
     database: {
       joins: true,

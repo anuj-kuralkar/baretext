@@ -18,6 +18,8 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_TOKEN: z.string(),
 
     ELECTRIC_URL: z.url(),
+
+    WEB_URL: z.url(),
   },
   runtimeEnv: process.env,
 });
