@@ -1,9 +1,9 @@
 import { ELECTRIC_PROTOCOL_QUERY_PARAMS } from "@electric-sql/client";
 import { QueryBuilder } from "drizzle-orm/pg-core/query-builders";
 import { sql } from "drizzle-orm/sql";
-import { getColumns } from "drizzle-orm/utils";
 import { Elysia } from "elysia";
-import { note, ydocUpdate, ydocUpdateRelations } from "../../db/schema";
+
+import { note, ydocAwareness, ydocUpdate } from "../../db/schema";
 import { env } from "../../lib/env/server";
 import { betterAuth } from "../auth";
 
@@ -26,7 +26,15 @@ export const shapeModule = new Elysia({ prefix: "/shape" })
       },
       ydoc_update: {
         tableDef: ydocUpdate,
-        whereExpr: sql`${sql.identifier(getColumns(ydocUpdateRelations.relations.note.targetTable).userId.name)} = ${user.id} AND ${sql.identifier(ydocUpdate.noteId.name)} = ${url.searchParams.get("room")}`,
+        whereExpr: sql`
+          ${sql.identifier(ydocUpdate.userId.name)} = ${user.id}
+          AND ${sql.identifier(ydocUpdate.noteId.name)} = ${url.searchParams.get("room")}`,
+      },
+      ydoc_awareness: {
+        tableDef: ydocAwareness,
+        whereExpr: sql`
+          ${sql.identifier(ydocAwareness.userId.name)} = ${user.id}
+          AND ${sql.identifier(ydocAwareness.noteId.name)} = ${url.searchParams.get("room")}`,
       },
     } as const;
 

@@ -2,9 +2,10 @@ import { ydocAwareness, ydocUpdate } from "../../db/schema";
 import { db } from "../../lib/db";
 
 export const YjsService = {
-  async saveUpdate(noteId: string, buffer: Buffer) {
+  async saveUpdate(noteId: string, buffer: Buffer, userId: string) {
     await db.insert(ydocUpdate).values({
       noteId: noteId,
+      userId: userId,
       op: buffer,
     });
   },

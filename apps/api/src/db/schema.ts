@@ -100,6 +100,9 @@ export const ydocUpdate = pgTable("ydoc_update", {
     .notNull()
     .references(() => note.id, { onDelete: "cascade" }),
   op: bytea("update").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
 });
 
 export const ydocAwareness = pgTable(
@@ -150,6 +153,10 @@ export const dbRelations = defineRelations(
       note: r.one.note({
         from: r.ydocUpdate.noteId,
         to: r.note.id,
+      }),
+      user: r.one.user({
+        from: r.ydocUpdate.userId,
+        to: r.user.id,
       }),
     },
   }),

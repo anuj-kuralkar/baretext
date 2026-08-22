@@ -27,6 +27,8 @@ export function createElectricProvider(ydoc: Y.Doc, noteId: string) {
           room: noteId,
         },
         parser: parseToDecoder,
+        fetchClient: ((url, init) =>
+          fetch(url, { ...init, credentials: "include" })) as typeof fetch,
       },
       sendUrl: new URL(
         `/yjs/update?room=${noteId}`,
@@ -39,9 +41,11 @@ export function createElectricProvider(ydoc: Y.Doc, noteId: string) {
         url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
         params: {
           table: `ydoc_awareness`,
-          where: `note_id = '${noteId}'`,
+          room: noteId,
         },
         parser: parseToDecoder,
+        fetchClient: ((url, init) =>
+          fetch(url, { ...init, credentials: "include" })) as typeof fetch,
       },
       sendUrl: new URL(
         `/yjs/awareness?room=${noteId}`,
@@ -60,5 +64,5 @@ export function createElectricProvider(ydoc: Y.Doc, noteId: string) {
   const _unsubscribeResumeState =
     resumeStateProvider.subscribeToResumeState(electricProvider);
 
-  return electricProvider;
+  return { provider: electricProvider, awareness };
 }

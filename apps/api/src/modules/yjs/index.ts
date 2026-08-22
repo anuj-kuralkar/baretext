@@ -14,9 +14,14 @@ export const yjsModule = new Elysia({ prefix: "/yjs" })
       query: "updateQuery",
       auth: true,
     },
-    async ({ request, query: { room } }) => {
+    async ({ request, query: { room }, user }) => {
       const buffer = Buffer.from(await request.arrayBuffer());
-      await YjsService.saveUpdate(room, buffer);
+      const hexString = `\\x${buffer.toString("hex")}`;
+      await YjsService.saveUpdate(
+        room,
+        hexString as unknown as Buffer,
+        user.id,
+      );
       return status(200);
     },
   )
