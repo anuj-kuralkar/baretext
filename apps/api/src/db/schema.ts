@@ -156,7 +156,6 @@ export const dbRelations = defineRelations(
 );
 
 export const userRelations = dbRelations.user;
-export const sessionRelations = dbRelations.session;
 export const accountRelations = dbRelations.account;
 export const noteRelations = dbRelations.note;
 export const ydocUpdateRelations = dbRelations.ydocUpdate;
