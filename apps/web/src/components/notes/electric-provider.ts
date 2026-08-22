@@ -29,7 +29,7 @@ export function createElectricProvider(ydoc: Y.Doc, noteId: string) {
         parser: parseToDecoder,
       },
       sendUrl: new URL(
-        `/yjs?note-id=${noteId}`,
+        `/yjs/update?room=${noteId}`,
         env.NEXT_PUBLIC_API_URL,
       ).toString(),
       getUpdateFromRow: (row) => row.op,
@@ -44,7 +44,7 @@ export function createElectricProvider(ydoc: Y.Doc, noteId: string) {
         parser: parseToDecoder,
       },
       sendUrl: new URL(
-        `/yjs/awareness?note-id=${noteId}`,
+        `/yjs/awareness?room=${noteId}`,
         env.NEXT_PUBLIC_API_URL,
       ).toString(),
       protocol: awareness,
