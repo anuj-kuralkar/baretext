@@ -14,12 +14,10 @@ export interface NoteListProps {
 }
 
 export function NoteList({ active }: NoteListProps) {
-  const { data: notes, isLoading } = useLiveQuery(
-    (q) =>
-      q
-        .from({ note: noteCollection })
-        .orderBy(({ note }) => note.updatedAt, "desc"),
-    [],
+  const { data: notes, isLoading } = useLiveQuery((q) =>
+    q
+      .from({ note: noteCollection })
+      .orderBy(({ note }) => note.updatedAt, "desc"),
   );
 
   if (isLoading) {
