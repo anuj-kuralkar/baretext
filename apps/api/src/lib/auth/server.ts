@@ -8,11 +8,13 @@ import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";
 
 export const auth = betterAuth({
   appName: "Baretext",
+  baseURL: env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET,
+  trustedOrigins: [env.WEB_URL],
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
   }),
-  trustedOrigins: [env.WEB_URL],
   advanced: {
     database: {
       joins: true,
