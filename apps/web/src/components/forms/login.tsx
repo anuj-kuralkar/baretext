@@ -36,8 +36,8 @@ export function LoginForm() {
     startTransition(async () => {
       const { error } = await authClient.signIn.social({
         provider,
-        callbackURL: "/",
-        errorCallbackURL: "/login",
+        callbackURL: `${window.location.origin}/`,
+        errorCallbackURL: `${window.location.origin}/login`,
       });
       if (error) {
         toast.add({

@@ -44,7 +44,7 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
     startTransition(async () => {
       const { error } = await authClient.linkSocial({
         provider,
-        callbackURL: "/settings/account",
+        callbackURL: `${window.location.origin}/settings/account`,
       });
       if (error) {
         toast.add({
