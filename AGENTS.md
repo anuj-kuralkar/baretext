@@ -19,7 +19,7 @@
 - **Sync & DB:** ElectricSQL, TanStack DB
 - **Cache/Redis:** Upstash Redis
 - **UI & Styling:** Tailwind CSS, Base UI, shadcn, Lucide React
-- **Rich Text Editor:** Lexical (with Yjs for real-time collaboration)
+- **Rich Text Editor:** Tiptap (with Yjs for real-time collaboration)
 - **Tooling & Code Quality:** Biome (linting/formatting), Lefthook
 - **Testing:** Vitest, @vitest/browser-playwright, vitest-browser-react
 
