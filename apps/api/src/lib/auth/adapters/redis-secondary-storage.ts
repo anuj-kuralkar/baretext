@@ -1,6 +1,14 @@
 import type { SecondaryStorage } from "better-auth";
 import { redis } from "../../redis";
 
+const incrementScript = `
+local value = redis.call("INCR", KEYS[1])
+if value == 1 then
+  redis.call("EXPIRE", KEYS[1], ARGV[1])
+end
+return value
+`;
+
 export const redisSecondaryStorage: SecondaryStorage = {
   async get(key) {
     return await redis.get(key);
@@ -10,19 +18,15 @@ export const redisSecondaryStorage: SecondaryStorage = {
     return await redis.getdel(key);
   },
 
-  async increment(key, ttl) {
-    const value = await redis.incr(key);
-    if (value === 1) {
-      await redis.expire(key, ttl);
-    }
-    return value;
+  async increment(key: string, ttl: number) {
+    return redis.eval(incrementScript, [key], [ttl]);
   },
 
   async set(key, value, ttl) {
     if (ttl) {
-      await redis.set<string>(key, value, { ex: ttl });
+      await redis.set(key, value, { ex: ttl });
     } else {
-      await redis.set<string>(key, value);
+      await redis.set(key, value);
     }
   },
 
