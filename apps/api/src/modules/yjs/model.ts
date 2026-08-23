@@ -8,8 +8,6 @@ export const YjsModel = {
   awarenessQuery: z.object({
     room: z.string(),
   }),
-  updateBody: z.any(),
-  awarenessBody: z.any(),
 } as const;
 
 export type YjsModel = {
