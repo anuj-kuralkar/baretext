@@ -99,7 +99,7 @@ export const ydocUpdate = pgTable("ydoc_update", {
   noteId: uuid("note_id")
     .notNull()
     .references(() => note.id, { onDelete: "cascade" }),
-  op: bytea("update").notNull(),
+  op: bytea("op").notNull(),
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
@@ -114,7 +114,7 @@ export const ydocAwareness = pgTable(
     noteId: uuid("note_id")
       .notNull()
       .references(() => note.id, { onDelete: "cascade" }),
-    op: bytea("update").notNull(),
+    op: bytea("op").notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .defaultNow()
       .$onUpdate(() => new Date())
