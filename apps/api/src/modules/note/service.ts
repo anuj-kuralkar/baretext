@@ -1,6 +1,6 @@
 import { and, eq, sql } from "drizzle-orm";
 import { problem } from "elysia";
-import { note } from "../../db/schema";
+import { note } from "shared/db/schema";
 import { db } from "../../lib/db";
 import type { NoteModel } from "./model";
 

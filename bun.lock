@@ -93,6 +93,7 @@
       "name": "shared",
       "version": "0.0.1",
       "dependencies": {
+        "drizzle-orm": "^1.0.0-rc.5-ab785fc",
         "zod": "^4.4.3",
       },
     },

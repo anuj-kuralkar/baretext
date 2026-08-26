@@ -1,4 +1,4 @@
-import { ydocAwareness, ydocUpdate } from "../../db/schema";
+import { ydocAwareness, ydocUpdate } from "shared/db/schema";
 import { db } from "../../lib/db";
 
 export const YjsService = {

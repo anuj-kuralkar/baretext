@@ -1,7 +1,7 @@
 import { passkey } from "@better-auth/passkey";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth/minimal";
-import * as schema from "../../db/schema";
+import * as schema from "shared/db/schema";
 import { db } from "../db";
 import { env } from "../env/server";
 import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";

@@ -3,7 +3,7 @@ import { QueryBuilder } from "drizzle-orm/pg-core/query-builders";
 import { sql } from "drizzle-orm/sql";
 import { Elysia } from "elysia";
 
-import { note, ydocAwareness, ydocUpdate } from "../../db/schema";
+import { note, ydocAwareness, ydocUpdate } from "shared/db/schema";
 import { env } from "../../lib/env/server";
 import { betterAuth } from "../auth";
 

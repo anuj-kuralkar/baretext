@@ -2,7 +2,7 @@
 
 import { useLiveQuery } from "@tanstack/react-db";
 import Link from "next/link";
-import type { Note } from "shared";
+import type { Note } from "shared/schema";
 
 import { noteListQuery } from "@/collections/note";
 import { Skeleton } from "@/components/ui/skeleton";

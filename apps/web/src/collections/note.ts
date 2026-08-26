@@ -3,7 +3,7 @@ import type { InitialQueryBuilder } from "@tanstack/db";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
 import { collectionOptions, useDbClient } from "@tanstack/react-db";
 
-import { noteSchema } from "shared";
+import { noteSchema } from "shared/schema";
 
 import { api } from "@/lib/api";
 import { env } from "@/lib/env/client";

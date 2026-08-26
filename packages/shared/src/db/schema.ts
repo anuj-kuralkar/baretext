@@ -1,3 +1,11 @@
+/**
+ * Drizzle schema: tables and relations. The single source of truth for
+ * storage. Consumed by the API only (drizzle client, better-auth adapter,
+ * drizzle-kit).
+ *
+ * Client-facing zod contracts derived from these live in `shared/schema`
+ * — never export table objects to the browser directly.
+ */
 import { defineRelations, sql } from "drizzle-orm";
 import {
   boolean,
