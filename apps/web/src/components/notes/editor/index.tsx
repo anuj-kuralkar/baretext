@@ -2,7 +2,7 @@
 
 import { useDbClient } from "@tanstack/react-db";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
-import Collaboration from "@tiptap/extension-collaboration";
+import Collaboration, { isChangeOrigin } from "@tiptap/extension-collaboration";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -83,7 +83,10 @@ export function Editor({ noteId }: { noteId: string }) {
       Collaboration.configure({ document: doc }),
       CodeBlockLowlight.configure({ lowlight }),
     ],
-    onUpdate: ({ editor }) => {
+    onUpdate: ({ editor, transaction }) => {
+      // Skip updates applied from Yjs (initial snapshot, remote/local CRDT
+      // sync). Mutating there would bump updatedAt on every note open.
+      if (isChangeOrigin(transaction)) return;
       mutate(editor.getText());
     },
   });
