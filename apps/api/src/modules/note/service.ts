@@ -11,11 +11,12 @@ export const NoteService = {
       .values(createBody)
       .returning({ txid: sql<string>`pg_current_xact_id()::xid::text` });
 
-    if (!result.length) {
+    const row = result[0];
+    if (!row) {
       throw problem(500, { detail: "Failed to create note" });
     }
 
-    const txid = result[0].txid;
+    const txid = row.txid;
     return { txid: parseInt(txid, 10) };
   },
 
@@ -30,13 +31,14 @@ export const NoteService = {
       .where(and(eq(note.id, id), eq(note.userId, userId)))
       .returning({ txid: sql<string>`pg_current_xact_id()::xid::text` });
 
-    if (!result.length) {
+    const row = result[0];
+    if (!row) {
       throw problem(404, {
         detail: "Note not found or you don't have permission to update it",
       });
     }
 
-    const txid = result[0].txid;
+    const txid = row.txid;
     return { txid: parseInt(txid, 10) };
   },
 
@@ -46,13 +48,14 @@ export const NoteService = {
       .where(and(eq(note.id, id), eq(note.userId, userId)))
       .returning({ txid: sql<string>`pg_current_xact_id()::xid::text` });
 
-    if (!result.length) {
+    const row = result[0];
+    if (!row) {
       throw problem(404, {
         detail: "Note not found or you don't have permission to delete it",
       });
     }
 
-    const txid = result[0].txid;
+    const txid = row.txid;
     return { txid: parseInt(txid, 10) };
   },
 };
