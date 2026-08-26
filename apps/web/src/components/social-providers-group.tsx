@@ -56,10 +56,10 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
     });
   };
 
-  const handleUnlink = (providerId: "google" | "github") => {
+  const handleUnlink = (accountId: string) => {
     startTransition(async () => {
       const { error } = await authClient.unlinkAccount({
-        providerId,
+        accountId,
       });
       if (error) {
         const errCode =
@@ -74,7 +74,7 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
       } else {
         toast.add({
           type: "success",
-          title: `Successfully unlinked ${providerId}`,
+          title: `Successfully unlinked account`,
         });
         router.refresh();
       }
@@ -108,7 +108,7 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleUnlink(provider.id)}
+                    onClick={() => handleUnlink(account.id)}
                     disabled={isPending}
                   >
                     Disconnect
