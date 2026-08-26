@@ -1,8 +1,8 @@
 "use client";
 
 import { useLiveQuery } from "@tanstack/react-db";
-import type { Note } from "api/src/modules/note/model";
 import Link from "next/link";
+import type { Note } from "shared";
 
 import { noteListQuery } from "@/collections/note";
 import { Skeleton } from "@/components/ui/skeleton";

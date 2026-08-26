@@ -4,10 +4,10 @@
   "version": "0.0.1",
   "workspaces": {
     "packages": [
-      "apps/*"
+      "apps/*",
+      "packages/*"
     ],
     "catalog": {
-      "@biomejs/biome": "2.5.9",
       "typescript": "^7.0.2"
     }
   },

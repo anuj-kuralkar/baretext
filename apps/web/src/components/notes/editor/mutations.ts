@@ -1,6 +1,6 @@
 import type { DbClient } from "@tanstack/db";
 import { createPacedMutations, debounceStrategy } from "@tanstack/db";
-import type { Note } from "api/src/modules/note/model";
+import type { Note } from "shared";
 
 import { noteCollection } from "@/collections/note";
 import { api } from "@/lib/api";

@@ -3,7 +3,7 @@ import type { InitialQueryBuilder } from "@tanstack/db";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
 import { collectionOptions, useDbClient } from "@tanstack/react-db";
 
-import { selectNoteSchema } from "api/src/modules/note/model";
+import { noteSchema } from "shared";
 
 import { api } from "@/lib/api";
 import { env } from "@/lib/env/client";
@@ -23,8 +23,7 @@ export const noteCollection = collectionOptions("note", (client) => {
     })) as typeof fetch;
 
   return electricCollectionOptions({
-    id: "note",
-    schema: selectNoteSchema.omit({ userId: true }),
+    schema: noteSchema,
     getKey: (row) => row.id,
     shapeOptions: {
       url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),

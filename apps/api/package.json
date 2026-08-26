@@ -17,10 +17,14 @@
     "drizzle-orm": "^1.0.0-rc.5-ab785fc",
     "elysia": "2.0.0-beta.6",
     "y-protocols": "^1.0.7",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "shared": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.4.0",
     "drizzle-kit": "^1.0.0-rc.5-ab785fc"
+  },
+  "exports": {
+    ".": "./src/index.ts"
   }
 }

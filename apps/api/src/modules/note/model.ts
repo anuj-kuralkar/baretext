@@ -1,14 +1,11 @@
-import {
-  createInsertSchema,
-  createSelectSchema,
-  createUpdateSchema,
-} from "drizzle-orm/zod";
+import { createInsertSchema, createUpdateSchema } from "drizzle-orm/zod";
 import type { UnwrapSchema } from "elysia";
+import { type Note, noteSchema } from "shared";
 import { z } from "zod";
 import { note } from "../../db/schema";
 import { isoDatetimeToDate } from "../../lib/utils";
 
-export const selectNoteSchema = createSelectSchema(note);
+export { type Note, noteSchema };
 
 export const insertNoteSchema = createInsertSchema(note, {
   createdAt: isoDatetimeToDate,
@@ -19,9 +16,6 @@ export const updateNoteSchema = createUpdateSchema(note, {
   content: z.string(),
   updatedAt: isoDatetimeToDate,
 }).omit({ id: true, createdAt: true, userId: true });
-
-export const noteSchema = selectNoteSchema.omit({ userId: true });
-export type Note = z.Infer<typeof noteSchema>;
 
 export const NoteModel = {
   createBody: insertNoteSchema,
