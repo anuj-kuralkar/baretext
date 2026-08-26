@@ -4,8 +4,8 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { safeRandomUUID } from "@tanstack/db";
 import { useRouter } from "next/navigation";
-import * as React from "react";
-import { noteCollection } from "@/collections/note";
+import { useTransition } from "react";
+import { useNoteCollection } from "@/collections/note";
 import { toast } from "@/components/ui/toast";
 
 export interface NoteCreateTriggerProps
@@ -17,15 +17,15 @@ export function NoteCreateTrigger({
   render,
   ...props
 }: NoteCreateTriggerProps) {
+  const notes = useNoteCollection();
   const router = useRouter();
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const handleCreate = () => {
     startTransition(() => {
       try {
         const newId = safeRandomUUID();
-
-        const tx = noteCollection.insert({
+        const tx = notes.insert({
           id: newId,
           content: "",
           createdAt: new Date(),

@@ -3,8 +3,8 @@
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { usePathname, useRouter } from "next/navigation";
-import * as React from "react";
-import { noteCollection } from "@/collections/note";
+import { useTransition } from "react";
+import { useNoteCollection } from "@/collections/note";
 import { toast } from "@/components/ui/toast";
 
 export interface NoteDeleteTriggerProps
@@ -18,14 +18,15 @@ export function NoteDeleteTrigger({
   render,
   ...props
 }: NoteDeleteTriggerProps) {
+  const notes = useNoteCollection();
   const router = useRouter();
   const pathname = usePathname();
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
     startTransition(() => {
       try {
-        const tx = noteCollection.delete(noteId);
+        const tx = notes.delete(noteId);
 
         tx.isPersisted.promise.catch((error) => {
           console.error("Failed to persist note deletion:", error);

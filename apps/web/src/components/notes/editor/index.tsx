@@ -1,5 +1,6 @@
 "use client";
 
+import { useDbClient } from "@tanstack/react-db";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 import Collaboration from "@tiptap/extension-collaboration";
 import TaskItem from "@tiptap/extension-task-item";
@@ -12,7 +13,6 @@ import typescript from "highlight.js/lib/languages/typescript";
 import { createLowlight } from "lowlight";
 import { useEffect, useState } from "react";
 import * as Y from "yjs";
-
 import { Spinner } from "@/components/ui/spinner";
 import { createElectricProvider } from "../electric-provider";
 import { updateNotePreview } from "./mutations";
@@ -70,7 +70,10 @@ export function Editor({ noteId }: { noteId: string }) {
     };
   }, [doc]);
 
-  const mutate = (text: string) => updateNotePreview({ id: noteId, text });
+  const client = useDbClient();
+
+  const mutate = (text: string) =>
+    updateNotePreview({ id: noteId, text, client });
 
   const editor = useEditor({
     immediatelyRender: false,

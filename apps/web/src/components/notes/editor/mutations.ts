@@ -1,15 +1,23 @@
+import type { DbClient } from "@tanstack/db";
 import { createPacedMutations, debounceStrategy } from "@tanstack/db";
 import type { Note } from "api/src/modules/note/model";
 
 import { noteCollection } from "@/collections/note";
 import { api } from "@/lib/api";
 
+type UpdateNotePreviewVariables = {
+  id: string;
+  text: string;
+  client: DbClient;
+};
+
 export const updateNotePreview = createPacedMutations<
-  { id: string; text: string },
+  UpdateNotePreviewVariables,
   Note
 >({
-  onMutate: ({ id, text }) => {
-    noteCollection.update(id, (draft) => {
+  onMutate: ({ id, text, client }) => {
+    const notes = client.collection(noteCollection);
+    notes.update(id, (draft) => {
       draft.content = text;
       draft.updatedAt = new Date();
     });

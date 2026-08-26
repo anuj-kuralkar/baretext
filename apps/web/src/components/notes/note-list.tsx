@@ -4,7 +4,7 @@ import { useLiveQuery } from "@tanstack/react-db";
 import type { Note } from "api/src/modules/note/model";
 import Link from "next/link";
 
-import { noteCollection } from "@/collections/note";
+import { noteListQuery } from "@/collections/note";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import { NoteContextMenu } from "./note-context-menu";
@@ -14,11 +14,7 @@ export interface NoteListProps {
 }
 
 export function NoteList({ active }: NoteListProps) {
-  const { data: notes, isLoading } = useLiveQuery((q) =>
-    q
-      .from({ note: noteCollection })
-      .orderBy(({ note }) => note.updatedAt, "desc"),
-  );
+  const { data: notes, isLoading } = useLiveQuery(noteListQuery);
 
   if (isLoading) {
     return (

@@ -1,10 +1,10 @@
 "use client";
 import { SettingsIcon } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
 import { BrandLink } from "@/components/brand-link";
+import { NoteList } from "@/components/notes/note-list";
+import { NoteListActions } from "@/components/notes/note-list-actions";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Sidebar,
@@ -16,19 +16,6 @@ import {
 } from "@/components/ui/sidebar";
 import { UserCard } from "@/components/user/user-card";
 import { authClient } from "@/lib/auth/client";
-
-const NoteList = dynamic(
-  () => import("@/components/notes/note-list").then((mod) => mod.NoteList),
-  { ssr: false },
-);
-
-const NoteListActions = dynamic(
-  () =>
-    import("@/components/notes/note-list-actions").then(
-      (mod) => mod.NoteListActions,
-    ),
-  { ssr: false },
-);
 
 export function AppSidebar() {
   const { noteId } = useParams<{ noteId: string }>();

@@ -1,19 +1,34 @@
 import { snakeCamelMapper } from "@electric-sql/client";
+import type { InitialQueryBuilder } from "@tanstack/db";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
-import { createCollection } from "@tanstack/react-db";
+import { collectionOptions, useDbClient } from "@tanstack/react-db";
+
 import { selectNoteSchema } from "api/src/modules/note/model";
+
 import { api } from "@/lib/api";
 import { env } from "@/lib/env/client";
+export const noteCollection = collectionOptions("note", (client) => {
+  // Set only by the server layout, for SSR preloads.
+  const serverCookie = client.getDependency<string>("cookie");
 
-export const noteCollection = createCollection(
-  electricCollectionOptions({
+  // Cast: Bun adds a `preconnect` static to `typeof fetch` that Electric's
+  // option type requires but never calls.
+  const shapeFetch = ((url, init) =>
+    fetch(url, {
+      ...init,
+      credentials: "include",
+      ...(serverCookie
+        ? { headers: { ...init?.headers, Cookie: serverCookie } }
+        : {}),
+    })) as typeof fetch;
+
+  return electricCollectionOptions({
     id: "note",
     schema: selectNoteSchema.omit({ userId: true }),
     getKey: (row) => row.id,
     shapeOptions: {
       url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
-      fetchClient: ((url, init) =>
-        fetch(url, { ...init, credentials: "include" })) as typeof fetch,
+      fetchClient: shapeFetch,
       params: {
         table: "note",
       },
@@ -58,5 +73,18 @@ export const noteCollection = createCollection(
       }
       return { txid: data.txid };
     },
-  }),
-);
+  });
+});
+
+// Must stay structurally identical on server (preload) and client (hook):
+// identical IR → identical queryHash → snapshot handoff.
+export const noteListQuery = {
+  query: (q: InitialQueryBuilder) =>
+    q
+      .from({ note: noteCollection })
+      .orderBy(({ note }) => note.updatedAt, "desc"),
+};
+
+export function useNoteCollection() {
+  return useDbClient().collection(noteCollection);
+}
