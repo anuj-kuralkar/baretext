@@ -22,7 +22,8 @@
   },
   "devDependencies": {
     "@types/bun": "^1.4.0",
-    "drizzle-kit": "^1.0.0-rc.5-ab785fc"
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc",
+    "typescript": "catalog:"
   },
   "exports": {
     ".": "./src/index.ts"
