@@ -98,6 +98,9 @@
         "drizzle-orm": "^1.0.0-rc.5-ab785fc",
         "zod": "^4.4.3",
       },
+      "devDependencies": {
+        "@types/bun": "^1.4.0",
+      },
     },
   },
   "trustedDependencies": [
