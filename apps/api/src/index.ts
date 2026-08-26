@@ -27,8 +27,5 @@ const app = new Elysia()
   .use(yjsModule)
   .listen(3001);
 
+export default app;
 export type App = typeof app;
-
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
-);
