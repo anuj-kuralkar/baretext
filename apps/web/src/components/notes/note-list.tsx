@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Note } from "shared/schema";
 
 import { noteListQuery } from "@/collections/note";
+import { useSidebar } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import { NoteContextMenu } from "./note-context-menu";
@@ -66,6 +67,8 @@ interface NotePreviewProps {
 }
 
 function NotePreview({ note, isActive }: NotePreviewProps) {
+  const { setOpenMobile } = useSidebar();
+
   const firstLine = note.content ? note.content.split("\n")[0].trim() : "";
   const title = firstLine || "Empty note";
 
@@ -88,6 +91,7 @@ function NotePreview({ note, isActive }: NotePreviewProps) {
         isActive &&
           "border-transparent bg-sidebar-accent text-sidebar-accent-foreground",
       )}
+      onClick={() => setOpenMobile(false)}
     >
       <span className="w-full truncate font-medium">{title}</span>
       <span className="line-clamp-2 whitespace-break-spaces text-xs">

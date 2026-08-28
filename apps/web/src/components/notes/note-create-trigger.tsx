@@ -6,6 +6,7 @@ import { safeRandomUUID } from "@tanstack/db";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useNoteCollection } from "@/collections/note";
+import { useSidebar } from "@/components/ui/sidebar";
 import { toast } from "@/components/ui/toast";
 
 export interface NoteCreateTriggerProps
@@ -20,6 +21,7 @@ export function NoteCreateTrigger({
   const notes = useNoteCollection();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { setOpenMobile } = useSidebar();
 
   const handleCreate = () => {
     startTransition(() => {
@@ -38,6 +40,7 @@ export function NoteCreateTrigger({
         });
 
         router.push(`/notes/${newId}`);
+        setOpenMobile(false);
       } catch (error) {
         console.error("Failed to create note locally:", error);
         toast.add({ type: "error", title: "Failed to create note" });
