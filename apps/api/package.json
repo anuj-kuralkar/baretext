@@ -25,5 +25,8 @@
     "@types/bun": "catalog:",
     "drizzle-kit": "^1.0.0-rc.5-5df90a1",
     "typescript": "catalog:"
+  },
+  "exports": {
+    ".": "./src/index.ts"
   }
 }
