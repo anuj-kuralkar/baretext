@@ -103,7 +103,7 @@ export function Editor({ noteId }: { noteId: string }) {
   return (
     <EditorContent
       editor={editor}
-      className="flex-1 overflow-y-auto focus:outline-none md:p-8 xl:p-12"
+      className="mx-auto w-full max-w-[210mm] flex-1 overflow-y-auto p-4 focus:outline-none"
     />
   );
 }
