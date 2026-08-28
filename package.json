@@ -14,12 +14,11 @@
     }
   },
   "scripts": {
-    "dev:web": "bun --filter web dev",
     "dev:api": "bun --filter api dev",
+    "dev:web": "bun --filter web dev",
     "build:web": "bun --filter web build",
-    "build:api": "bun --filter api build",
-    "lint": "biome check",
-    "format": "biome format --write"
+    "check": "biome check",
+    "check:write": "biome check --write"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.10",

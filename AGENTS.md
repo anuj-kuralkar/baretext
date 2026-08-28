@@ -27,12 +27,13 @@
 
 Below are the available scripts and their purposes:
 
-- `bun dev:web`: Starts the Next.js development server for the web app.
-- `bun dev:api`: Starts the ElysiaJS development server in watch mode for the API.
-- `bun build:web`: Builds the Next.js web application for production.
-- `bun build:api`: Builds the API for production.
-- `bun lint`: Runs the Biome linter across the workspace (`biome check`). MUST be used for linting.
-- `bun format`: Runs the Biome formatter across the workspace (`biome format --write`). MUST be used for formatting.
+# Scripts
+
+- `bun dev:api`: Starts the API dev server in watch mode.
+- `bun dev:web`: Starts the web app in dev mode.
+- `bun build:web`: Builds the web app for production.
+- `bun check`: Runs Biome formatting and lint checks. **MUST** be used for linting and formatting.
+- `bun check:write`: Runs Biome checks and automatically applies safe fixes. **MUST** be used to fix lint and formatting issues.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
