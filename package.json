@@ -2,13 +2,15 @@
   "name": "baretext",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
   "workspaces": {
     "packages": [
       "apps/*",
       "packages/*"
     ],
     "catalog": {
-      "typescript": "^7.0.2"
+      "typescript": "^7.0.2",
+      "@types/bun": "^1.4.0"
     }
   },
   "scripts": {
