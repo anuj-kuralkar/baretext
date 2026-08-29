@@ -4,6 +4,7 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { clearDocument } from "y-indexeddb";
 import { useNoteCollection } from "@/collections/note";
 import { toast } from "@/components/ui/toast";
 
@@ -36,6 +37,9 @@ export function NoteDeleteTrigger({
         if (pathname === `/notes/${noteId}`) {
           router.push("/notes");
         }
+        clearDocument(noteId).catch((err) => {
+          console.error("Failed to clear indexeddb for note:", err);
+        });
       } catch (error) {
         console.error("Failed to delete note locally:", error);
         toast.add({ type: "error", title: "Failed to delete note" });
