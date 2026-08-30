@@ -21,7 +21,7 @@
     "elysia": "2.0.0-beta.9",
     "shared": "workspace:*",
     "y-protocols": "^1.0.7",
-    "zod": "^4.4.3"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/bun": "catalog:",

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "drizzle-orm": "^1.0.0-rc.5-5df90a1",
-    "zod": "^4.4.3"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/bun": "catalog:",
