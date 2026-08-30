@@ -2,8 +2,9 @@
 import { SettingsIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { Suspense } from "react";
 import { BrandLink } from "@/components/brand-link";
-import { NoteList } from "@/components/notes/note-list";
+import { NoteList, NoteListSkeleton } from "@/components/notes/note-list";
 import { NoteListActions } from "@/components/notes/note-list-actions";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -32,7 +33,9 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <NoteList active={noteId} />
+            <Suspense fallback={<NoteListSkeleton />}>
+              <NoteList active={noteId} />
+            </Suspense>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
