@@ -42,7 +42,7 @@ export const noteCollection = collectionOptions("note", (client) => {
       const modified = transaction.mutations[0].modified;
       const { data, error } = await api.notes.post({
         id: modified.id,
-        content: modified.content,
+        preview: modified.preview,
         createdAt: modified.createdAt,
         updatedAt: modified.updatedAt,
       });
@@ -55,7 +55,7 @@ export const noteCollection = collectionOptions("note", (client) => {
     onUpdate: async ({ transaction }) => {
       const { original, modified } = transaction.mutations[0];
       const { data, error } = await api.notes({ id: original.id }).patch({
-        content: modified.content,
+        preview: modified.preview,
         updatedAt: modified.updatedAt,
       });
       if (error) {

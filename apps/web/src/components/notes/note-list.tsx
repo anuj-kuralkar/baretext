@@ -68,18 +68,9 @@ interface NotePreviewProps {
 
 function NotePreview({ note, isActive }: NotePreviewProps) {
   const { setOpenMobile } = useSidebar();
-
-  const firstLine = note.content ? note.content.split("\n")[0].trim() : "";
-  const title = firstLine || "Empty note";
-
-  let description = "No additional text";
-  if (note.content) {
-    const lines = note.content.split("\n");
-    if (lines.length > 1) {
-      const rest = lines.slice(1).join(" ").trim();
-      if (rest) description = rest;
-    }
-  }
+  const [title = "Empty note", description = "No additional text"] = (
+    note.preview ?? ""
+  ).split("\n", 2);
 
   const relativeTime = formatRelativeTime(note.updatedAt);
 

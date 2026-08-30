@@ -13,10 +13,9 @@ export const insertNoteSchema = createInsertSchema(note, {
 }).omit({ userId: true });
 
 export const updateNoteSchema = createUpdateSchema(note, {
-  content: z.string(),
+  preview: z.string(),
   updatedAt: isoDatetimeToDate,
 }).omit({ id: true, createdAt: true, userId: true });
-
 export const NoteModel = {
   createBody: insertNoteSchema,
   updateBody: updateNoteSchema,

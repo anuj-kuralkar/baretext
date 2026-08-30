@@ -29,7 +29,7 @@ export function NoteCreateTrigger({
         const newId = safeRandomUUID();
         const tx = notes.insert({
           id: newId,
-          content: "",
+          preview: "",
           createdAt: new Date(),
           updatedAt: new Date(),
         });

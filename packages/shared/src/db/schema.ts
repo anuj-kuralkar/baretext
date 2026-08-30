@@ -89,7 +89,7 @@ export const passkey = pgTable(
 
 export const note = pgTable("note", {
   id: uuid("id").primaryKey().default(sql`uuidv7()`),
-  content: text("content").notNull(),
+  preview: text("preview").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

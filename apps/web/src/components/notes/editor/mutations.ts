@@ -18,7 +18,7 @@ export const updateNotePreview = createPacedMutations<
   onMutate: ({ id, text, client }) => {
     const notes = client.collection(noteCollection);
     notes.update(id, (draft) => {
-      draft.content = text;
+      draft.preview = text;
       draft.updatedAt = new Date();
     });
   },
@@ -32,9 +32,9 @@ export const updateNotePreview = createPacedMutations<
 
         if (!("id" in original)) return;
 
-        if (changes.content !== undefined && changes.updatedAt !== undefined) {
+        if (changes.preview !== undefined && changes.updatedAt !== undefined) {
           await api.notes({ id: original.id }).patch({
-            content: changes.content,
+            preview: changes.preview,
             updatedAt: changes.updatedAt,
           });
         }
