@@ -25,7 +25,7 @@ const app = new Elysia()
   .use(noteModule)
   .use(shapeModule)
   .use(yjsModule)
-  .listen(3001);
+  .listen(process.env.PORT ?? 8080);
 
 export default app;
 export type App = typeof app;
