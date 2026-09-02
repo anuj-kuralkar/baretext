@@ -24,8 +24,7 @@ const app = new Elysia()
   .use(betterAuth)
   .use(noteModule)
   .use(shapeModule)
-  .use(yjsModule)
-  .listen(process.env.PORT ?? 8080);
+  .use(yjsModule);
 
 export default app;
 export type App = typeof app;
