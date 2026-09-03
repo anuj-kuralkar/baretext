@@ -1,5 +1,5 @@
+import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { passkey } from "@better-auth/passkey";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth/minimal";
 import * as schema from "shared/db/schema";
 import { db } from "../db";
