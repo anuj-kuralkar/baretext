@@ -1,11 +1,3 @@
-/**
- * Drizzle schema: tables and relations. The single source of truth for
- * storage. Consumed by the API only (drizzle client, better-auth adapter,
- * drizzle-kit).
- *
- * Client-facing zod contracts derived from these live in `shared/schema`
- * — never export table objects to the browser directly.
- */
 import { defineRelations, sql } from "drizzle-orm";
 import {
   boolean,
@@ -131,7 +123,7 @@ export const ydocAwareness = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.noteId] })],
 );
 
-export const dbRelations = defineRelations(
+export const relations = defineRelations(
   { user, account, passkey, note, ydocUpdate },
   (r) => ({
     user: {
@@ -156,6 +148,7 @@ export const dbRelations = defineRelations(
         from: r.note.userId,
         to: r.user.id,
       }),
+      ydocUpdates: r.many.ydocUpdate(),
     },
     ydocUpdate: {
       note: r.one.note({
@@ -169,9 +162,3 @@ export const dbRelations = defineRelations(
     },
   }),
 );
-
-export const userRelations = dbRelations.user;
-export const accountRelations = dbRelations.account;
-export const noteRelations = dbRelations.note;
-export const ydocUpdateRelations = dbRelations.ydocUpdate;
-export const passkeyRelations = dbRelations.passkey;
