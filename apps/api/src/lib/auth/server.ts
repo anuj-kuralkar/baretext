@@ -19,6 +19,10 @@ export const auth = betterAuth({
     database: {
       joins: true,
     },
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: "baretext.app",
+    },
   },
   secondaryStorage: redisSecondaryStorage,
   socialProviders: {
