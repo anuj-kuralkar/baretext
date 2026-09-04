@@ -1,25 +1,23 @@
 import type { SecondaryStorage } from "better-auth";
 import { redis } from "../../redis";
 
-const incrementScript = `
-local value = redis.call("INCR", KEYS[1])
-if value == 1 then
-  redis.call("EXPIRE", KEYS[1], ARGV[1])
-end
-return value
-`;
-
 export const redisSecondaryStorage: SecondaryStorage = {
-  async get(key) {
-    return await redis.get(key);
+  get(key) {
+    return redis.get(key);
   },
 
-  async getAndDelete(key) {
-    return await redis.getdel(key);
+  getAndDelete(key) {
+    return redis.getdel(key);
   },
 
-  async increment(key: string, ttl: number) {
-    return redis.eval(incrementScript, [key], [ttl]);
+  async increment(key, ttl) {
+    if (!Number.isInteger(ttl) || ttl <= 0) {
+      throw new TypeError("Redis increment TTL must be a positive integer");
+    }
+
+    const [value] = await redis.multi().incr(key).expire(key, ttl, "NX").exec();
+
+    return value;
   },
 
   async set(key, value, ttl) {
@@ -30,7 +28,7 @@ export const redisSecondaryStorage: SecondaryStorage = {
     }
   },
 
-  async delete(key: string) {
+  async delete(key) {
     await redis.del(key);
   },
 };
