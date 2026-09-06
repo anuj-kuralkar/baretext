@@ -14,7 +14,7 @@
     "@neondatabase/serverless": "^1.1.0",
     "@t3-oss/env-core": "catalog:",
     "@upstash/redis": "^1.38.4",
-    "drizzle-orm": "^1.0.0-rc.4",
+    "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
