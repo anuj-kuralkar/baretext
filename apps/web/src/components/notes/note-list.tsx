@@ -1,12 +1,12 @@
 "use client";
 
 import { useLiveSuspenseQuery } from "@tanstack/react-db";
+import { cn } from "cn";
 import Link from "next/link";
-
 import { noteListQuery } from "@/collections/note";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn, formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
 import { NoteContextMenu } from "./note-context-menu";
 
 export interface NoteListProps {

@@ -1,10 +1,11 @@
 "use client";
 
 import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "cn";
 import { useMemo } from "react";
+
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -106,7 +107,7 @@ function FieldLabel({
     <Label
       data-slot="field-label"
       className={cn(
-        "group/field-label peer/field-label flex w-fit gap-2 leading-snug has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border has-data-checked:border-primary/30 has-data-checked:bg-primary/5 *:data-[slot=field]:p-2.5 group-data-[disabled=true]/field:opacity-50 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10",
+        "group/field-label peer/field-label flex w-fit gap-2 leading-snug has-[>[data-slot=field]]:has-focus-visible:border-ring has-[>[data-slot=field]]:has-focus-visible:ring-3 has-[>[data-slot=field]]:has-focus-visible:ring-ring/50 has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 *:data-[slot=field]:p-2.5 group-data-[disabled=true]/field:opacity-50 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10",
         "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col",
         className,
       )}
@@ -200,8 +201,10 @@ function FieldError({
 
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
-        {uniqueErrors.map((error) =>
-          error?.message ? <li key={error.message}>{error.message}</li> : null,
+        {uniqueErrors.map(
+          (error, index) =>
+            // biome-ignore lint/suspicious/noArrayIndexKey: shadcn
+            error?.message && <li key={index}>{error.message}</li>,
         )}
       </ul>
     );
