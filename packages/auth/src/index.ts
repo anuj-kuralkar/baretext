@@ -1,10 +1,10 @@
+import { db } from "@baretext/db";
+import * as schema from "@baretext/db/schema";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { passkey } from "@better-auth/passkey";
 import { betterAuth } from "better-auth/minimal";
-import * as schema from "shared/db/schema";
-import { db } from "../db";
-import { env } from "../env/server";
 import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";
+import { env } from "./env";
 
 export const auth = betterAuth({
   appName: "Baretext",

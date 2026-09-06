@@ -1,5 +1,5 @@
+import { auth } from "@baretext/auth";
 import { Elysia, problem } from "elysia";
-import { auth } from "../../lib/auth/server";
 
 export const betterAuth = new Elysia({ name: "better-auth" })
   .mount(auth.handler)

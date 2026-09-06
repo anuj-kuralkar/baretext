@@ -1,0 +1,23 @@
+{
+  "name": "@baretext/auth",
+  "type": "module",
+  "private": true,
+  "module": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.2",
+    "@better-auth/passkey": "catalog:",
+    "@t3-oss/env-core": "catalog:",
+    "better-auth": "catalog:",
+    "@baretext/db": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:"
+  },
+  "peerDependencies": {
+    "typescript": "catalog:"
+  }
+}

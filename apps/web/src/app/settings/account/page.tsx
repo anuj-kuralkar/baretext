@@ -1,13 +1,11 @@
+import { auth } from "@baretext/auth";
 import { headers } from "next/headers";
 import { LogoutCard } from "@/components/logout-card";
 import { SignInMethods } from "@/components/sign-in-methods";
-import { authClient } from "@/lib/auth/client";
 
 export default async function Page() {
-  const { data: accounts } = await authClient.listAccounts({
-    fetchOptions: {
-      headers: await headers(),
-    },
+  const accounts = await auth.api.listUserAccounts({
+    headers: await headers(),
   });
 
   return (

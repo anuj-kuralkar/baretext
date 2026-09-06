@@ -1,6 +1,6 @@
 import cors from "@elysia/cors";
 import { Elysia } from "elysia";
-import { env } from "./lib/env/server";
+import { env } from "./lib/env";
 import { betterAuth } from "./modules/auth/index";
 import { noteModule } from "./modules/note/index";
 import { shapeModule } from "./modules/shape/index";

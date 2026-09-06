@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@baretext/api",
   "type": "module",
   "version": "0.0.1",
   "private": true,
@@ -11,28 +11,22 @@
     "check:write": "biome check --write",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.7.2",
-    "@better-auth/passkey": "^1.7.1",
-    "@electric-sql/client": "^1.5.26",
+    "@baretext/auth": "workspace:*",
+    "@baretext/db": "workspace:*",
+    "@electric-sql/client": "catalog:",
     "@elysia/cors": "2.0.0-beta.1",
-    "@neondatabase/serverless": "^1.1.0",
-    "@t3-oss/env-core": "^0.13.11",
-    "@upstash/redis": "^1.38.3",
-    "better-auth": "^1.7.2",
+    "@t3-oss/env-core": "catalog:",
     "drizzle-orm": "^1.0.0-rc.5-5df90a1",
     "elysia": "2.0.0-beta.11",
-    "shared": "workspace:*",
-    "y-protocols": "^1.0.7",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@types/bun": "catalog:",
-    "drizzle-kit": "^1.0.0-rc.5-5df90a1",
     "typescript": "catalog:",
     "wrangler": "^4.128.0"
-  },
-  "exports": {
-    ".": "./src/index.ts"
   }
 }

@@ -1,6 +1,6 @@
+import type { Note } from "@baretext/db/zod/schema";
 import type { DbClient } from "@tanstack/db";
 import { createPacedMutations, debounceStrategy } from "@tanstack/db";
-import type { Note } from "shared/schema";
 
 import { noteCollection } from "@/collections/note";
 import { api } from "@/lib/api";

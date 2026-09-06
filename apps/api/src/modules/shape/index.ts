@@ -1,10 +1,9 @@
+import { note, ydocAwareness, ydocUpdate } from "@baretext/db/schema";
 import { ELECTRIC_PROTOCOL_QUERY_PARAMS } from "@electric-sql/client";
 import { QueryBuilder } from "drizzle-orm/pg-core/query-builders";
 import { sql } from "drizzle-orm/sql";
 import { Elysia } from "elysia";
-
-import { note, ydocAwareness, ydocUpdate } from "shared/db/schema";
-import { env } from "../../lib/env/server";
+import { env } from "../../lib/env";
 import { betterAuth } from "../auth";
 
 export const shapeModule = new Elysia({ prefix: "/shape" })

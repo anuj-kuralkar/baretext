@@ -1,11 +1,10 @@
-
 ## Problem Statement
 
 Note-taking applications force users to choose between local performance (instant load times, offline capability) and cloud synchronization (multi-device access). Traditional cloud-first architectures fail when the connection drops, resulting in lost data, spinner fatigue, or read-only modes. Users need a reliable place to write that is always instantly available and seamlessly merges changes made across different offline devices without manual conflict resolution.
 
 ## Solution
 
-The Baretext Editor MVP is an offline-first rich text editor that uses a Conflict-free Replicated Data Type (CRDT) engine. Users can read, write, and format notes to a local database with zero latency. When a user writes while completely disconnected, their work is saved locally. Upon reconnection, the system mathematically merges their offline edits with any changes made on other devices, guaranteeing that no text is ever lost to an overwrite conflict. 
+The Baretext Editor MVP is an offline-first rich text editor that uses a Conflict-free Replicated Data Type (CRDT) engine. Users can read, write, and format notes to a local database with zero latency. When a user writes while completely disconnected, their work is saved locally. Upon reconnection, the system mathematically merges their offline edits with any changes made on other devices, guaranteeing that no text is ever lost to an overwrite conflict.
 
 ## User Stories
 

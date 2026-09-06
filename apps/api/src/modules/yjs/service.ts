@@ -1,5 +1,5 @@
-import { ydocAwareness, ydocUpdate } from "shared/db/schema";
-import { db } from "../../lib/db";
+import { db } from "@baretext/db";
+import { ydocAwareness, ydocUpdate } from "@baretext/db/schema";
 
 export const YjsService = {
   async saveUpdate(noteId: string, buffer: Buffer, userId: string) {

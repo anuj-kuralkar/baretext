@@ -1,13 +1,11 @@
+import { auth } from "@baretext/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { authClient } from "@/lib/auth/client";
 
 export const getSession = cache(async () => {
-  const { data: session } = await authClient.getSession({
-    fetchOptions: {
-      headers: await headers(),
-    },
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
   return session;
 });

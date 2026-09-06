@@ -1,7 +1,7 @@
+import { db } from "@baretext/db";
+import { note } from "@baretext/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { problem } from "elysia";
-import { note } from "shared/db/schema";
-import { db } from "../../lib/db";
 import type { NoteModel } from "./model";
 
 export const NoteService = {

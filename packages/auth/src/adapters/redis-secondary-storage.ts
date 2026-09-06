@@ -1,5 +1,5 @@
+import { redis } from "@baretext/db/redis";
 import type { SecondaryStorage } from "better-auth";
-import { redis } from "../../redis";
 
 export const redisSecondaryStorage: SecondaryStorage = {
   get(key) {

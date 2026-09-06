@@ -1,0 +1,27 @@
+{
+  "name": "@baretext/db",
+  "module": "./src/index.ts",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts",
+    "./redis": "./src/redis.ts",
+    "./zod/schema": "./src/zod/schema.ts",
+    "./zod/codec": "./src/zod/codec.ts"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@t3-oss/env-core": "catalog:",
+    "@upstash/redis": "^1.38.4",
+    "drizzle-orm": "^1.0.0-rc.4",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "drizzle-kit": "^1.0.0-rc.4"
+  },
+  "peerDependencies": {
+    "typescript": "catalog:"
+  }
+}
