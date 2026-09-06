@@ -10,16 +10,12 @@ export function NotesDbProvider({
   state,
 }: {
   children: ReactNode;
-  state?: DehydratedDbState;
+  state: DehydratedDbState;
 }) {
   const [client] = useState(() => new DbClient());
   return (
     <DbProvider client={client}>
-      {state ? (
-        <HydrationBoundary state={state}>{children}</HydrationBoundary>
-      ) : (
-        children
-      )}
+      <HydrationBoundary state={state}>{children}</HydrationBoundary>
     </DbProvider>
   );
 }
