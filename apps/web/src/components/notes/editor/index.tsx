@@ -49,7 +49,8 @@ export function Editor({ noteId }: { noteId: string }) {
   // Provider + awareness lifecycle: create in effect so the synced listener
   // is attached before ElectricProvider starts its internal sync loop.
   useEffect(() => {
-    const { provider, awareness } = createElectricProvider(doc, noteId);
+    const { provider, awareness, unsubscribeResumeState } =
+      createElectricProvider(doc, noteId);
 
     // ElectricProvider emits "synced" when the initial snapshot is applied.
     // Attach before any async work starts to avoid missing the event.
@@ -60,6 +61,7 @@ export function Editor({ noteId }: { noteId: string }) {
     return () => {
       provider.destroy();
       awareness.destroy();
+      unsubscribeResumeState();
     };
   }, [doc, noteId]);
 

@@ -12,7 +12,7 @@ import { env } from "@/lib/env/client";
 
 export function createElectricProvider(ydoc: Y.Doc, noteId: string) {
   const awareness = new Awareness(ydoc);
-  const _indexeddbPersistence = new IndexeddbPersistence(noteId, ydoc);
+  new IndexeddbPersistence(noteId, ydoc);
   const resumeStateProvider = new LocalStorageResumeStateProvider(noteId);
   const electricProvider = new ElectricProvider<
     { op: Decoder },
@@ -61,8 +61,8 @@ export function createElectricProvider(ydoc: Y.Doc, noteId: string) {
       fetch(url, { ...init, credentials: "include" })) as typeof fetch,
   });
 
-  const _unsubscribeResumeState =
+  const unsubscribeResumeState =
     resumeStateProvider.subscribeToResumeState(electricProvider);
 
-  return { provider: electricProvider, awareness };
+  return { provider: electricProvider, awareness, unsubscribeResumeState };
 }
