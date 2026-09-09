@@ -18,5 +18,7 @@ export const posthog =
     ? new PostHog(env.POSTHOG_PROJECT_TOKEN, {
         host: env.POSTHOG_HOST,
         enableExceptionAutocapture: true,
+        flushAt: 1,
+        flushInterval: 0,
       })
     : undefined;
