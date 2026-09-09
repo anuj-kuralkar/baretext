@@ -1,6 +1,7 @@
 import cors from "@elysia/cors";
 import { Elysia } from "elysia";
 import { env } from "./lib/env";
+import { posthog } from "./lib/posthog";
 import { betterAuth } from "./modules/auth/index";
 import { noteModule } from "./modules/note/index";
 import { shapeModule } from "./modules/shape/index";
@@ -24,7 +25,10 @@ const app = new Elysia()
   .use(betterAuth)
   .use(noteModule)
   .use(shapeModule)
-  .use(yjsModule);
+  .use(yjsModule)
+  .error(({ error }) => {
+    posthog?.captureException(error);
+  });
 
 export default app;
 export type App = typeof app;

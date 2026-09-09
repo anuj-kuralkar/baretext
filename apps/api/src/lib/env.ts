@@ -20,6 +20,9 @@ export const env = createEnv({
 
     ELECTRIC_URL: z.url(),
 
+    POSTHOG_PROJECT_TOKEN: z.string().optional(),
+    POSTHOG_HOST: z.url().optional(),
+
     WEB_URL: z.url(),
   },
   runtimeEnv: process.env,

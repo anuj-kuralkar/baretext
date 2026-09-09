@@ -1,5 +1,6 @@
 import { auth } from "@baretext/auth";
 import { Elysia, problem } from "elysia";
+import { posthog } from "../../lib/posthog";
 
 export const betterAuth = new Elysia({ name: "better-auth" })
   .mount(auth.handler)
@@ -10,6 +11,9 @@ export const betterAuth = new Elysia({ name: "better-auth" })
           headers,
         });
         if (!session) return problem(401, { detail: "Unauthorized" });
+
+        posthog?.enterContext({ distinctId: session.user.id }, { fresh: true });
+
         return {
           user: session.user,
           session: session.session,
