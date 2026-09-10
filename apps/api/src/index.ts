@@ -1,5 +1,7 @@
+import { waitUntil } from "cloudflare:workers";
 import cors from "@elysia/cors";
 import { Elysia } from "elysia";
+
 import { env } from "./lib/env";
 import { posthog } from "./lib/posthog";
 import { betterAuth } from "./modules/auth/index";
@@ -26,8 +28,8 @@ const app = new Elysia()
   .use(noteModule)
   .use(shapeModule)
   .use(yjsModule)
-  .error(({ error }) => {
-    posthog?.captureException(error);
+  .error(async ({ error }) => {
+    if (posthog) waitUntil(posthog.captureExceptionImmediate(error));
   });
 
 export default app;
