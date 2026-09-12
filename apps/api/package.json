@@ -29,12 +29,12 @@
     "@t3-oss/env-core": "catalog:",
     "drizzle-orm": "catalog:",
     "elysia": "2.0.0-beta.14",
-    "posthog-node": "^5.51.8",
+    "posthog-node": "^5.52.1",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@types/bun": "catalog:",
     "typescript": "catalog:",
-    "wrangler": "^4.130.0"
+    "wrangler": "^4.131.1"
   }
 }
