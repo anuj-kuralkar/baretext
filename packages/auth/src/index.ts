@@ -35,5 +35,11 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
-  plugins: [passkey()],
+  plugins: [
+    passkey({
+      rpID: new URL(env.WEB_URL).hostname,
+      rpName: "Baretext",
+      origin: env.WEB_URL,
+    }),
+  ],
 });
