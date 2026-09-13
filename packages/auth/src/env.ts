@@ -13,6 +13,8 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string(),
 
     WEB_URL: z.url(),
+
+    VERCEL_ENV: z.enum(["production", "preview", "development"]),
   },
   runtimeEnv: process.env,
 });

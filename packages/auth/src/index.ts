@@ -20,7 +20,7 @@ export const auth = betterAuth({
       joins: true,
     },
     crossSubDomainCookies:
-      process.env.NODE_ENV === "production"
+      env.VERCEL_ENV === "production"
         ? { enabled: true, domain: "baretext.app" }
         : { enabled: false },
   },
