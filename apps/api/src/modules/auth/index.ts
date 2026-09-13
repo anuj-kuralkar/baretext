@@ -3,7 +3,7 @@ import { Elysia, problem } from "elysia";
 import { posthog } from "../../lib/posthog";
 
 export const betterAuth = new Elysia({ name: "better-auth" })
-  .mount(auth.handler)
+  .all("/api/auth/*", ({ request }) => auth.handler(request))
   .macro({
     auth: {
       async derive({ request: { headers } }) {

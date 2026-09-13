@@ -1,4 +1,3 @@
-import { waitUntil } from "cloudflare:workers";
 import cors from "@elysia/cors";
 import { Elysia } from "elysia";
 
@@ -29,8 +28,9 @@ const app = new Elysia()
   .use(shapeModule)
   .use(yjsModule)
   .error(async ({ error }) => {
-    if (posthog) waitUntil(posthog.captureExceptionImmediate(error));
-  });
+    posthog?.captureExceptionImmediate(error);
+  })
+  .listen(8080);
 
 export default app;
 export type App = typeof app;
