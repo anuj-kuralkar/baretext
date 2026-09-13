@@ -2,7 +2,7 @@
 
 import { FingerprintIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState } from "react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,37 +17,48 @@ import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 
+type LoginProvider = "google" | "github" | "passkey";
+
 export function LoginForm() {
-  const [isPending, startTransition] = useTransition();
+  const [loadingProvider, setLoadingProvider] = useState<LoginProvider | null>(
+    null,
+  );
   const router = useRouter();
 
-  const handlePasskeyLogin = () => {
-    startTransition(async () => {
-      const { error } = await authClient.signIn.passkey();
-      if (error) {
-        toast.add({ type: "error", title: error.message });
-        return;
-      }
-      router.push("/");
-    });
+  const handlePasskeyLogin = async () => {
+    setLoadingProvider("passkey");
+    const { error } = await authClient.signIn.passkey();
+    setLoadingProvider(null);
+
+    if (error) {
+      toast.add({
+        type: "error",
+        title: error.message ?? error.statusText,
+      });
+      return;
+    }
+
+    router.push("/");
   };
 
-  const handleLogin = (provider: "google" | "github") => {
-    startTransition(async () => {
-      const { error } = await authClient.signIn.social({
-        provider,
-        callbackURL: `${window.location.origin}/`,
-        errorCallbackURL: `${window.location.origin}/login`,
-      });
-      if (error) {
-        toast.add({
-          type: "error",
-          title: error.code ?? error.status,
-          description: error.message ?? error.statusText,
-        });
-      }
+  const handleLogin = async (provider: "google" | "github") => {
+    setLoadingProvider(provider);
+    const { error } = await authClient.signIn.social({
+      provider,
+      callbackURL: `${window.location.origin}/`,
+      errorCallbackURL: `${window.location.origin}/login`,
     });
+    setLoadingProvider(null);
+
+    if (error) {
+      toast.add({
+        type: "error",
+        title: error.message ?? error.statusText,
+      });
+    }
   };
+
+  const isPending = loadingProvider !== null;
 
   return (
     <Card className="w-full">
@@ -66,7 +77,7 @@ export function LoginForm() {
           onClick={() => handleLogin("google")}
           disabled={isPending}
         >
-          {isPending ? (
+          {loadingProvider === "google" ? (
             <Spinner data-icon="inline-start" />
           ) : (
             <GoogleIcon data-icon="inline-start" />
@@ -79,7 +90,7 @@ export function LoginForm() {
           onClick={() => handleLogin("github")}
           disabled={isPending}
         >
-          {isPending ? (
+          {loadingProvider === "github" ? (
             <Spinner data-icon="inline-start" />
           ) : (
             <GithubIcon data-icon="inline-start" />
@@ -97,7 +108,7 @@ export function LoginForm() {
           onClick={handlePasskeyLogin}
           disabled={isPending}
         >
-          {isPending ? (
+          {loadingProvider === "passkey" ? (
             <Spinner data-icon="inline-start" />
           ) : (
             <FingerprintIcon data-icon="inline-start" />
