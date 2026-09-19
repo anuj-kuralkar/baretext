@@ -13,16 +13,29 @@ export function formatRelativeTime(date: string | Date | number): string {
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - d.getTime()) / 1000);
 
-  if (diffInSeconds < 60) return "just now";
+  const rtf = new Intl.RelativeTimeFormat("en", {
+    style: "narrow",
+    numeric: "always",
+  });
+
+  if (Math.abs(diffInSeconds) < 60) {
+    return "Just now";
+  }
 
   const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  if (Math.abs(diffInMinutes) < 60) {
+    return rtf.format(-diffInMinutes, "minute");
+  }
 
   const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `${diffInHours}h ago`;
+  if (Math.abs(diffInHours) < 24) {
+    return rtf.format(-diffInHours, "hour");
+  }
 
   const diffInDays = Math.floor(diffInHours / 24);
-  if (diffInDays < 7) return `${diffInDays}d ago`;
+  if (Math.abs(diffInDays) < 7) {
+    return rtf.format(-diffInDays, "day");
+  }
 
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
