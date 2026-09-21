@@ -1,0 +1,96 @@
+.editor-indent {
+  --lexical-indent-base-value: 32px;
+}
+
+::highlight(editor-find-match) {
+  background-color: rgb(250 204 21 / 0.4);
+  color: inherit;
+}
+
+::highlight(editor-find-match-current) {
+  background-color: rgb(249 115 22 / 0.6);
+  color: inherit;
+}
+
+@media (forced-colors: active) {
+  ::highlight(editor-find-match) {
+    background-color: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  ::highlight(editor-find-match-current) {
+    background-color: Mark;
+    color: MarkText;
+    forced-color-adjust: none;
+  }
+}
+
+.editor-find-match-overlay {
+  position: absolute;
+  pointer-events: none;
+  background-color: rgb(250 204 21 / 0.4);
+}
+
+.editor-find-match-overlay-current {
+  background-color: rgb(249 115 22 / 0.6);
+}
+
+.editor-mark {
+  background-color: rgb(251 191 36 / 0.2);
+  border-bottom: 2px solid rgb(251 191 36 / 0.45);
+  padding-bottom: 1px;
+  cursor: pointer;
+}
+
+.editor-mark.selected {
+  background-color: rgb(251 191 36 / 0.45);
+  border-bottom-color: rgb(245 158 11);
+}
+
+.editor-mark-overlap {
+  background-color: rgb(251 191 36 / 0.35);
+}
+
+.editor-mark-overlap.selected {
+  background-color: rgb(251 191 36 / 0.6);
+}
+
+.editor-comment-highlight {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  background-color: rgb(251 191 36 / 0.35);
+}
+
+.editor-code {
+  direction: ltr;
+  unicode-bidi: isolate;
+  background-color: var(--card);
+}
+
+.editor-code::before {
+  content: attr(data-gutter);
+  position: sticky;
+  inset-inline-start: 0;
+  top: 0;
+  float: left;
+  z-index: 1;
+  min-width: 1.75rem;
+  margin-inline-end: 1rem;
+  padding-inline: 0.5rem;
+  color: var(--muted-foreground);
+  text-align: right;
+  white-space: pre-wrap;
+  user-select: none;
+  background-color: var(--card);
+}
+
+.editor-table-scrollable-wrapper {
+  overflow-x: auto;
+  margin-block: 1rem;
+}
+
+.editor-table-cell-selected {
+  background-color: var(--accent);
+}
