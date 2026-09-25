@@ -13,7 +13,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
     "@t3-oss/env-core": "catalog:",
-    "@upstash/redis": "^1.38.4",
+    "@upstash/redis": "^1.39.0",
     "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },
