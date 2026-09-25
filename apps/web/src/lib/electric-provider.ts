@@ -3,7 +3,7 @@ import {
   parseToDecoder,
   type ResumeState,
 } from "@electric-sql/y-electric";
-import type { Provider, ProviderAwareness } from "@lexical/yjs";
+import type { Provider } from "@lexical/yjs";
 import type { Decoder } from "lib0/decoding";
 import type { Awareness } from "y-protocols/awareness";
 import type * as Y from "yjs";
@@ -65,41 +65,21 @@ export function createElectricProvider(
  * Trivial provider stub implementing Lexical's Provider interface
  * to bridge awareness and sync events to Lexical CollaborationPlugin.
  */
-export function createTrivialProvider(
-  awareness: Awareness,
-  electricProvider: ElectricProvider<{ op: Decoder }, { op: Decoder }>,
-): Provider {
+export function createTrivialProvider(): Provider {
   return {
-    awareness: awareness as unknown as ProviderAwareness,
-    connect: () => electricProvider.connect(),
-    disconnect: () => electricProvider.disconnect(),
-    on: ((type: string, cb: (arg: unknown) => void) => {
-      if (type === "sync") {
-        electricProvider.on("synced", cb as (isSynced: boolean) => void);
-        if (electricProvider.synced) {
-          (cb as (isSynced: boolean) => void)(true);
-        }
-      } else if (type === "status") {
-        electricProvider.on(
-          "status",
-          cb as (status: { status: string }) => void,
-        );
-        if (electricProvider.connected) {
-          (cb as (status: { status: string }) => void)({
-            status: "connected",
-          });
-        }
-      }
-    }) as Provider["on"],
-    off: ((type: string, cb: (arg: unknown) => void) => {
-      if (type === "sync") {
-        electricProvider.off("synced", cb as (isSynced: boolean) => void);
-      } else if (type === "status") {
-        electricProvider.off(
-          "status",
-          cb as (status: { status: string }) => void,
-        );
-      }
-    }) as Provider["off"],
+    awareness: {
+      getLocalState: () => null,
+      getStates: () => new Map(),
+      on: () => {},
+      off: () => {},
+      setLocalState: () => {},
+      setLocalStateField: () => {},
+    },
+
+    connect: () => {},
+    disconnect: () => {},
+
+    on: () => {},
+    off: () => {},
   };
 }

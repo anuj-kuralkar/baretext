@@ -56,7 +56,7 @@ export function Editor({ noteId }: { noteId: string }) {
     awareness,
     resumeStateProvider.load(),
   );
-  const provider = createTrivialProvider(awareness, electricProvider);
+  const provider = createTrivialProvider();
 
   useEffect(() => {
     new IndexeddbPersistence(noteId, doc);
