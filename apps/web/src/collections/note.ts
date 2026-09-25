@@ -1,11 +1,17 @@
-import { noteSchema } from "@baretext/db/zod/schema";
+import { type Note, noteSchema } from "@baretext/db/zod/schema";
 import { snakeCamelMapper } from "@electric-sql/client";
-import type { InitialQueryBuilder } from "@tanstack/db";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
-import { collectionOptions, useDbClient } from "@tanstack/react-db";
+import {
+  collectionOptions,
+  debounceStrategy,
+  type InitialQueryBuilder,
+  useDbClient,
+  usePacedMutations,
+} from "@tanstack/react-db";
 
 import { api } from "@/lib/api";
 import { env } from "@/lib/env/client";
+
 export const noteCollection = collectionOptions("note", (client) => {
   // Set only by the server layout, for SSR preloads.
   const serverCookie = client.getDependency<string>("cookie");
@@ -85,4 +91,48 @@ export const noteListQuery = {
 
 export function useNoteCollection() {
   return useDbClient().collection(noteCollection);
+}
+
+export type UpdateNotePreviewVariables = {
+  id: string;
+  text: string;
+};
+
+export function useNotePacedMutations() {
+  const notes = useNoteCollection();
+
+  return usePacedMutations<UpdateNotePreviewVariables, Note>({
+    onMutate: ({ id, text }) => {
+      notes.update(id, (draft) => {
+        draft.preview = text;
+        draft.updatedAt = new Date();
+      });
+    },
+    mutationFn: async ({ transaction }) => {
+      await Promise.all(
+        transaction.mutations.map(async (mutation) => {
+          if (mutation?.type !== "update") return;
+
+          const changes = mutation.changes;
+          const original = mutation.original;
+
+          if (!("id" in original)) return;
+
+          if (
+            changes.preview !== undefined &&
+            changes.updatedAt !== undefined
+          ) {
+            const { error } = await api.notes({ id: original.id }).patch({
+              preview: changes.preview,
+              updatedAt: changes.updatedAt,
+            });
+            if (error) {
+              throw error;
+            }
+          }
+        }),
+      );
+    },
+    strategy: debounceStrategy({ wait: 500 }),
+  });
 }
