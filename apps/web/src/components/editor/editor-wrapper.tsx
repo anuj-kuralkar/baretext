@@ -44,22 +44,21 @@ export function EditorWrapper({ children }: { children: React.ReactNode }) {
 
 export function Editor({ noteId }: { noteId: string }) {
   const [doc] = useState(() => new Y.Doc());
-  const awareness = new Awareness(doc);
-  const resumeStateProvider = new LocalStorageResumeStateProvider(noteId);
+  const provider = createTrivialProvider();
 
   const [isSynced, setIsSynced] = useState(false);
   const mutateNotePaced = useNotePacedMutations();
 
-  const electricProvider = createElectricProvider(
-    doc,
-    noteId,
-    awareness,
-    resumeStateProvider.load(),
-  );
-  const provider = createTrivialProvider();
-
   useEffect(() => {
     new IndexeddbPersistence(noteId, doc);
+    const awareness = new Awareness(doc);
+    const resumeStateProvider = new LocalStorageResumeStateProvider(noteId);
+    const electricProvider = createElectricProvider(
+      doc,
+      noteId,
+      awareness,
+      resumeStateProvider.load(),
+    );
     const unsubscribeResumeState =
       resumeStateProvider.subscribeToResumeState(electricProvider);
 
@@ -68,7 +67,6 @@ export function Editor({ noteId }: { noteId: string }) {
         setIsSynced(true);
       }
     };
-
     electricProvider.on("synced", onSynced);
     if (electricProvider.synced) {
       setIsSynced(true);
@@ -81,7 +79,7 @@ export function Editor({ noteId }: { noteId: string }) {
       electricProvider.destroy();
       doc.destroy();
     };
-  }, [electricProvider, resumeStateProvider, awareness, doc, noteId]);
+  }, [doc, noteId]);
 
   const previewSyncExtension = defineExtension({
     name: "baretext/note-preview-sync",
