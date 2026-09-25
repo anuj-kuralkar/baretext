@@ -1,8 +1,6 @@
 "use client";
 
 import { LocalStorageResumeStateProvider } from "@electric-sql/y-electric";
-import { HorizontalRuleExtension } from "@lexical/extension";
-import { CheckListExtension, ListExtension } from "@lexical/list";
 import {
   MdastCommonMarkExtension,
   MdastExtension,
@@ -13,7 +11,6 @@ import { LexicalCollaboration } from "@lexical/react/LexicalCollaborationContext
 import { CollaborationPluginV2__EXPERIMENTAL } from "@lexical/react/LexicalCollaborationPlugin";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
 import { RichTextExtension } from "@lexical/rich-text";
-import { TableExtension } from "@lexical/table";
 import {
   $getRoot,
   COLLABORATION_TAG,
@@ -100,10 +97,6 @@ export function Editor({ noteId }: { noteId: string }) {
     name: "@baretext/editor",
     dependencies: [
       RichTextExtension,
-      ListExtension,
-      CheckListExtension,
-      TableExtension,
-      HorizontalRuleExtension,
       MdastExtension,
       MdastCommonMarkExtension,
       MdastGfmExtension,
