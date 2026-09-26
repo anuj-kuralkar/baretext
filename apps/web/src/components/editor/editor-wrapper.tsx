@@ -1,10 +1,14 @@
 "use client";
 
 import { LocalStorageResumeStateProvider } from "@electric-sql/y-electric";
+import { ClipboardDOMImportExtension } from "@lexical/clipboard";
+import { AutoFocusExtension } from "@lexical/extension";
+import { HistoryExtension } from "@lexical/history";
 import {
   MdastCommonMarkExtension,
   MdastExtension,
   MdastGfmExtension,
+  MdastHtmlExtension,
   MdastShortcutsExtension,
 } from "@lexical/mdast";
 import { LexicalCollaboration } from "@lexical/react/LexicalCollaborationContext";
@@ -97,10 +101,14 @@ export function Editor({ noteId }: { noteId: string }) {
     name: "@baretext/editor",
     dependencies: [
       RichTextExtension,
+      AutoFocusExtension,
+      HistoryExtension,
       MdastExtension,
       MdastCommonMarkExtension,
       MdastGfmExtension,
       MdastShortcutsExtension,
+      MdastHtmlExtension,
+      ClipboardDOMImportExtension,
       previewSyncExtension,
     ],
     theme: editorTheme,
