@@ -29,7 +29,6 @@ import * as Y from "yjs";
 import { useNotePacedMutations } from "@/collections/note";
 import { ContentEditable } from "@/components/editor/plugins/content-editable";
 import { editorTheme } from "@/components/editor/theme";
-import { Spinner } from "@/components/ui/spinner";
 import {
   createElectricProvider,
   createTrivialProvider,
@@ -47,7 +46,6 @@ export function Editor({ noteId }: { noteId: string }) {
   const [doc] = useState(() => new Y.Doc());
   const provider = createTrivialProvider();
 
-  const [isSynced, setIsSynced] = useState(false);
   const mutateNotePaced = useNotePacedMutations();
 
   useEffect(() => {
@@ -63,18 +61,7 @@ export function Editor({ noteId }: { noteId: string }) {
     const unsubscribeResumeState =
       resumeStateProvider.subscribeToResumeState(electricProvider);
 
-    const onSynced = (synced: boolean) => {
-      if (synced) {
-        setIsSynced(true);
-      }
-    };
-    electricProvider.on("synced", onSynced);
-    if (electricProvider.synced) {
-      setIsSynced(true);
-    }
-
     return () => {
-      electricProvider.off("synced", onSynced);
       unsubscribeResumeState();
       awareness.destroy();
       electricProvider.destroy();
@@ -124,15 +111,9 @@ export function Editor({ noteId }: { noteId: string }) {
           __shouldBootstrapUnsafe={true}
         />
         <EditorWrapper>
-          {!isSynced ? (
-            <div className="flex flex-1 items-center justify-center">
-              <Spinner className="size-8" />
-            </div>
-          ) : (
-            <div className="relative min-w-0 flex-1 overflow-y-auto">
-              <ContentEditable />
-            </div>
-          )}
+          <div className="relative min-w-0 flex-1 overflow-y-auto">
+            <ContentEditable />
+          </div>
         </EditorWrapper>
       </LexicalExtensionComposer>
     </LexicalCollaboration>
