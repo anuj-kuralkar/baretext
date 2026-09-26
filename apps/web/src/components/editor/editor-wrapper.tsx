@@ -15,7 +15,7 @@ import {
   $getRoot,
   COLLABORATION_TAG,
   defineExtension,
-  HISTORIC_TAG,
+  HISTORY_MERGE_TAG,
 } from "lexical";
 import { useEffect, useState } from "react";
 import { IndexeddbPersistence } from "y-indexeddb";
@@ -82,7 +82,7 @@ export function Editor({ noteId }: { noteId: string }) {
     name: "baretext/note-preview-sync",
     register: (editor) => {
       return editor.registerUpdateListener(({ editorState, tags }) => {
-        if (tags.has(COLLABORATION_TAG) || tags.has(HISTORIC_TAG)) {
+        if (tags.has(HISTORY_MERGE_TAG) || tags.has(COLLABORATION_TAG)) {
           return;
         }
         editorState.read(() => {
