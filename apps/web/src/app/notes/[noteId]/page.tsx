@@ -1,4 +1,4 @@
-import { Editor } from "@/components/editor/editor-wrapper";
+import { Editor } from "@/components/editor";
 
 export default async function NotePage({
   params,
