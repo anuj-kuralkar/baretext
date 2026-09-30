@@ -14,14 +14,19 @@ export const previewExtension = defineExtension({
   config: safeCast<PreviewConfig>({ persist: () => {} }),
   name: "@baretext/preview-extension",
   register: (editor, config) => {
-    return editor.registerUpdateListener(({ editorState, tags }) => {
-      if (tags.has(HISTORY_MERGE_TAG) || tags.has(COLLABORATION_TAG)) {
-        return;
-      }
-      editorState.read(() => {
-        const text = $getRoot().getTextContent().slice(0, 256);
-        config.persist(text);
-      });
-    });
+    return editor.registerUpdateListener(
+      ({ editorState, tags, dirtyElements, dirtyLeaves }) => {
+        if (tags.has(HISTORY_MERGE_TAG) || tags.has(COLLABORATION_TAG)) {
+          return;
+        }
+        if (dirtyElements.size === 0 && dirtyLeaves.size === 0) {
+          return;
+        }
+        editorState.read(() => {
+          const text = $getRoot().getTextContent().slice(0, 256);
+          config.persist(text);
+        });
+      },
+    );
   },
 });
