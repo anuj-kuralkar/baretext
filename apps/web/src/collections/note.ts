@@ -57,18 +57,6 @@ export const noteCollection = collectionOptions("note", (client) => {
       return { txid: data.txid };
     },
 
-    onUpdate: async ({ transaction }) => {
-      const { original, modified } = transaction.mutations[0];
-      const { data, error } = await api.notes({ id: original.id }).patch({
-        preview: modified.preview,
-        updatedAt: modified.updatedAt,
-      });
-      if (error) {
-        throw error;
-      }
-      return { txid: data.txid };
-    },
-
     onDelete: async ({ transaction }) => {
       const original = transaction.mutations[0].original;
       const { data, error } = await api.notes({ id: original.id }).delete();
@@ -122,13 +110,14 @@ export function useNotePacedMutations() {
             changes.preview !== undefined &&
             changes.updatedAt !== undefined
           ) {
-            const { error } = await api.notes({ id: original.id }).patch({
+            const { data, error } = await api.notes({ id: original.id }).patch({
               preview: changes.preview,
               updatedAt: changes.updatedAt,
             });
             if (error) {
               throw error;
             }
+            await notes.utils.awaitTxId(data.txid);
           }
         }),
       );

@@ -23,7 +23,7 @@ export const previewExtension = defineExtension({
           return;
         }
         editorState.read(() => {
-          const text = $getRoot().getTextContent().slice(0, 256);
+          const text = $getRoot().getTextContent();
           config.persist(text);
         });
       },
