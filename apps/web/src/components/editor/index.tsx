@@ -28,6 +28,7 @@ import { useNotePacedMutations } from "@/collections/note";
 import { ContentEditable } from "@/components/editor/content-editable";
 import { EditorWrapper } from "@/components/editor/editor-wrapper";
 import { previewExtension } from "@/components/editor/extensions/preview-sync";
+import { searchHighlightExtension } from "@/components/editor/extensions/search-highlight";
 import { editorTheme } from "@/components/editor/theme";
 import {
   createElectricProvider,
@@ -51,6 +52,7 @@ export function Editor({ noteId }: { noteId: string }) {
       MdastShortcutsExtension,
       MdastHtmlExtension,
       ClipboardDOMImportExtension,
+      searchHighlightExtension,
       configExtension(previewExtension, {
         persist: (text) => {
           mutateNotePaced({ id: noteId, text });
