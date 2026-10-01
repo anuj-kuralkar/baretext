@@ -91,7 +91,7 @@ export function Editor({ noteId }: { noteId: string }) {
           __shouldBootstrapUnsafe={true}
         />
         <EditorWrapper>
-          <div className="relative min-w-0 flex-1 overflow-y-auto">
+          <div className="relative mx-auto w-full min-w-0 max-w-[210mm] flex-1 overflow-y-auto">
             <ContentEditable />
           </div>
         </EditorWrapper>

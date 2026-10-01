@@ -6,9 +6,5 @@ export default async function NotePage({
   params: Promise<{ noteId: string }>;
 }) {
   const { noteId } = await params;
-  return (
-    <div className="flex h-full w-full flex-col">
-      <Editor key={noteId} noteId={noteId} />
-    </div>
-  );
+  return <Editor key={noteId} noteId={noteId} />;
 }
