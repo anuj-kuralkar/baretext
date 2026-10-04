@@ -6,7 +6,6 @@ import { Suspense } from "react";
 import { BrandLink } from "@/components/brand-link";
 import { NoteList, NoteListSkeleton } from "@/components/notes/note-list";
 import { NoteListActions } from "@/components/notes/note-list-actions";
-import { SearchInput } from "@/components/notes/search-input";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Sidebar,
@@ -30,10 +29,6 @@ export function AppSidebar() {
         <BrandLink />
         <NoteListActions />
       </SidebarHeader>
-
-      <div className="px-2 pb-2">
-        <SearchInput />
-      </div>
 
       <SidebarContent>
         <SidebarGroup>
