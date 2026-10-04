@@ -80,9 +80,9 @@ function NotePreview({ id, preview, updatedAt, isActive }: NotePreviewProps) {
     <Link
       href={`/notes/${id}`}
       className={cn(
-        "flex flex-col items-start gap-2 overflow-hidden rounded-lg border p-4 text-sm leading-tight hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        "flex flex-col items-start gap-2 overflow-hidden rounded-lg border border-sidebar-border bg-sidebar p-4 text-sm leading-tight hover:bg-[color-mix(in_oklch,var(--sidebar),var(--sidebar-foreground)_5%)]",
         isActive &&
-          "border-transparent bg-sidebar-accent text-sidebar-accent-foreground",
+          "bg-[color-mix(in_oklch,var(--sidebar),var(--sidebar-foreground)_7.5%)]",
       )}
       onClick={() => setOpenMobile(false)}
     >
