@@ -1,4 +1,4 @@
-import { DbClient } from "@tanstack/db";
+import { DbClient } from "@tanstack/react-db";
 import { cookies } from "next/headers";
 
 import { noteListQuery } from "@/collections/note";

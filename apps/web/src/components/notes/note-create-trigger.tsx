@@ -2,7 +2,7 @@
 
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
-import { safeRandomUUID } from "@tanstack/db";
+import { safeRandomUUID } from "@tanstack/react-db";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useNoteCollection } from "@/collections/note";

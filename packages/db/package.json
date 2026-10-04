@@ -11,7 +11,7 @@
     "./zod/codec": "./src/zod/codec.ts"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0",
+    "@neondatabase/serverless": "^1.2.0",
     "@t3-oss/env-core": "catalog:",
     "@upstash/redis": "^1.39.0",
     "drizzle-orm": "catalog:",

@@ -1,6 +1,6 @@
 "use client";
 
-import type { DehydratedDbState } from "@tanstack/db";
+import type { DehydratedDbState } from "@tanstack/react-db";
 import { DbClient, DbProvider, HydrationBoundary } from "@tanstack/react-db";
 import type { ReactNode } from "react";
 import { useState } from "react";
