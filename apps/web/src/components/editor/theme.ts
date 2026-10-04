@@ -1,6 +1,44 @@
 import type { EditorThemeClasses } from "lexical";
 
-import "./theme.css";
+const CODE_HIGHLIGHT_TYPES = [
+  "atrule",
+  "attr-name",
+  "boolean",
+  "builtin",
+  "cdata",
+  "char",
+  "class",
+  "class-name",
+  "code",
+  "comment",
+  "constant",
+  "deleted",
+  "directive",
+  "doctype",
+  "doctype-tag",
+  "entity",
+  "function",
+  "function-definition",
+  "generic-function",
+  "important",
+  "inserted",
+  "keyword",
+  "macro-name",
+  "named-entity",
+  "namespace",
+  "number",
+  "operator",
+  "prolog",
+  "property",
+  "regex",
+  "selector",
+  "string",
+  "string-literal",
+  "symbol",
+  "tag",
+  "url",
+  "variable",
+] as const;
 
 export const editorTheme: EditorThemeClasses = {
   root: "relative outline-none",
@@ -20,12 +58,12 @@ export const editorTheme: EditorThemeClasses = {
   quote:
     "relative my-4 border-s-2 ps-6 text-muted-foreground italic first:mt-0 last:mb-0",
   list: {
-    checklist: "!ps-1",
+    checklist: "ps-1!",
     listitem: "relative",
     listitemChecked:
-      "relative list-none ps-6 text-muted-foreground line-through outline-none before:absolute before:start-0 before:top-1 before:size-4 before:cursor-pointer before:rounded-[4px] before:border before:border-primary before:bg-primary before:shadow-xs after:absolute after:start-[5px] after:top-[6px] after:h-[9px] after:w-[5px] after:rotate-45 after:cursor-pointer after:border-r-2 after:border-b-2 after:border-primary-foreground focus:before:ring-2 focus:before:ring-ring/50",
+      "relative list-none ps-6 text-muted-foreground line-through outline-none before:absolute before:inset-s-0 before:top-1 before:size-4 before:cursor-pointer before:rounded-lg before:border before:border-primary before:bg-primary before:shadow-xs after:absolute after:inset-s-1.25 after:top-1.5 after:h-2.25 after:w-1.25 after:rotate-45 after:cursor-pointer after:border-r-2 after:border-b-2 after:border-primary-foreground focus:before:ring-2 focus:before:ring-ring/50",
     listitemUnchecked:
-      "relative list-none ps-6 outline-none before:absolute before:start-0 before:top-1 before:size-4 before:cursor-pointer before:rounded-[4px] before:border before:border-input before:shadow-xs focus:before:ring-2 focus:before:ring-ring/50 dark:before:bg-input/30",
+      "relative list-none ps-6 outline-none before:absolute before:inset-s-0 before:top-1 before:size-4 before:cursor-pointer before:rounded-lg before:border before:border-input before:shadow-xs focus:before:ring-2 focus:before:ring-ring/50 dark:before:bg-input/30",
     nested: {
       listitem: "list-none before:hidden after:hidden",
     },
@@ -59,11 +97,10 @@ export const editorTheme: EditorThemeClasses = {
     uppercase: "uppercase",
     capitalize: "capitalize",
   },
-  code: "editor-code relative mb-3 block overflow-x-auto rounded-lg border bg-card py-3 pe-4 ps-0 font-mono text-[13px] leading-relaxed [tab-size:2] [white-space:pre]",
-  codeHighlight: {
-    inserted: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
-    deleted: "bg-red-500/15 text-red-700 dark:text-red-400",
-  },
+  code: "editor-code",
+  codeHighlight: Object.fromEntries(
+    CODE_HIGHLIGHT_TYPES.map((type) => [type, `editor-code-highlight-${type}`]),
+  ),
   tableScrollableWrapper:
     "editor-table-scrollable-wrapper relative my-3 w-full overflow-x-auto",
   table: "w-full table-fixed caption-bottom text-sm",

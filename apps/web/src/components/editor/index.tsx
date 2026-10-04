@@ -2,6 +2,7 @@
 
 import { LocalStorageResumeStateProvider } from "@electric-sql/y-electric";
 import { ClipboardDOMImportExtension } from "@lexical/clipboard";
+import { CodePrismExtension } from "@lexical/code-prism";
 import {
   AutoFocusExtension,
   configExtension,
@@ -19,7 +20,7 @@ import { LexicalCollaboration } from "@lexical/react/LexicalCollaborationContext
 import { CollaborationPluginV2__EXPERIMENTAL } from "@lexical/react/LexicalCollaborationPlugin";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
 import { RichTextExtension } from "@lexical/rich-text";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { Awareness } from "y-protocols/awareness";
 import * as Y from "yjs";
@@ -36,7 +37,7 @@ import {
 } from "@/lib/electric-provider";
 
 export function Editor({ noteId }: { noteId: string }) {
-  const [doc] = useState(() => new Y.Doc());
+  const doc = new Y.Doc();
   const provider = createTrivialProvider();
   const mutateNotePaced = useNotePacedMutations();
 
@@ -53,6 +54,7 @@ export function Editor({ noteId }: { noteId: string }) {
       MdastHtmlExtension,
       ClipboardDOMImportExtension,
       searchHighlightExtension,
+      CodePrismExtension,
       configExtension(previewExtension, {
         persist: (text) => {
           mutateNotePaced({ id: noteId, text });

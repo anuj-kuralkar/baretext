@@ -34,7 +34,7 @@ export default function RootLayout({
       className={cn(
         geistSans.variable,
         geistMono.variable,
-        "dark h-full antialiased",
+        "h-full antialiased",
       )}
       suppressHydrationWarning
     >
