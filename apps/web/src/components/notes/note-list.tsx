@@ -4,6 +4,7 @@ import { useLiveSuspenseQuery } from "@tanstack/react-db";
 import { cn } from "cn";
 import Link from "next/link";
 import { noteListQuery } from "@/collections/note";
+import { buttonVariants } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatRelativeTime } from "@/lib/utils";
@@ -80,9 +81,12 @@ function NotePreview({ id, preview, updatedAt, isActive }: NotePreviewProps) {
     <Link
       href={`/notes/${id}`}
       className={cn(
-        "flex flex-col items-start gap-2 overflow-hidden rounded-lg border border-sidebar-border bg-sidebar p-4 text-sm leading-tight hover:bg-[color-mix(in_oklch,var(--sidebar),var(--sidebar-foreground)_5%)]",
-        isActive &&
-          "bg-[color-mix(in_oklch,var(--sidebar),var(--sidebar-foreground)_7.5%)]",
+        buttonVariants({
+          variant: "outline",
+          size: "lg",
+        }),
+        "h-24 w-full flex-col items-start",
+        isActive && "bg-muted text-foreground dark:bg-input/50",
       )}
       onClick={() => setOpenMobile(false)}
     >
