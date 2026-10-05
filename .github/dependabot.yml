@@ -1,0 +1,88 @@
+version: 2
+
+updates:
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 7
+      semver-major-days: 21
+    groups:
+      next-react:
+        patterns:
+          - next
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
+          - babel-plugin-react-compiler
+      elysia:
+        patterns:
+          - elysia
+          - "@elysia/*"
+      toolchain:
+        patterns:
+          - typescript
+          - "@types/bun"
+          - "@types/node"
+      lexical:
+        patterns:
+          - lexical
+          - "@lexical/*"
+      sync:
+        patterns:
+          - "@electric-sql/*"
+          - "@tanstack/*"
+          - yjs
+          - y-indexeddb
+          - y-protocols
+          - lib0
+      data:
+        patterns:
+          - drizzle-orm
+          - drizzle-kit
+          - "@neondatabase/serverless"
+          - "@upstash/redis"
+          - "@t3-oss/*"
+          - zod
+      auth:
+        patterns:
+          - better-auth
+          - "@better-auth/*"
+      observability:
+        patterns:
+          - "@opentelemetry/*"
+          - posthog-node
+      ui:
+        patterns:
+          - "@base-ui/react"
+          - "@tailwindcss/*"
+          - tailwindcss
+          - shadcn
+          - lucide-react
+          - next-themes
+          - class-variance-authority
+          - cn
+          - tw-animate-css
+          - shaders
+      devtools:
+        patterns:
+          - "@biomejs/*"
+          - lefthook
+          - vitest
+          - "@vitest/*"
+          - "@vitejs/*"
+          - vitest-browser-react
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
