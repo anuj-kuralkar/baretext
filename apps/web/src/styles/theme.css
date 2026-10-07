@@ -1,0 +1,262 @@
+.light {
+  color-scheme: light;
+
+  /* code block */
+  --editor-fg: #1f2328;
+  --editor-fg-muted: #656d76;
+  --editor-surface: #f6f8fa;
+  --editor-border-muted: #d8dee4;
+  --editor-line-number: #8c959f;
+
+  /* syntax */
+  --editor-code-highlight-comment: #6e7781;
+  --editor-code-highlight-keyword: #cf222e;
+  --editor-code-highlight-operator: #cf222e;
+  --editor-code-highlight-constant: #0550ae;
+  --editor-code-highlight-property: #0550ae;
+  --editor-code-highlight-string: #0a3069;
+  --editor-code-highlight-function: #8250df;
+  --editor-code-highlight-entity: #953800;
+  --editor-code-highlight-variable: #953800;
+  --editor-code-highlight-tag: #116329;
+  --editor-code-highlight-inserted-fg: #116329;
+  --editor-code-highlight-inserted-bg: #dafbe1;
+  --editor-code-highlight-deleted-fg: #82071e;
+  --editor-code-highlight-deleted-bg: #ffebe9;
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* code block */
+  --editor-fg: #e6edf3;
+  --editor-fg-muted: #7d8590;
+  --editor-surface: #161b22;
+  --editor-border-muted: #21262d;
+  --editor-line-number: #6e7681;
+
+  /* syntax */
+  --editor-code-highlight-comment: #8b949e;
+  --editor-code-highlight-keyword: #ff7b72;
+  --editor-code-highlight-operator: #ff7b72;
+  --editor-code-highlight-constant: #79c0ff;
+  --editor-code-highlight-property: #79c0ff;
+  --editor-code-highlight-string: #a5d6ff;
+  --editor-code-highlight-function: #d2a8ff;
+  --editor-code-highlight-entity: #ffa657;
+  --editor-code-highlight-variable: #ffa657;
+  --editor-code-highlight-tag: #7ee787;
+  --editor-code-highlight-inserted-fg: #7ee787;
+  --editor-code-highlight-inserted-bg: #04260f;
+  --editor-code-highlight-deleted-fg: #ffa198;
+  --editor-code-highlight-deleted-bg: #490202;
+}
+
+.editor-indent {
+  --lexical-indent-base-value: 32px;
+}
+
+::highlight(editor-find-match) {
+  background-color: rgb(250 204 21 / 0.4);
+  color: inherit;
+}
+
+::highlight(editor-find-match-current) {
+  background-color: rgb(249 115 22 / 0.6);
+  color: inherit;
+}
+
+@media (forced-colors: active) {
+  ::highlight(editor-find-match) {
+    background-color: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  ::highlight(editor-find-match-current) {
+    background-color: Mark;
+    color: MarkText;
+    forced-color-adjust: none;
+  }
+}
+
+.editor-find-match-overlay {
+  position: absolute;
+  pointer-events: none;
+  background-color: rgb(250 204 21 / 0.4);
+}
+
+.editor-find-match-overlay-current {
+  background-color: rgb(249 115 22 / 0.6);
+}
+
+.editor-mark {
+  background-color: rgb(251 191 36 / 0.2);
+  border-bottom: 2px solid rgb(251 191 36 / 0.45);
+  padding-bottom: 1px;
+  cursor: pointer;
+}
+
+.editor-mark.selected {
+  background-color: rgb(251 191 36 / 0.45);
+  border-bottom-color: rgb(245 158 11);
+}
+
+.editor-mark-overlap {
+  background-color: rgb(251 191 36 / 0.35);
+}
+
+.editor-mark-overlap.selected {
+  background-color: rgb(251 191 36 / 0.6);
+}
+
+.editor-comment-highlight {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  background-color: rgb(251 191 36 / 0.35);
+}
+
+/* Code block */
+
+.editor-code {
+  display: block;
+  position: relative;
+  margin-block: 0 1rem;
+  padding-block: 1rem;
+  padding-inline: 3.5rem 1rem;
+  overflow-x: auto;
+  border-radius: 0.375rem;
+  background-color: var(--editor-surface);
+  color: var(--editor-fg);
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  white-space: pre;
+  tab-size: 2;
+  scrollbar-color: var(--editor-fg-muted) transparent;
+  scrollbar-width: thin;
+
+  /* Lexical writes the line numbers into data-gutter as "1\n2\n3…" */
+  &::before {
+    content: attr(data-gutter);
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    box-sizing: border-box;
+    inline-size: 2.75rem;
+    padding: 1rem 0.75rem;
+    border-inline-end: 1px solid var(--editor-border-muted);
+    color: var(--editor-line-number);
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+    white-space: pre;
+    user-select: none;
+  }
+
+  &:last-child {
+    margin-block-end: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .editor-code {
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+}
+
+/* Syntax highlighting */
+
+:is(
+  .editor-code-highlight-comment,
+  .editor-code-highlight-prolog,
+  .editor-code-highlight-doctype,
+  .editor-code-highlight-cdata
+) {
+  color: var(--editor-code-highlight-comment);
+}
+
+:is(
+  .editor-code-highlight-keyword,
+  .editor-code-highlight-atrule,
+  .editor-code-highlight-directive,
+  .editor-code-highlight-doctype-tag
+) {
+  color: var(--editor-code-highlight-keyword);
+}
+
+.editor-code-highlight-important {
+  color: var(--editor-code-highlight-keyword);
+  font-weight: 600;
+}
+
+.editor-code-highlight-operator {
+  color: var(--editor-code-highlight-operator);
+}
+
+:is(
+  .editor-code-highlight-boolean,
+  .editor-code-highlight-number,
+  .editor-code-highlight-constant,
+  .editor-code-highlight-symbol,
+  .editor-code-highlight-builtin,
+  .editor-code-highlight-entity,
+  .editor-code-highlight-named-entity,
+  .editor-code-highlight-attr-name,
+  .editor-code-highlight-code
+) {
+  color: var(--editor-code-highlight-constant);
+}
+
+.editor-code-highlight-property {
+  color: var(--editor-code-highlight-property);
+}
+
+:is(
+  .editor-code-highlight-string,
+  .editor-code-highlight-string-literal,
+  .editor-code-highlight-char,
+  .editor-code-highlight-regex,
+  .editor-code-highlight-url
+) {
+  color: var(--editor-code-highlight-string);
+}
+
+:is(
+  .editor-code-highlight-function,
+  .editor-code-highlight-function-definition,
+  .editor-code-highlight-generic-function,
+  .editor-code-highlight-macro-name
+) {
+  color: var(--editor-code-highlight-function);
+}
+
+:is(
+  .editor-code-highlight-class-name,
+  .editor-code-highlight-class,
+  .editor-code-highlight-namespace
+) {
+  color: var(--editor-code-highlight-entity);
+}
+
+.editor-code-highlight-variable {
+  color: var(--editor-code-highlight-variable);
+}
+
+:is(.editor-code-highlight-tag, .editor-code-highlight-selector) {
+  color: var(--editor-code-highlight-tag);
+}
+
+.editor-code-highlight-inserted {
+  background-color: var(--editor-code-highlight-inserted-bg);
+  color: var(--editor-code-highlight-inserted-fg);
+}
+
+.editor-code-highlight-deleted {
+  background-color: var(--editor-code-highlight-deleted-bg);
+  color: var(--editor-code-highlight-deleted-fg);
+}

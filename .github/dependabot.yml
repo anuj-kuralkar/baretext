@@ -1,27 +1,60 @@
 version: 2
+
 updates:
   - package-ecosystem: "bun"
-    directory: "/"
+    directories:
+      - "/"
+      - "/apps/*"
+      - "/packages/*"
+
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
     groups:
-      react:
+      next-react:
         patterns:
+          - "next"
           - "react"
           - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+          - "babel-plugin-react-compiler"
+
+      elysia:
+        patterns:
+          - "elysia"
+          - "@elysia/*"
 
       lexical:
         patterns:
-          - "@lexical/*"
           - "lexical"
+          - "@lexical/*"
 
-      tailwind:
+      tanstack:
+        patterns:
+          - "@tanstack/*"
+
+      tailwindcss:
         patterns:
           - "tailwindcss"
           - "@tailwindcss/*"
 
+      drizzle:
+        patterns:
+          - "drizzle-orm"
+          - "drizzle-kit"
+
+      better-auth:
+        patterns:
+          - "better-auth"
+          - "@better-auth/*"
+
       commitlint:
         patterns:
-          - "commitlint"
           - "@commitlint/*"
+
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+          - "vitest-browser-react"
