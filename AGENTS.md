@@ -1,44 +1,24 @@
-# Baretext AI Agent Guidelines
+# Baretext Agent Context
 
-## Project Overview
+## Architecture
+Baretext is a Bun workspace monorepo (`apps/web`, `apps/api`, `packages/*`).
+- **Web**: Next.js frontend with Lexical (Yjs) editor, synchronized via ElectricSQL and TanStack DB.
+- **API**: ElysiaJS backend.
+- **Data**: Neon Postgres, Drizzle ORM, Upstash Redis.
+- **Auth**: Better Auth.
 
-**Baretext** is a simple place to write, organize, and revisit your notes. Easy to get started with, comfortable to use every day.
-
-- **Repository:** [github.com/anuj-kuralkar/baretext](https://github.com/anuj-kuralkar/baretext)
-- **Web:** [baretext.app](https://baretext.app)
-
-## Tech Stack
-
-> **Note:** Always check `package.json` for the current installed version of these dependencies and ensure you use that exact version.
-
-- **Framework:** Next.js
-- **Language:** TypeScript
-- **Authentication:** Better Auth (uses `@alde/ba-surreal` adapter for SurrealDB)
-- **Database:** SurrealDB
-- **Cache/Redis:** Upstash Redis
-- **Storage:** Vercel Blob
-- **UI & Styling:** Tailwind CSS, Ark UI, shadcn, Lucide React
-- **Rich Text Editor:** Lexical
-- **Emails:** React Email & Resend
-- **Tooling & Code Quality:** Biome (linting/formatting), Lefthook, Commitlint
-
-## Scripts
-
-Below are the available scripts and their purposes:
-
-- `bun dev`: Starts the Next.js development server.
-- `bun build`: Builds the Next.js application for production.
-- `bun start`: Starts the Next.js production server.
-- `bun lint`: Runs the Biome linter and automatically fixes issues (`biome lint --write .`). MUST be used for linting instead of ESLint.
-- `bun format`: Runs the Biome formatter and automatically formats code (`biome format --write .`). MUST be used for formatting instead of Prettier.
-- `bun email:dev`: Starts the React Email development server to preview templates.
-
-## Agent Rules
+## Rules
+- **Environment**: Read `package.json` for dependency versions and workspace commands.
+- **Formatting**: Run `biome` scripts defined in the root `package.json` for linting.
+- **React Compiler**: The React Compiler is active. NEVER use `useMemo`, `useCallback`, or `React.memo()`. Write standard inline functions and objects; rely on the compiler for optimization.
+- **Sync & Offline**: We use ElectricSQL and TanStack DB. You MUST read https://electric-sql.com/AGENTS.md for general information on developing with Electric and TanStack DB.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-### Next.js: ALWAYS read docs before coding
+# This is NOT the Next.js you know
 
-Before any Next.js work, find and read the relevant doc in `node_modules/next/dist/docs/`. Your training data is outdated — the docs are the source of truth.
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->

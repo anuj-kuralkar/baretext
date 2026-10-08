@@ -1,8 +1,5 @@
-const commitlintConfig = {
+const Configuration = {
   extends: ["@commitlint/config-conventional"],
-  rules: {
-    "scope-case": [2, "always", "kebab-case"],
-  },
 };
 
-export default commitlintConfig;
+export default Configuration;
