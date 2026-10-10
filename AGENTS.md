@@ -13,6 +13,20 @@ Baretext is a Bun workspace monorepo (`apps/web`, `apps/api`, `packages/*`).
 - **React Compiler**: The React Compiler is active. NEVER use `useMemo`, `useCallback`, or `React.memo()`. Write standard inline functions and objects; rely on the compiler for optimization.
 - **Sync & Offline**: We use ElectricSQL and TanStack DB. You MUST read https://electric-sql.com/AGENTS.md for general information on developing with Electric and TanStack DB.
 
+## Agent skills
+
+### Issue tracker
+
+GitHub is used as the issue tracker. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The default triage labels are used (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout (one `GLOSSARY.md` at the root). See `docs/agents/domain.md`.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
