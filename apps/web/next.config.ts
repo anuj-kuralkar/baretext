@@ -5,6 +5,8 @@ import { env } from "@/lib/env/client";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  cacheComponents: true,
+  partialPrefetching: true,
   reactCompiler: true,
   turbopack: {
     rules: {
