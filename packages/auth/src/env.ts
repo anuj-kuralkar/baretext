@@ -17,4 +17,5 @@ export const env = createEnv({
     VERCEL_ENV: z.enum(["production", "preview", "development"]),
   },
   runtimeEnv: process.env,
+  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 });

@@ -25,4 +25,5 @@ export const env = createEnv({
     WEB_URL: z.url(),
   },
   runtimeEnv: process.env,
+  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 });
