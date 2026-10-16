@@ -8,7 +8,7 @@ updates:
       - "/packages/*"
 
     schedule:
-      interval: "daily"
+      interval: "monthly"
 
     groups:
       next-react:
