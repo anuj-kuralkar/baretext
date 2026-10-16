@@ -10,14 +10,14 @@
       "packages/*"
     ],
     "catalog": {
-      "@better-auth/passkey": "^1.7.7",
+      "@better-auth/passkey": "^1.7.10",
       "@electric-sql/client": "^1.5.28",
       "@t3-oss/env-core": "^0.13.11",
-      "@types/bun": "^1.4.2",
-      "better-auth": "^1.7.7",
-      "drizzle-orm": "^1.0.0-rc.4",
+      "@types/bun": "^1.4.3",
+      "better-auth": "^1.7.10",
+      "drizzle-orm": "1.0.0-rc.4",
       "typescript": "^7.0.2",
-      "zod": "^4.6.2"
+      "zod": "^4.6.7"
     }
   },
   "scripts": {
@@ -35,6 +35,6 @@
     "@biomejs/biome": "2.5.15",
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
-    "lefthook": "^2.1.12"
+    "lefthook": "^2.2.2"
   }
 }
