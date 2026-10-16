@@ -20,7 +20,7 @@
     "@baretext/auth": "workspace:*",
     "@baretext/db": "workspace:*",
     "@electric-sql/client": "catalog:",
-    "@elysia/cors": "2.0.0-beta.1",
+    "@elysia/cors": "2.0.0-beta.2",
     "@opentelemetry/api-logs": "^0.223.0",
     "@opentelemetry/exporter-logs-otlp-http": "^0.223.0",
     "@opentelemetry/resources": "^2.12.0",
@@ -28,8 +28,8 @@
     "@opentelemetry/sdk-node": "^0.223.0",
     "@t3-oss/env-core": "catalog:",
     "drizzle-orm": "catalog:",
-    "elysia": "2.0.0-beta.21",
-    "posthog-node": "^5.55.0",
+    "elysia": "2.0.0-beta.32",
+    "posthog-node": "^5.56.1",
     "zod": "catalog:"
   },
   "devDependencies": {
