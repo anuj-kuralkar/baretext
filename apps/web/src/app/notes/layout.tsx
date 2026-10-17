@@ -2,7 +2,7 @@ import { DbClient } from "@tanstack/react-db";
 import { cookies } from "next/headers";
 
 import { noteListQuery } from "@/collections/note";
-import { AppSidebar } from "@/components/layout/app-sidebar";
+import { NotesSidebar } from "@/components/layout/notes-sidebar";
 import { NotesDbProvider } from "@/components/providers/notes-db-provider";
 import {
   SidebarInset,
@@ -30,7 +30,7 @@ export default async function NotesLayout({
   return (
     <NotesDbProvider state={state}>
       <SidebarProvider>
-        <AppSidebar />
+        <NotesSidebar />
         <SidebarInset>
           <header className="sticky top-0 z-10 flex shrink-0 items-center gap-2 border-b bg-background p-4">
             <SidebarTrigger className="-ml-1" />

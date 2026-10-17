@@ -11,7 +11,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar() {
+export function NotesSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="flex-row items-center justify-between">
