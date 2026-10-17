@@ -6,7 +6,8 @@ import { Suspense } from "react";
 import { Background } from "@/components/background";
 import { BrandLink } from "@/components/brand-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getSession } from "@/lib/session";
 
 async function UserNav() {
@@ -48,7 +49,7 @@ export default function Home() {
               Notes
             </Link>
 
-            <Suspense fallback={<Button disabled>Login</Button>}>
+            <Suspense fallback={<Skeleton className="h-8 w-16 rounded-lg" />}>
               <UserNav />
             </Suspense>
           </div>

@@ -15,6 +15,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { requireSession } from "@/lib/session";
 import { getInitials } from "@/lib/utils";
 
@@ -25,7 +26,7 @@ function ProfileFieldsSkeleton() {
         <FieldContent>
           <FieldLabel>Profile Picture</FieldLabel>
         </FieldContent>
-        <div className="size-20 animate-pulse rounded-full bg-muted" />
+        <Skeleton className="size-20 rounded-full" />
       </Field>
 
       <FieldSeparator />
@@ -34,13 +35,13 @@ function ProfileFieldsSkeleton() {
         <FieldContent>
           <FieldLabel htmlFor="name">Name</FieldLabel>
         </FieldContent>
-        <div className="h-9 w-full animate-pulse rounded-md bg-muted" />
+        <Skeleton className="h-8 w-full rounded-lg" />
       </Field>
       <Field orientation="responsive">
         <FieldContent>
           <FieldLabel htmlFor="email">Email Address</FieldLabel>
         </FieldContent>
-        <div className="h-9 w-full animate-pulse rounded-md bg-muted" />
+        <Skeleton className="h-8 w-full rounded-lg" />
       </Field>
     </FieldGroup>
   );

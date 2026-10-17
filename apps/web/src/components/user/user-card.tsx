@@ -1,12 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { requireSession } from "@/lib/session";
 import { getInitials } from "@/lib/utils";
 
 export function UserCardSkeleton() {
   return (
     <div className="flex h-10 items-center gap-1.5 p-2">
-      <div className="size-8 shrink-0 animate-pulse rounded-full bg-muted" />
-      <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+      <Skeleton className="size-8 shrink-0 rounded-full" />
+      <Skeleton className="h-4 w-24" />
     </div>
   );
 }
