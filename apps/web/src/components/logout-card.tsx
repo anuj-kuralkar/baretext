@@ -1,7 +1,6 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +16,6 @@ import { authClient } from "@/lib/auth/client";
 import { clearAllNotesIndexedDb } from "@/lib/indexeddb";
 
 export function LogoutCard() {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleLogout = () => {
@@ -31,7 +29,7 @@ export function LogoutCard() {
           description: error.message ?? error.statusText,
         });
       } else {
-        router.push("/login");
+        window.location.href = "/login";
       }
     });
   };
