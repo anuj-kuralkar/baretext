@@ -1,5 +1,6 @@
 import { DbClient } from "@tanstack/react-db";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 
 import { noteListQuery } from "@/collections/note";
 import { NotesSidebar } from "@/components/layout/notes-sidebar";
@@ -16,6 +17,7 @@ export default async function NotesLayout({
 }: {
   children: React.ReactNode;
 }) {
+  await connection();
   await requireSession();
 
   const dbClient = new DbClient({
