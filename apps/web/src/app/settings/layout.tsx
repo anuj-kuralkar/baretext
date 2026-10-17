@@ -1,11 +1,11 @@
-import { SettingsIcon, ShieldIcon, UserIcon } from "lucide-react";
+import { ShieldIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { BrandLink } from "@/components/brand-link";
+import { AppSidebarFooter } from "@/components/layout/app-sidebar-footer";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -15,8 +15,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { UserCard } from "@/components/user/user-card";
-import { requireSession } from "@/lib/session";
 
 const sidebarNavItems = [
   {
@@ -31,13 +29,11 @@ const sidebarNavItems = [
   },
 ];
 
-export default async function NotesLayout({
+export default function SettingsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await requireSession();
-  const user = session.user;
   return (
     <SidebarProvider>
       <Sidebar>
@@ -68,15 +64,7 @@ export default async function NotesLayout({
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="flex-row items-center justify-between">
-          <UserCard image={user?.image ?? undefined} name={user?.name} />
-          <Link
-            href="/settings/profile"
-            className={buttonVariants({ size: "icon-sm", variant: "outline" })}
-          >
-            <SettingsIcon />
-          </Link>
-        </SidebarFooter>
+        <AppSidebarFooter />
       </Sidebar>
       <SidebarInset className="relative flex w-full min-w-0 flex-col bg-background">
         <header className="flex h-14 shrink-0 items-center gap-2 bg-background px-4">
