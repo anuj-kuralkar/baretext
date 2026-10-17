@@ -27,7 +27,7 @@ const app = new Elysia()
   .use(noteModule)
   .use(shapeModule)
   .use(yjsModule)
-  .error(async ({ error }) => {
+  .onError(async ({ error }) => {
     posthog?.captureExceptionImmediate(error);
   })
   .listen(8080);
