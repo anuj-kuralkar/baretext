@@ -13,11 +13,13 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 
 export function PasskeysGroup() {
-  const { data: passkeys, error: _error } = authClient.useListPasskeys();
+  const { data: passkeys, isPending: isLoadingPasskeys } =
+    authClient.useListPasskeys();
   const [isPending, startTransition] = useTransition();
 
   const handleAddPasskey = () => {
@@ -69,36 +71,48 @@ export function PasskeysGroup() {
         </Button>
       </ItemActions>
       <ItemGroup className="pl-3.5">
-        {passkeys?.map((passkey) => (
-          <Item key={passkey.id}>
+        {isLoadingPasskeys ? (
+          <Item>
             <ItemContent>
-              <ItemTitle>
-                {passkey.name ||
-                  getAuthenticatorName(passkey.aaguid) ||
-                  "Passkey"}
-              </ItemTitle>
-              <ItemDescription>
-                {passkey.createdAt
-                  ? `Added on ${new Intl.DateTimeFormat("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    }).format(new Date(passkey.createdAt))}`
-                  : "Added previously"}
-              </ItemDescription>
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="mt-1.5 h-3.5 w-44" />
             </ItemContent>
             <ItemActions>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDeletePasskey(passkey.id)}
-                disabled={isPending}
-              >
-                Remove
-              </Button>
+              <Skeleton className="h-7 w-16 rounded-md" />
             </ItemActions>
           </Item>
-        ))}
+        ) : (
+          passkeys?.map((passkey) => (
+            <Item key={passkey.id}>
+              <ItemContent>
+                <ItemTitle>
+                  {passkey.name ||
+                    getAuthenticatorName(passkey.aaguid) ||
+                    "Passkey"}
+                </ItemTitle>
+                <ItemDescription>
+                  {passkey.createdAt
+                    ? `Added on ${new Intl.DateTimeFormat("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      }).format(new Date(passkey.createdAt))}`
+                    : "Added previously"}
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDeletePasskey(passkey.id)}
+                  disabled={isPending}
+                >
+                  Remove
+                </Button>
+              </ItemActions>
+            </Item>
+          ))
+        )}
       </ItemGroup>
     </Item>
   );
