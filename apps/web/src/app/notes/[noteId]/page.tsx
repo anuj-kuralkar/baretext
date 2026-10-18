@@ -1,5 +1,7 @@
 import { Editor } from "@/components/editor";
 
+export const instant = false;
+
 export default async function NotePage({
   params,
 }: {
