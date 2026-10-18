@@ -7,7 +7,11 @@ const missingVariable = !env.POSTHOG_PROJECT_TOKEN
     ? "POSTHOG_HOST"
     : undefined;
 
-if (missingVariable && process.env.NODE_ENV !== "production") {
+if (
+  missingVariable &&
+  process.env.NODE_ENV !== "production" &&
+  process.env.SKIP_ENV_VALIDATION !== "true"
+) {
   throw new Error(
     `${missingVariable} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${missingVariable} is configured`,
   );
