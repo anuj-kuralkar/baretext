@@ -1,16 +1,40 @@
 import { ArrowRight, CircleUserRoundIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { Background } from "@/components/background";
 import { BrandLink } from "@/components/brand-link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getSession } from "@/lib/session";
 
-export default async function Home() {
+async function UserNav() {
   const session = await getSession();
   const user = session?.user;
+
+  if (user) {
+    return (
+      <Link href="/settings/profile">
+        <Avatar>
+          <AvatarImage alt="User Avatar" src={user.image ?? undefined} />
+          <AvatarFallback>
+            <CircleUserRoundIcon className="size-4" />
+          </AvatarFallback>
+        </Avatar>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href="/login" className={buttonVariants()}>
+      Login
+    </Link>
+  );
+}
+
+export default function Home() {
   return (
     <div className="group/layout relative z-10 flex min-h-svh flex-col bg-background">
       <header className="sticky top-0 z-10 w-full bg-background">
@@ -25,23 +49,9 @@ export default async function Home() {
               Notes
             </Link>
 
-            {user ? (
-              <Link href="/settings/profile">
-                <Avatar>
-                  <AvatarImage
-                    alt="User Avatar"
-                    src={user.image ?? undefined}
-                  />
-                  <AvatarFallback>
-                    <CircleUserRoundIcon className="size-4" />
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-            ) : (
-              <Link href="/login" className={buttonVariants()}>
-                Login
-              </Link>
-            )}
+            <Suspense fallback={<Skeleton className="h-8 w-16 rounded-lg" />}>
+              <UserNav />
+            </Suspense>
           </div>
         </nav>
       </header>

@@ -3,6 +3,7 @@
 import { useLiveSuspenseQuery } from "@tanstack/react-db";
 import { cn } from "cn";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 import { noteListQuery } from "@/collections/note";
 import { buttonVariants } from "@/components/ui/button";
@@ -11,13 +12,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { NoteContextMenu } from "./note-context-menu";
 
-export interface NoteListProps {
-  active?: string;
-}
-
-export function NoteList({ active }: NoteListProps) {
+export function NoteList() {
+  const { noteId } = useParams<{ noteId?: string }>();
   const { data: notes } = useLiveSuspenseQuery(noteListQuery);
-
   if (notes.length === 0) {
     return <NoteListEmpty />;
   }
@@ -30,7 +27,7 @@ export function NoteList({ active }: NoteListProps) {
             id={note.id}
             textContent={note.textContent}
             updatedAt={note.updatedAt}
-            isActive={active === note.id}
+            isActive={noteId === note.id}
           />
         </NoteContextMenu>
       ))}
