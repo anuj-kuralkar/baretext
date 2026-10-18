@@ -37,9 +37,11 @@ export const auth = betterAuth({
   },
   plugins: [
     passkey({
-      rpID: new URL(env.WEB_URL).hostname,
       rpName: "Baretext",
-      origin: env.WEB_URL,
+      ...(process.env.SKIP_ENV_VALIDATION !== "true" && {
+        rpID: new URL(env.WEB_URL).hostname,
+        origin: env.WEB_URL,
+      }),
     }),
   ],
 });
