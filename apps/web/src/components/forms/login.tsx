@@ -1,7 +1,6 @@
 "use client";
 
 import { FingerprintIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,6 @@ export function LoginForm() {
   const [loadingProvider, setLoadingProvider] = useState<LoginProvider | null>(
     null,
   );
-  const router = useRouter();
 
   const handlePasskeyLogin = async () => {
     setLoadingProvider("passkey");
@@ -38,7 +36,7 @@ export function LoginForm() {
       return;
     }
 
-    router.push("/");
+    window.location.href = "/";
   };
 
   const handleLogin = async (provider: "google" | "github") => {
