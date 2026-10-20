@@ -14,9 +14,6 @@
   "exports": {
     ".": {
       "types": "./src/app.ts"
-    },
-    "./app": {
-      "types": "./src/app.ts"
     }
   },
   "dependencies": {
