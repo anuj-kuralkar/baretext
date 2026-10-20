@@ -8,14 +8,16 @@ const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     "service.name": "baretext-api",
   }),
-  logRecordProcessor: new BatchLogRecordProcessor({
-    exporter: new OTLPLogExporter({
-      url: "https://us.i.posthog.com/i/v1/logs",
-      headers: {
-        Authorization: `Bearer ${env.POSTHOG_PROJECT_TOKEN}`,
-      },
+  logRecordProcessors: [
+    new BatchLogRecordProcessor({
+      exporter: new OTLPLogExporter({
+        url: "https://us.i.posthog.com/i/v1/logs",
+        headers: {
+          Authorization: `Bearer ${env.POSTHOG_PROJECT_TOKEN}`,
+        },
+      }),
     }),
-  }),
+  ],
 });
 
 sdk.start();

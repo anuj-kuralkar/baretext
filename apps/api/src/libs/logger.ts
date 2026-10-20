@@ -1,3 +1,3 @@
-import { logs } from "@opentelemetry/api-logs";
+import { logs } from "@opentelemetry/api";
 
 export const logger = logs.getLogger("baretext-api");
