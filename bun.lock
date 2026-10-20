@@ -18,7 +18,7 @@
         "@baretext/auth": "workspace:*",
         "@baretext/db": "workspace:*",
         "@electric-sql/client": "catalog:",
-        "@elysia/cors": "2.0.0-beta.2",
+        "@elysia/cors": "2.0.0-exp.1",
         "@opentelemetry/api-logs": "^0.223.0",
         "@opentelemetry/exporter-logs-otlp-http": "^0.223.0",
         "@opentelemetry/resources": "^2.12.0",
@@ -46,7 +46,7 @@
         "@better-auth/passkey": "catalog:",
         "@electric-sql/client": "catalog:",
         "@electric-sql/y-electric": "^0.1.54",
-        "@elysia/eden": "2.0.0-beta.6",
+        "@elysia/eden": "2.0.0-exp.1",
         "@lexical/clipboard": "^0.52.0",
         "@lexical/code-prism": "^0.52.0",
         "@lexical/extension": "^0.52.0",
@@ -301,9 +301,9 @@
 
     "@electric-sql/y-electric": ["@electric-sql/y-electric@0.1.54", "", { "dependencies": { "@electric-sql/client": "1.5.28", "lib0": "^0.2.65", "y-protocols": "^1.0.5", "yjs": "^13.6.6" }, "bin": { "intent": "bin/intent.mjs" } }, "sha512-yK/3bzpR3LOXvBTU7aC0Pe7mq2gr/wCCrhlklEU+xHCR5eEoH7qEpYjDAUuByhm7BQHCfWY5cxc/BxPDpTjseQ=="],
 
-    "@elysia/cors": ["@elysia/cors@2.0.0-beta.2", "", { "peerDependencies": { "elysia": ">= 2.0.0-beta.30" } }, "sha512-Sumt71xVWde3B8pE28X0Swg79269Q22AiPVaUlyEr5B0aISl8Ngc9kCtx9XlC8i/39gI0jG6LnMHo2BlMS6xjw=="],
+    "@elysia/cors": ["@elysia/cors@2.0.0-exp.1", "", { "peerDependencies": { "elysia": ">= 2.0.0-exp.14" } }, "sha512-Y23iaNj82ml5jCjvckQAZIgdTDcCS7FZtEQU018Pf2Yd8a3Ogsqa8+hPdjwje7uCJHBLE88QyZeJgo2bly2Hrw=="],
 
-    "@elysia/eden": ["@elysia/eden@2.0.0-beta.6", "", { "peerDependencies": { "elysia": ">= 2.0.0-beta.2" } }, "sha512-UYtYUiJ/OPwlkFZCe8QJ4Xc4VwXz7BykYruBDc4VQRMItWWGypsjMqwJUhQPG3D7A82GAU7q1goVwMcLyC6pYg=="],
+    "@elysia/eden": ["@elysia/eden@2.0.0-exp.1", "", { "peerDependencies": { "elysia": ">= 2.0.0-exp.23" } }, "sha512-l6SB67Q3VoZMnLwjNULCg+friUCvbOs6bMqRW8ckWe0mLA6UmMF96b/GN2boy0M8UMOlusLUGkxOoKgcaPFjEA=="],
 
     "@emnapi/runtime": ["@emnapi/runtime@1.11.3", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA=="],
 

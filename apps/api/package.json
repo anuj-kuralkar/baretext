@@ -23,7 +23,7 @@
     "@baretext/auth": "workspace:*",
     "@baretext/db": "workspace:*",
     "@electric-sql/client": "catalog:",
-    "@elysia/cors": "2.0.0-beta.2",
+    "@elysia/cors": "2.0.0-exp.1",
     "@opentelemetry/api-logs": "^0.223.0",
     "@opentelemetry/exporter-logs-otlp-http": "^0.223.0",
     "@opentelemetry/resources": "^2.12.0",

@@ -19,7 +19,7 @@
     "@better-auth/passkey": "catalog:",
     "@electric-sql/client": "catalog:",
     "@electric-sql/y-electric": "^0.1.54",
-    "@elysia/eden": "2.0.0-beta.6",
+    "@elysia/eden": "2.0.0-exp.1",
     "@lexical/clipboard": "^0.52.0",
     "@lexical/code-prism": "^0.52.0",
     "@lexical/extension": "^0.52.0",
