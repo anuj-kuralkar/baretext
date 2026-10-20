@@ -5,8 +5,6 @@ import { sql } from "drizzle-orm/sql";
 import { env } from "../../libs/env";
 import type * as ShapeModel from "./model";
 
-const qb = new QueryBuilder();
-
 export function buildElectricOriginUrl({
   userId,
   query,
@@ -45,7 +43,7 @@ export function buildElectricOriginUrl({
   const target = tables[table];
   originUrl.searchParams.set("table", table);
 
-  const { sql: queryString, params: queryParams } = qb
+  const { sql: queryString, params: queryParams } = new QueryBuilder()
     .select()
     .from(target.tableDef)
     .where(target.whereExpr)
