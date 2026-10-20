@@ -2,33 +2,26 @@ import { note, ydocAwareness, ydocUpdate } from "@baretext/db/schema";
 import { ELECTRIC_PROTOCOL_QUERY_PARAMS } from "@electric-sql/client";
 import { QueryBuilder } from "drizzle-orm/pg-core/query-builders";
 import { sql } from "drizzle-orm/sql";
-import { HTTPError } from "elysia";
 import { env } from "../../libs/env";
-import type { ShapeTableName } from "./model";
+import type * as ShapeModel from "./model";
 
-export class InvalidShapeTableError extends HTTPError.id(
-  "INVALID_SHAPE_TABLE",
-  400,
-) {}
+const qb = new QueryBuilder();
 
 export function buildElectricOriginUrl({
-  table,
-  room,
   userId,
-  searchParams,
+  query,
 }: {
-  table: ShapeTableName;
-  room?: string;
   userId: string;
-  searchParams: URLSearchParams;
-}): URL | InvalidShapeTableError {
+  query: ShapeModel.Get["Query"];
+}): URL {
+  const { table, room } = query;
   const originUrl = new URL(env.ELECTRIC_URL);
 
-  searchParams.forEach((value, key) => {
-    if (ELECTRIC_PROTOCOL_QUERY_PARAMS.includes(key)) {
-      originUrl.searchParams.set(key, value);
+  for (const [key, value] of Object.entries(query)) {
+    if (value !== undefined && ELECTRIC_PROTOCOL_QUERY_PARAMS.includes(key)) {
+      originUrl.searchParams.set(key, String(value));
     }
-  });
+  }
 
   const tables = {
     note: {
@@ -50,20 +43,15 @@ export function buildElectricOriginUrl({
   } as const;
 
   const target = tables[table];
-  if (!target) {
-    return new InvalidShapeTableError(`Invalid table: ${table}`);
-  }
-
   originUrl.searchParams.set("table", table);
 
-  const qb = new QueryBuilder();
-  const { sql: query, params: queryParams } = qb
+  const { sql: queryString, params: queryParams } = qb
     .select()
     .from(target.tableDef)
     .where(target.whereExpr)
     .toSQL();
 
-  const fragment = query.replace(/^SELECT .* FROM .* WHERE\s+/i, "");
+  const fragment = queryString.replace(/^SELECT .* FROM .* WHERE\s+/i, "");
   originUrl.searchParams.set("where", fragment);
 
   queryParams.forEach((value, index) => {

@@ -2,7 +2,6 @@ import type { UnwrapModels } from "elysia";
 import { z } from "zod";
 
 export const shapeTables = ["note", "ydoc_update", "ydoc_awareness"] as const;
-export type ShapeTableName = (typeof shapeTables)[number];
 
 export const Get = {
   Query: z.looseObject({
