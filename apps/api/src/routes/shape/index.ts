@@ -24,10 +24,10 @@ export const shape = new Elysia({ prefix: "/shape" }).use(authPlugin).get(
     headers.delete("access-control-allow-headers");
     headers.delete("access-control-allow-credentials");
     headers.set(
-      "Access-Control-Expose-Headers",
+      "access-control-expose-headers",
       "electric-offset, electric-handle, electric-schema, electric-cursor",
     );
-    headers.set("Vary", "Cookie");
+    headers.set("vary", "cookie");
 
     return new Response(response.body, {
       status: response.status,
