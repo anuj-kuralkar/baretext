@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "build": "bun build.ts",
-    "start": "bun index.ts",
+    "start": "bun index.js",
     "check": "biome check",
     "check:write": "biome check --write",
     "test": "echo \"Error: no test specified\" && exit 1"
