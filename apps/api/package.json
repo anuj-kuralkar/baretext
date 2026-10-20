@@ -13,7 +13,10 @@
   },
   "exports": {
     ".": {
-      "types": "./src/index.ts"
+      "types": "./src/app.ts"
+    },
+    "./app": {
+      "types": "./src/app.ts"
     }
   },
   "dependencies": {
@@ -28,7 +31,7 @@
     "@opentelemetry/sdk-node": "^0.223.0",
     "@t3-oss/env-core": "catalog:",
     "drizzle-orm": "catalog:",
-    "elysia": "2.0.0-beta.32",
+    "elysia": "^2.0.0-rc.0",
     "posthog-node": "^5.56.1",
     "zod": "catalog:"
   },

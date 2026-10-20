@@ -1,4 +1,4 @@
-import type { App } from "@baretext/api";
+import type { App } from "@baretext/api/app";
 import { treaty } from "@elysia/eden";
 import { env } from "@/lib/env/client";
 
