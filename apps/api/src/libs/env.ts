@@ -3,7 +3,6 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    PORT: z.coerce.number().default(8080),
     DATABASE_URL: z.url(),
 
     GITHUB_CLIENT_ID: z.string(),
@@ -24,6 +23,8 @@ export const env = createEnv({
     POSTHOG_HOST: z.url().optional(),
 
     WEB_URL: z.url(),
+
+    PORT: z.coerce.number().default(8080),
   },
   runtimeEnv: process.env,
   skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
