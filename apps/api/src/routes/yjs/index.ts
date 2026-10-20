@@ -29,5 +29,3 @@ export const yjs = new Elysia({ prefix: "/yjs" })
       return status(200);
     },
   );
-
-export const yjsModule = yjs;

@@ -5,8 +5,8 @@ import { HTTPError } from "elysia";
 import type * as NoteModel from "./model";
 
 export class NoteNotFound extends HTTPError.id("NOTE_NOT_FOUND", 404) {}
-export class NoteOperationFailed extends HTTPError.id(
-  "NOTE_OPERATION_FAILED",
+export class NoteCreationFailed extends HTTPError.id(
+  "NOTE_CREATION_FAILED",
   500,
 ) {}
 
@@ -20,7 +20,7 @@ export async function createNote(
 
   const row = result[0];
   if (!row) {
-    return new NoteOperationFailed("Failed to create note");
+    return new NoteCreationFailed("Failed to create note");
   }
 
   const txid = row.txid;
@@ -71,9 +71,3 @@ export async function deleteNote({
   const txid = row.txid;
   return { txid: parseInt(txid, 10) };
 }
-
-export const NoteService = {
-  createNote,
-  updateNote,
-  deleteNote,
-};

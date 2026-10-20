@@ -44,5 +44,3 @@ export const shape = new Elysia({ prefix: "/shape" }).use(authPlugin).get(
     });
   },
 );
-
-export const shapeModule = shape;

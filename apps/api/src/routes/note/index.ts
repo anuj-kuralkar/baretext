@@ -31,5 +31,3 @@ export const note = new Elysia({ prefix: "/notes" })
     },
     async ({ params: { id }, user }) => deleteNote({ id, userId: user.id }),
   );
-
-export const noteModule = note;

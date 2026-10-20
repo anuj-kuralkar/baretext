@@ -31,11 +31,6 @@ export const ByIdDelete = {
   }),
 };
 
-export const Patch = ByIdPatch;
-export const Delete = ByIdDelete;
-
 export type Post = UnwrapModels<typeof Post>;
 export type ByIdPatch = UnwrapModels<typeof ByIdPatch>;
 export type ByIdDelete = UnwrapModels<typeof ByIdDelete>;
-export type Patch = ByIdPatch;
-export type Delete = ByIdDelete;

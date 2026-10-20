@@ -13,8 +13,5 @@ export const AwarenessPut = {
   }),
 };
 
-export const Put = UpdatePut;
-
 export type UpdatePut = UnwrapModels<typeof UpdatePut>;
 export type AwarenessPut = UnwrapModels<typeof AwarenessPut>;
-export type Put = UpdatePut;

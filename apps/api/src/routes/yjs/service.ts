@@ -41,8 +41,3 @@ export async function saveAwareness({
       },
     });
 }
-
-export const YjsService = {
-  saveUpdate,
-  saveAwareness,
-};
