@@ -3,7 +3,6 @@ import {
   createMcpHandler,
   hostHeaderValidationResponse,
 } from "@modelcontextprotocol/server";
-import { NoteDb } from "./db";
 import { env } from "./env";
 import { createBaretextMcpServer } from "./server";
 
@@ -71,37 +70,22 @@ async function handleRequest(request: Request): Promise<Response> {
     return hostViolation;
   }
 
-  // 4. Local dev bypass / Static Token validation
+  // 4. Local dev with explicit secret token and user ID
   const authHeader = request.headers.get("authorization");
-  let localUserId = request.headers.get("x-user-id") || env.BARETEXT_USER_ID;
+  const explicitUserId =
+    request.headers.get("x-user-id") || env.BARETEXT_USER_ID;
 
-  if (env.MCP_AUTH_TOKEN && authHeader === `Bearer ${env.MCP_AUTH_TOKEN}`) {
-    if (!localUserId) {
-      localUserId = (await NoteDb.getDefaultUserId()) ?? undefined;
-    }
-    if (localUserId) {
-      return mcpHandler.fetch(request, {
-        authInfo: { clientId: localUserId },
-      });
-    }
-  }
-
-  // In local development, if no Bearer token is provided, auto-resolve default user
   if (
-    process.env.NODE_ENV !== "production" &&
-    !authHeader?.startsWith("Bearer ")
+    env.MCP_AUTH_TOKEN &&
+    authHeader === `Bearer ${env.MCP_AUTH_TOKEN}` &&
+    explicitUserId
   ) {
-    if (!localUserId) {
-      localUserId = (await NoteDb.getDefaultUserId()) ?? undefined;
-    }
-    if (localUserId) {
-      return mcpHandler.fetch(request, {
-        authInfo: { clientId: localUserId },
-      });
-    }
+    return mcpHandler.fetch(request, {
+      authInfo: { clientId: explicitUserId },
+    });
   }
 
-  // 5. OAuth Protected Request Handler (verifies Bearer JWT via JWKS or challenges 401)
+  // 5. OAuth Protected Request Handler (verifies Better Auth Bearer JWT via JWKS or challenges 401)
   return protectedHandler(request);
 }
 

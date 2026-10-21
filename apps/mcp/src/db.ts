@@ -17,22 +17,7 @@ export interface NoteSummary {
   createdAt: Date;
   updatedAt: Date;
 }
-
-let cachedDefaultUserId: string | null = null;
-
 export const NoteDb = {
-  async getDefaultUserId(): Promise<string | null> {
-    if (cachedDefaultUserId) {
-      return cachedDefaultUserId;
-    }
-    const [firstUser] = await db.select({ id: user.id }).from(user).limit(1);
-    if (firstUser) {
-      cachedDefaultUserId = firstUser.id;
-      return cachedDefaultUserId;
-    }
-    return null;
-  },
-
   async listNotes(
     userId: string,
     limit = 50,
