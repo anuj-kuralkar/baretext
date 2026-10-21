@@ -8,20 +8,15 @@
   },
   "dependencies": {
     "@baretext/db": "workspace:*",
+    "@baretext/emails": "workspace:*",
     "@better-auth/drizzle-adapter": "^1.7.10",
     "@better-auth/passkey": "catalog:",
     "@t3-oss/env-core": "catalog:",
     "better-auth": "catalog:",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "react-email": "^6.11.3",
-    "resend": "^6.34.1",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@types/bun": "catalog:",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0"
+    "@types/bun": "catalog:"
   },
   "peerDependencies": {
     "typescript": "catalog:"

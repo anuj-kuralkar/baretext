@@ -1,11 +1,11 @@
 import { db } from "@baretext/db";
 import * as schema from "@baretext/db/schema";
+import { sendSignInOtpEmail } from "@baretext/emails";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { passkey } from "@better-auth/passkey";
 import { betterAuth } from "better-auth/minimal";
 import { emailOTP } from "better-auth/plugins";
 import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";
-import { sendSignInOtpEmail } from "./emails/send";
 import { env } from "./env";
 
 export const auth = betterAuth({
