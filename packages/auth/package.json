@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.10",
+    "@better-auth/mcp": "catalog:",
     "@better-auth/passkey": "catalog:",
     "@t3-oss/env-core": "catalog:",
     "better-auth": "catalog:",

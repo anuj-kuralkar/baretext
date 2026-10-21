@@ -10,13 +10,17 @@
       "packages/*"
     ],
     "catalog": {
+      "@better-auth/mcp": "^1.7.11",
       "@better-auth/passkey": "^1.7.12",
       "@electric-sql/client": "^1.5.28",
+      "@modelcontextprotocol/server": "^2.3.1",
       "@t3-oss/env-core": "^0.13.11",
       "@types/bun": "^1.4.3",
       "better-auth": "^1.7.12",
       "drizzle-orm": "1.0.0-rc.4",
+      "lexical": "^0.52.0",
       "typescript": "^7.0.2",
+      "yjs": "^13.6.33",
       "zod": "^4.6.7"
     }
   },
@@ -28,6 +32,9 @@
     "build:api": "bun --filter @baretext/api build",
     "start:api": "bun --filter @baretext/api start",
     "start:web": "bun --filter @baretext/web start",
+    "dev:mcp": "bun --filter @baretext/mcp dev",
+    "build:mcp": "bun --filter @baretext/mcp build",
+    "start:mcp": "bun --filter @baretext/mcp start",
     "check": "biome check",
     "check:write": "biome check --write"
   },
