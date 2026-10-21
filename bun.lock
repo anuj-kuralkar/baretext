@@ -133,6 +133,25 @@
         "typescript": "catalog:",
       },
     },
+    "packages/emails": {
+      "name": "@baretext/emails",
+      "dependencies": {
+        "@t3-oss/env-core": "catalog:",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1",
+        "react-email": "^6.11.3",
+        "resend": "^6.34.1",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@types/bun": "catalog:",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+      },
+      "peerDependencies": {
+        "typescript": "catalog:",
+      },
+    },
   },
   "trustedDependencies": [
     "sharp",
@@ -213,6 +232,8 @@
     "@baretext/auth": ["@baretext/auth@workspace:packages/auth"],
 
     "@baretext/db": ["@baretext/db@workspace:packages/db"],
+
+    "@baretext/emails": ["@baretext/emails@workspace:packages/emails"],
 
     "@baretext/web": ["@baretext/web@workspace:apps/web"],
 
