@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "PORT=3001 bun run --watch src/index.ts",
+    "stdio": "bun run src/stdio.ts",
     "build": "bun build.ts",
     "start": "PORT=3001 bun run src/index.ts",
     "check": "biome check",

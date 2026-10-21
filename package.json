@@ -33,6 +33,7 @@
     "start:api": "bun --filter @baretext/api start",
     "start:web": "bun --filter @baretext/web start",
     "dev:mcp": "bun --filter @baretext/mcp dev",
+    "stdio:mcp": "bun --filter @baretext/mcp stdio",
     "build:mcp": "bun --filter @baretext/mcp build",
     "start:mcp": "bun --filter @baretext/mcp start",
     "check": "biome check",
