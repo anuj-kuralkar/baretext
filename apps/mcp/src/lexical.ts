@@ -14,7 +14,28 @@ import {
   syncYjsStateToLexicalV2__EXPERIMENTAL,
 } from "@lexical/yjs";
 import { $getRoot, defineExtension } from "lexical";
+import * as decoding from "lib0/decoding";
+import * as encoding from "lib0/encoding";
 import * as Y from "yjs";
+
+export function unpackYjsOp(buffer: Uint8Array): Uint8Array[] {
+  try {
+    const decoder = decoding.createDecoder(buffer);
+    const ops: Uint8Array[] = [];
+    while (decoder.pos < decoder.arr.length) {
+      ops.push(decoding.readVarUint8Array(decoder));
+    }
+    return ops.length > 0 ? ops : [buffer];
+  } catch {
+    return [buffer];
+  }
+}
+
+export function packYjsOp(update: Uint8Array): Uint8Array {
+  const encoder = encoding.createEncoder();
+  encoding.writeVarUint8Array(encoder, update);
+  return encoding.toUint8Array(encoder);
+}
 
 const editorExtension = defineExtension({
   name: "@baretext/mcp-editor",
@@ -48,8 +69,11 @@ export function yjsToMarkdown(
   ydocOps: Uint8Array[],
 ): { markdown: string; textContent: string } {
   const doc = new Y.Doc();
-  for (const op of ydocOps) {
-    Y.applyUpdate(doc, op);
+  for (const rawOp of ydocOps) {
+    const unpacked = unpackYjsOp(rawOp);
+    for (const op of unpacked) {
+      Y.applyUpdate(doc, op);
+    }
   }
 
   const editor = buildEditorFromExtensions(editorExtension);
@@ -69,8 +93,11 @@ export async function markdownToYjs(
   existingOps: Uint8Array[] = [],
 ): Promise<{ stateUpdate: Uint8Array; textContent: string }> {
   const doc = new Y.Doc();
-  for (const op of existingOps) {
-    Y.applyUpdate(doc, op);
+  for (const rawOp of existingOps) {
+    const unpacked = unpackYjsOp(rawOp);
+    for (const op of unpacked) {
+      Y.applyUpdate(doc, op);
+    }
   }
 
   const provider = createTrivialProvider();
@@ -106,7 +133,8 @@ export async function markdownToYjs(
   setTimeout(resolve, 20);
   await promise;
   const textContent = editor.read(() => $getRoot().getTextContent());
-  const stateUpdate = Y.encodeStateAsUpdate(doc);
+  const rawUpdate = Y.encodeStateAsUpdate(doc);
+  const stateUpdate = packYjsOp(rawUpdate);
 
   doc.destroy();
   return { stateUpdate, textContent };
