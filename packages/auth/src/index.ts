@@ -3,7 +3,9 @@ import * as schema from "@baretext/db/schema";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { passkey } from "@better-auth/passkey";
 import { betterAuth } from "better-auth/minimal";
+import { emailOTP } from "better-auth/plugins";
 import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";
+import { sendSignInOtpEmail } from "./emails/send";
 import { env } from "./env";
 
 export const auth = betterAuth({
@@ -42,6 +44,15 @@ export const auth = betterAuth({
         rpID: new URL(env.WEB_URL).hostname,
         origin: env.WEB_URL,
       }),
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "sign-in" || type === "email-verification") {
+          await sendSignInOtpEmail({ email, otp });
+        }
+      },
+      expiresIn: 300,
+      otpLength: 6,
     }),
   ],
 });

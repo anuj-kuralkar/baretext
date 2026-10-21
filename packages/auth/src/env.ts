@@ -15,6 +15,9 @@ export const env = createEnv({
     WEB_URL: z.url(),
 
     VERCEL_ENV: z.enum(["production", "preview", "development"]),
+
+    RESEND_API_KEY: z.string().optional(),
+    EMAIL_FROM: z.string().default("Baretext <onboarding@resend.dev>"),
   },
   runtimeEnv: process.env,
   skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
