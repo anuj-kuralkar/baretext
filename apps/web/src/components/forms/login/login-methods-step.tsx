@@ -3,9 +3,14 @@
 import { FingerprintIcon, MailIcon } from "lucide-react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "./login-context";
-import { LoginHeader } from "./login-header";
 
 export function LoginMethodsStep() {
   const {
@@ -19,71 +24,69 @@ export function LoginMethodsStep() {
   const isPending = loadingProvider !== null;
 
   return (
-    <div className="flex flex-col p-8">
-      <LoginHeader
-        title="Welcome back"
-        description="Hop back in and keep writing."
-      />
-      <div className="mt-6 flex flex-col gap-3">
+    <div className="flex flex-col">
+      <CardHeader className="text-center">
+        <CardTitle className="font-extrabold text-2xl tracking-tight">
+          Welcome back
+        </CardTitle>
+        <CardDescription>Hop back in and keep writing.</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
         <Button
           variant="outline"
-          size="lg"
-          className="h-10 w-full justify-center gap-2 font-medium"
+          className="w-full"
           onClick={goToEmail}
           disabled={isPending}
         >
-          <MailIcon className="size-4" />
+          <MailIcon data-icon="inline-start" />
           Sign in with Email
         </Button>
         <Button
           variant="outline"
-          size="lg"
-          className="h-10 w-full justify-center gap-2 font-medium"
+          className="w-full"
           onClick={() => loginWithSocial("google")}
           disabled={isPending}
         >
           {loadingProvider === "google" ? (
             <Spinner data-icon="inline-start" />
           ) : (
-            <GoogleIcon className="size-4" />
+            <GoogleIcon data-icon="inline-start" />
           )}
           Sign in with Google
         </Button>
         <Button
           variant="outline"
-          size="lg"
-          className="h-10 w-full justify-center gap-2 font-medium"
+          className="w-full"
           onClick={() => loginWithSocial("github")}
           disabled={isPending}
         >
           {loadingProvider === "github" ? (
             <Spinner data-icon="inline-start" />
           ) : (
-            <GithubIcon className="size-4" />
+            <GithubIcon data-icon="inline-start" />
           )}
           Sign in with GitHub
         </Button>
         <Button
           variant="outline"
-          size="lg"
-          className="h-10 w-full justify-center gap-2 font-medium"
+          className="w-full"
           onClick={loginWithPasskey}
           disabled={isPending}
         >
           {loadingProvider === "passkey" ? (
             <Spinner data-icon="inline-start" />
           ) : (
-            <FingerprintIcon className="size-4" />
+            <FingerprintIcon data-icon="inline-start" />
           )}
           Sign in with Passkey
         </Button>
 
         {emailError && (
-          <p className="mt-1 text-center font-medium text-destructive text-xs">
+          <p className="text-center font-medium text-destructive text-sm">
             {emailError}
           </p>
         )}
-      </div>
+      </CardContent>
     </div>
   );
 }

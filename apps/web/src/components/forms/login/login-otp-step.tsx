@@ -1,8 +1,13 @@
 "use client";
 
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { PencilIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   InputOTP,
   InputOTPGroup,
@@ -11,7 +16,6 @@ import {
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "./login-context";
-import { LoginHeader } from "./login-header";
 
 export function LoginOtpStep() {
   const {
@@ -28,27 +32,17 @@ export function LoginOtpStep() {
   } = useLogin();
 
   return (
-    <div className="flex flex-col p-8">
-      <LoginHeader
-        title="Check your email"
-        description={
-          <span>
-            We sent a 6-digit code to{" "}
-            <button
-              type="button"
-              onClick={goToEmail}
-              className="inline-flex items-center gap-1 font-medium text-foreground underline-offset-4 transition-colors hover:underline"
-              title="Change email"
-            >
-              <span className="max-w-[180px] truncate">{email}</span>
-              <PencilIcon className="size-3 text-muted-foreground" />
-            </button>
-          </span>
-        }
-        onBack={goToEmail}
-        backLabel="Change email"
-      />
-      <div className="mt-6 flex flex-col items-center">
+    <div className="flex flex-col">
+      <CardHeader className="text-center">
+        <CardTitle className="font-extrabold text-2xl tracking-tight">
+          Check your email
+        </CardTitle>
+        <CardDescription>
+          We sent a 6-digit code to{" "}
+          <span className="font-medium text-foreground">{email}</span>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center gap-4">
         <div className="flex flex-col items-center justify-center py-2">
           <InputOTP
             maxLength={6}
@@ -64,52 +58,27 @@ export function LoginOtpStep() {
             autoFocus
           >
             <InputOTPGroup>
-              <InputOTPSlot
-                index={0}
-                className="size-11 text-base sm:size-12 sm:text-lg"
-                aria-invalid={!!otpError}
-              />
-              <InputOTPSlot
-                index={1}
-                className="size-11 text-base sm:size-12 sm:text-lg"
-                aria-invalid={!!otpError}
-              />
-              <InputOTPSlot
-                index={2}
-                className="size-11 text-base sm:size-12 sm:text-lg"
-                aria-invalid={!!otpError}
-              />
+              <InputOTPSlot index={0} aria-invalid={!!otpError} />
+              <InputOTPSlot index={1} aria-invalid={!!otpError} />
+              <InputOTPSlot index={2} aria-invalid={!!otpError} />
             </InputOTPGroup>
-            <InputOTPSeparator className="mx-1 sm:mx-2" />
+            <InputOTPSeparator />
             <InputOTPGroup>
-              <InputOTPSlot
-                index={3}
-                className="size-11 text-base sm:size-12 sm:text-lg"
-                aria-invalid={!!otpError}
-              />
-              <InputOTPSlot
-                index={4}
-                className="size-11 text-base sm:size-12 sm:text-lg"
-                aria-invalid={!!otpError}
-              />
-              <InputOTPSlot
-                index={5}
-                className="size-11 text-base sm:size-12 sm:text-lg"
-                aria-invalid={!!otpError}
-              />
+              <InputOTPSlot index={3} aria-invalid={!!otpError} />
+              <InputOTPSlot index={4} aria-invalid={!!otpError} />
+              <InputOTPSlot index={5} aria-invalid={!!otpError} />
             </InputOTPGroup>
           </InputOTP>
 
           {otpError && (
-            <p className="mt-3 text-center font-medium text-destructive text-xs leading-normal">
+            <p className="mt-2 text-center font-medium text-destructive text-sm">
               {otpError}
             </p>
           )}
         </div>
 
         <Button
-          size="lg"
-          className="mt-6 h-10 w-full font-medium text-sm"
+          className="w-full"
           onClick={() => verifyOtp(otp)}
           disabled={otp.length !== 6 || isVerifyingOtp}
         >
@@ -123,28 +92,30 @@ export function LoginOtpStep() {
           )}
         </Button>
 
-        <div className="mt-5 text-center">
-          {countdown > 0 ? (
-            <p className="text-muted-foreground text-xs">
-              Resend code in{" "}
-              <span className="font-medium text-foreground">{countdown}s</span>
-            </p>
-          ) : (
-            <Button
-              type="button"
-              variant="ghost"
-              size="xs"
-              className="text-muted-foreground text-xs hover:text-foreground"
-              onClick={resendOtp}
-              disabled={isSendingOtp}
-            >
-              {isSendingOtp
-                ? "Sending new code..."
-                : "Didn't get a code? Resend"}
-            </Button>
-          )}
-        </div>
-      </div>
+        <Button
+          type="button"
+          variant="ghost"
+          className="w-full"
+          onClick={resendOtp}
+          disabled={isSendingOtp || countdown > 0}
+        >
+          {countdown > 0
+            ? `Resend code in ${countdown}s`
+            : isSendingOtp
+              ? "Sending code..."
+              : "Resend code"}
+        </Button>
+
+        <Button
+          type="button"
+          variant="ghost"
+          className="w-full"
+          onClick={goToEmail}
+          disabled={isVerifyingOtp}
+        >
+          Change email
+        </Button>
+      </CardContent>
     </div>
   );
 }
