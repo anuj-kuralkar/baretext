@@ -1,29 +1,21 @@
 "use client";
 
+import { ViewTransition } from "react";
 import { LoginProvider, useLogin } from "./login-context";
 import { LoginEmailStep } from "./login-email-step";
 import { LoginMethodsStep } from "./login-methods-step";
 import { LoginOtpStep } from "./login-otp-step";
 
 function LoginContent() {
-  const { step, direction } = useLogin();
-
-  const animationClass =
-    direction === "left"
-      ? "animate-in fade-in slide-in-from-right-6 duration-200"
-      : direction === "right"
-        ? "animate-in fade-in slide-in-from-left-6 duration-200"
-        : direction === "up"
-          ? "animate-in fade-in slide-in-from-bottom-6 duration-250"
-          : "animate-in fade-in slide-in-from-top-6 duration-200";
+  const { step } = useLogin();
 
   return (
-    <div className="w-full overflow-hidden">
-      <div key={step} className={animationClass}>
-        {step === "methods" && <LoginMethodsStep />}
-        {step === "email" && <LoginEmailStep />}
-        {step === "otp" && <LoginOtpStep />}
-      </div>
+    <div className="w-full">
+      <ViewTransition name="login-card" share="auto" enter="auto">
+        {step === "methods" && <LoginMethodsStep key="methods" />}
+        {step === "email" && <LoginEmailStep key="email" />}
+        {step === "otp" && <LoginOtpStep key="otp" />}
+      </ViewTransition>
     </div>
   );
 }

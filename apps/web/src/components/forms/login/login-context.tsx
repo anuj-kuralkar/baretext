@@ -1,11 +1,10 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
-import type { SlideDirection, Step } from "./types";
+import { createContext, startTransition, useContext, useState } from "react";
+import type { Step } from "./types";
 
 interface LoginContextValue {
   step: Step;
-  direction: SlideDirection;
   email: string;
   setEmail: (email: string) => void;
   goToMethods: () => void;
@@ -25,30 +24,31 @@ export function useLogin() {
 
 export function LoginProvider({ children }: { children: React.ReactNode }) {
   const [step, setStep] = useState<Step>("methods");
-  const [direction, setDirection] = useState<SlideDirection>("left");
   const [email, setEmail] = useState("");
 
   const goToMethods = () => {
-    setDirection("right");
-    setStep("methods");
+    startTransition(() => {
+      setStep("methods");
+    });
   };
 
   const goToEmail = () => {
-    setDirection(step === "otp" ? "down" : "left");
-    setStep("email");
+    startTransition(() => {
+      setStep("email");
+    });
   };
 
   const goToOtp = (nextEmail?: string) => {
-    if (nextEmail) setEmail(nextEmail);
-    setDirection("up");
-    setStep("otp");
+    startTransition(() => {
+      if (nextEmail) setEmail(nextEmail);
+      setStep("otp");
+    });
   };
 
   return (
     <LoginContext.Provider
       value={{
         step,
-        direction,
         email,
         setEmail,
         goToMethods,
