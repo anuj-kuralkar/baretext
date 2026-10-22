@@ -2,14 +2,11 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { z } from "zod";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 import type { SlideDirection, SocialProvider, Step } from "./types";
 
-const emailSchema = z
-  .string()
-  .trim()
-  .min(1, "Email address is required")
-  .email("Please enter a valid email address");
+const emailSchema = z.email("Please enter a valid email address");
 
 interface LoginContextValue {
   step: Step;
@@ -110,9 +107,11 @@ export function LoginProvider({ children }: { children: React.ReactNode }) {
     setLoadingProvider(null);
 
     if (error) {
-      setEmailError(
-        error.message ?? error.statusText ?? "Passkey authentication failed",
-      );
+      toast.add({
+        type: "error",
+        title:
+          error.message ?? error.statusText ?? "Passkey authentication failed",
+      });
       return;
     }
 
@@ -129,16 +128,18 @@ export function LoginProvider({ children }: { children: React.ReactNode }) {
     setLoadingProvider(null);
 
     if (error) {
-      setEmailError(
-        error.message ??
+      toast.add({
+        type: "error",
+        title:
+          error.message ??
           error.statusText ??
           `Failed to sign in with ${provider}`,
-      );
+      });
     }
   };
 
   const submitEmail = async () => {
-    const parseResult = emailSchema.safeParse(email);
+    const parseResult = emailSchema.safeParse(email.trim());
     if (!parseResult.success) {
       const issue = parseResult.error.issues[0];
       setEmailError(issue?.message ?? "Please enter a valid email address");

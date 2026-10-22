@@ -4,6 +4,7 @@ import { FingerprintIcon, MailIcon } from "lucide-react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -13,18 +14,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "./login-context";
 
 export function LoginMethodsStep() {
-  const {
-    goToEmail,
-    loginWithSocial,
-    loginWithPasskey,
-    loadingProvider,
-    emailError,
-  } = useLogin();
+  const { goToEmail, loginWithSocial, loginWithPasskey, loadingProvider } =
+    useLogin();
 
   const isPending = loadingProvider !== null;
 
   return (
-    <div className="flex flex-col">
+    <Card>
       <CardHeader className="text-center">
         <CardTitle className="font-extrabold text-2xl tracking-tight">
           Welcome back
@@ -80,13 +76,7 @@ export function LoginMethodsStep() {
           )}
           Sign in with Passkey
         </Button>
-
-        {emailError && (
-          <p className="text-center font-medium text-destructive text-sm">
-            {emailError}
-          </p>
-        )}
       </CardContent>
-    </div>
+    </Card>
   );
 }

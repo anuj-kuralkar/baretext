@@ -3,6 +3,7 @@
 import type * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -29,7 +30,7 @@ export function LoginEmailStep() {
   };
 
   return (
-    <div className="flex flex-col">
+    <Card>
       <CardHeader className="text-center">
         <CardTitle className="font-extrabold text-2xl tracking-tight">
           Sign in with email
@@ -80,6 +81,6 @@ export function LoginEmailStep() {
           </Button>
         </form>
       </CardContent>
-    </div>
+    </Card>
   );
 }

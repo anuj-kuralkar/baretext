@@ -19,13 +19,13 @@ function LoginCardContent() {
           : "animate-in fade-in slide-in-from-top-6 duration-200";
 
   return (
-    <Card className="w-full overflow-hidden">
+    <div className="w-full overflow-hidden">
       <div key={step} className={animationClass}>
         {step === "methods" && <LoginMethodsStep />}
         {step === "email" && <LoginEmailStep />}
         {step === "otp" && <LoginOtpStep />}
       </div>
-    </Card>
+    </div>
   );
 }
 

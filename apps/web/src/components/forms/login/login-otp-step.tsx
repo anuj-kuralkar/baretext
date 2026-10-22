@@ -3,6 +3,7 @@
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -32,7 +33,7 @@ export function LoginOtpStep() {
   } = useLogin();
 
   return (
-    <div className="flex flex-col">
+    <Card>
       <CardHeader className="text-center">
         <CardTitle className="font-extrabold text-2xl tracking-tight">
           Check your email
@@ -116,6 +117,6 @@ export function LoginOtpStep() {
           Change email
         </Button>
       </CardContent>
-    </div>
+    </Card>
   );
 }
