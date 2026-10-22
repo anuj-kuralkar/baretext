@@ -29,11 +29,8 @@ export function LoginEmailStep() {
     e.preventDefault();
 
     const trimmed = emailInput.trim();
-    const result = emailSchema.safeParse(trimmed);
-    if (!result.success) {
-      setEmailError(
-        result.error.issues[0]?.message ?? "Please enter a valid email address",
-      );
+    if (!emailSchema.validate(trimmed)) {
+      setEmailError("Please enter a valid email address");
       return;
     }
 
@@ -41,7 +38,7 @@ export function LoginEmailStep() {
     setIsSending(true);
 
     const { error } = await authClient.emailOtp.sendVerificationOtp({
-      email: result.data,
+      email: trimmed,
       type: "sign-in",
     });
 
@@ -54,8 +51,8 @@ export function LoginEmailStep() {
       return;
     }
 
-    setEmail(result.data);
-    goToOtp(result.data);
+    setEmail(trimmed);
+    goToOtp(trimmed);
   };
 
   return (
