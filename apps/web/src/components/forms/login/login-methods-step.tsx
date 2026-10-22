@@ -1,6 +1,7 @@
 "use client";
 
 import { FingerprintIcon, MailIcon } from "lucide-react";
+import { useState } from "react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,13 +12,55 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "@/components/ui/toast";
+import { authClient } from "@/lib/auth/client";
 import { useLogin } from "./login-context";
+import type { SocialProvider } from "./types";
 
 export function LoginMethodsStep() {
-  const { goToEmail, loginWithSocial, loginWithPasskey, loadingProvider } =
-    useLogin();
+  const { goToEmail } = useLogin();
+  const [loadingProvider, setLoadingProvider] = useState<
+    SocialProvider | "passkey" | null
+  >(null);
 
   const isPending = loadingProvider !== null;
+
+  const handleSocialLogin = async (provider: SocialProvider) => {
+    setLoadingProvider(provider);
+    const { error } = await authClient.signIn.social({
+      provider,
+      callbackURL: `${window.location.origin}/`,
+      errorCallbackURL: `${window.location.origin}/login`,
+    });
+    setLoadingProvider(null);
+
+    if (error) {
+      toast.add({
+        type: "error",
+        title:
+          error.message ??
+          error.statusText ??
+          `Failed to sign in with ${provider}`,
+      });
+    }
+  };
+
+  const handlePasskeyLogin = async () => {
+    setLoadingProvider("passkey");
+    const { error } = await authClient.signIn.passkey();
+    setLoadingProvider(null);
+
+    if (error) {
+      toast.add({
+        type: "error",
+        title:
+          error.message ?? error.statusText ?? "Passkey authentication failed",
+      });
+      return;
+    }
+
+    window.location.href = "/";
+  };
 
   return (
     <Card>
@@ -40,7 +83,7 @@ export function LoginMethodsStep() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => loginWithSocial("google")}
+          onClick={() => handleSocialLogin("google")}
           disabled={isPending}
         >
           {loadingProvider === "google" ? (
@@ -53,7 +96,7 @@ export function LoginMethodsStep() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => loginWithSocial("github")}
+          onClick={() => handleSocialLogin("github")}
           disabled={isPending}
         >
           {loadingProvider === "github" ? (
@@ -66,7 +109,7 @@ export function LoginMethodsStep() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={loginWithPasskey}
+          onClick={handlePasskeyLogin}
           disabled={isPending}
         >
           {loadingProvider === "passkey" ? (

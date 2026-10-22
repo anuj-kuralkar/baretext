@@ -1,6 +1,7 @@
 "use client";
 
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,21 +17,68 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth/client";
 import { useLogin } from "./login-context";
 
 export function LoginOtpStep() {
-  const {
-    email,
-    otp,
-    setOtp,
-    otpError,
-    isVerifyingOtp,
-    isSendingOtp,
-    countdown,
-    verifyOtp,
-    resendOtp,
-    goToEmail,
-  } = useLogin();
+  const { email, goToEmail } = useLogin();
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [countdown, setCountdown] = useState(30);
+
+  // Countdown timer for OTP resend
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const interval = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [countdown]);
+
+  const verifyOtp = async (codeToVerify: string) => {
+    const code = codeToVerify.trim();
+    if (code.length !== 6 || isVerifying) return;
+
+    setIsVerifying(true);
+    setOtpError(null);
+
+    const { error } = await authClient.signIn.emailOtp({
+      email,
+      otp: code,
+    });
+
+    setIsVerifying(false);
+
+    if (error) {
+      setOtpError(error.message ?? "Invalid or expired verification code");
+      return;
+    }
+
+    window.location.href = "/";
+  };
+
+  const handleResend = async () => {
+    if (countdown > 0 || isResending) return;
+    setOtp("");
+    setOtpError(null);
+    setIsResending(true);
+
+    const { error } = await authClient.emailOtp.sendVerificationOtp({
+      email,
+      type: "sign-in",
+    });
+
+    setIsResending(false);
+
+    if (error) {
+      setOtpError(error.message ?? error.statusText ?? "Failed to resend code");
+      return;
+    }
+
+    setCountdown(30);
+  };
 
   return (
     <Card>
@@ -51,11 +99,12 @@ export function LoginOtpStep() {
             value={otp}
             onChange={(val) => {
               setOtp(val);
+              if (otpError) setOtpError(null);
               if (val.length === 6) {
                 verifyOtp(val);
               }
             }}
-            disabled={isVerifyingOtp}
+            disabled={isVerifying}
             autoFocus
           >
             <InputOTPGroup>
@@ -81,9 +130,9 @@ export function LoginOtpStep() {
         <Button
           className="w-full"
           onClick={() => verifyOtp(otp)}
-          disabled={otp.length !== 6 || isVerifyingOtp}
+          disabled={otp.length !== 6 || isVerifying}
         >
-          {isVerifyingOtp ? (
+          {isVerifying ? (
             <>
               <Spinner data-icon="inline-start" />
               Verifying...
@@ -97,12 +146,12 @@ export function LoginOtpStep() {
           type="button"
           variant="ghost"
           className="w-full"
-          onClick={resendOtp}
-          disabled={isSendingOtp || countdown > 0}
+          onClick={handleResend}
+          disabled={isResending || countdown > 0}
         >
           {countdown > 0
             ? `Resend code in ${countdown}s`
-            : isSendingOtp
+            : isResending
               ? "Sending code..."
               : "Resend code"}
         </Button>
@@ -112,7 +161,7 @@ export function LoginOtpStep() {
           variant="ghost"
           className="w-full"
           onClick={goToEmail}
-          disabled={isVerifyingOtp}
+          disabled={isVerifying}
         >
           Change email
         </Button>

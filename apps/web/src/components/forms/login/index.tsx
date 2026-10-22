@@ -1,12 +1,11 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { LoginProvider, useLogin } from "./login-context";
 import { LoginEmailStep } from "./login-email-step";
 import { LoginMethodsStep } from "./login-methods-step";
 import { LoginOtpStep } from "./login-otp-step";
 
-function LoginCardContent() {
+function LoginContent() {
   const { step, direction } = useLogin();
 
   const animationClass =
@@ -32,7 +31,7 @@ function LoginCardContent() {
 export function LoginForm() {
   return (
     <LoginProvider>
-      <LoginCardContent />
+      <LoginContent />
     </LoginProvider>
   );
 }

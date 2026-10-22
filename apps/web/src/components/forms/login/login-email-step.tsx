@@ -1,6 +1,8 @@
 "use client";
 
 import type * as React from "react";
+import { useState } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,21 +14,48 @@ import {
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth/client";
 import { useLogin } from "./login-context";
 
+const emailSchema = z.email("Please enter a valid email address");
+
 export function LoginEmailStep() {
-  const {
-    email,
-    setEmail,
-    emailError,
-    isSendingOtp,
-    submitEmail,
-    goToMethods,
-  } = useLogin();
+  const { email, setEmail, goToMethods, goToOtp } = useLogin();
+  const [emailInput, setEmailInput] = useState(email);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await submitEmail();
+
+    const trimmed = emailInput.trim();
+    const result = emailSchema.safeParse(trimmed);
+    if (!result.success) {
+      setEmailError(
+        result.error.issues[0]?.message ?? "Please enter a valid email address",
+      );
+      return;
+    }
+
+    setEmailError(null);
+    setIsSending(true);
+
+    const { error } = await authClient.emailOtp.sendVerificationOtp({
+      email: result.data,
+      type: "sign-in",
+    });
+
+    setIsSending(false);
+
+    if (error) {
+      setEmailError(
+        error.message ?? error.statusText ?? "Failed to send verification code",
+      );
+      return;
+    }
+
+    setEmail(result.data);
+    goToOtp(result.data);
   };
 
   return (
@@ -47,11 +76,14 @@ export function LoginEmailStep() {
               id="email-input"
               type="email"
               placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={emailInput}
+              onChange={(e) => {
+                setEmailInput(e.target.value);
+                if (emailError) setEmailError(null);
+              }}
               autoFocus
               autoComplete="email"
-              disabled={isSendingOtp}
+              disabled={isSending}
               aria-invalid={!!emailError}
             />
             {emailError && <FieldError>{emailError}</FieldError>}
@@ -59,9 +91,9 @@ export function LoginEmailStep() {
           <Button
             type="submit"
             className="w-full"
-            disabled={isSendingOtp || !email.trim()}
+            disabled={isSending || !emailInput.trim()}
           >
-            {isSendingOtp ? (
+            {isSending ? (
               <>
                 <Spinner data-icon="inline-start" />
                 Sending code...
@@ -75,7 +107,7 @@ export function LoginEmailStep() {
             variant="ghost"
             className="w-full"
             onClick={goToMethods}
-            disabled={isSendingOtp}
+            disabled={isSending}
           >
             Back
           </Button>
