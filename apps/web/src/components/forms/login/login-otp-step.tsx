@@ -3,7 +3,6 @@
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { PencilIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
 import {
   InputOTP,
   InputOTPGroup,
@@ -11,35 +10,25 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
+import { useLogin } from "./login-context";
 import { LoginHeader } from "./login-header";
 
-export interface LoginOtpStepProps {
-  email: string;
-  otp: string;
-  onOtpChange: (value: string) => void;
-  onVerify: (code: string) => void;
-  onResend: () => void;
-  onBack: () => void;
-  isVerifying: boolean;
-  isResending: boolean;
-  countdown: number;
-  error: string | null;
-}
+export function LoginOtpStep() {
+  const {
+    email,
+    otp,
+    setOtp,
+    otpError,
+    isVerifyingOtp,
+    isSendingOtp,
+    countdown,
+    verifyOtp,
+    resendOtp,
+    goToEmail,
+  } = useLogin();
 
-export function LoginOtpStep({
-  email,
-  otp,
-  onOtpChange,
-  onVerify,
-  onResend,
-  onBack,
-  isVerifying,
-  isResending,
-  countdown,
-  error,
-}: LoginOtpStepProps) {
   return (
-    <>
+    <div className="flex flex-col p-8">
       <LoginHeader
         title="Check your email"
         description={
@@ -47,59 +36,84 @@ export function LoginOtpStep({
             We sent a 6-digit code to{" "}
             <button
               type="button"
-              onClick={onBack}
+              onClick={goToEmail}
               className="inline-flex items-center gap-1 font-medium text-foreground underline-offset-4 transition-colors hover:underline"
               title="Change email"
             >
-              <span className="max-w-[200px] truncate">{email}</span>
+              <span className="max-w-[180px] truncate">{email}</span>
               <PencilIcon className="size-3 text-muted-foreground" />
             </button>
           </span>
         }
-        onBack={onBack}
+        onBack={goToEmail}
         backLabel="Change email"
       />
-      <CardContent className="flex flex-col items-center gap-4">
+      <div className="mt-6 flex flex-col items-center">
         <div className="flex flex-col items-center justify-center py-2">
           <InputOTP
             maxLength={6}
             pattern={REGEXP_ONLY_DIGITS}
             value={otp}
             onChange={(val) => {
-              onOtpChange(val);
+              setOtp(val);
               if (val.length === 6) {
-                onVerify(val);
+                verifyOtp(val);
               }
             }}
-            disabled={isVerifying}
+            disabled={isVerifyingOtp}
             autoFocus
           >
             <InputOTPGroup>
-              <InputOTPSlot index={0} aria-invalid={!!error} />
-              <InputOTPSlot index={1} aria-invalid={!!error} />
-              <InputOTPSlot index={2} aria-invalid={!!error} />
+              <InputOTPSlot
+                index={0}
+                className="size-11 text-base sm:size-12 sm:text-lg"
+                aria-invalid={!!otpError}
+              />
+              <InputOTPSlot
+                index={1}
+                className="size-11 text-base sm:size-12 sm:text-lg"
+                aria-invalid={!!otpError}
+              />
+              <InputOTPSlot
+                index={2}
+                className="size-11 text-base sm:size-12 sm:text-lg"
+                aria-invalid={!!otpError}
+              />
             </InputOTPGroup>
-            <InputOTPSeparator />
+            <InputOTPSeparator className="mx-1 sm:mx-2" />
             <InputOTPGroup>
-              <InputOTPSlot index={3} aria-invalid={!!error} />
-              <InputOTPSlot index={4} aria-invalid={!!error} />
-              <InputOTPSlot index={5} aria-invalid={!!error} />
+              <InputOTPSlot
+                index={3}
+                className="size-11 text-base sm:size-12 sm:text-lg"
+                aria-invalid={!!otpError}
+              />
+              <InputOTPSlot
+                index={4}
+                className="size-11 text-base sm:size-12 sm:text-lg"
+                aria-invalid={!!otpError}
+              />
+              <InputOTPSlot
+                index={5}
+                className="size-11 text-base sm:size-12 sm:text-lg"
+                aria-invalid={!!otpError}
+              />
             </InputOTPGroup>
           </InputOTP>
 
-          {error && (
-            <p className="mt-2.5 text-center font-medium text-destructive text-xs leading-normal">
-              {error}
+          {otpError && (
+            <p className="mt-3 text-center font-medium text-destructive text-xs leading-normal">
+              {otpError}
             </p>
           )}
         </div>
 
         <Button
-          className="w-full"
-          onClick={() => onVerify(otp)}
-          disabled={otp.length !== 6 || isVerifying}
+          size="lg"
+          className="mt-6 h-10 w-full font-medium text-sm"
+          onClick={() => verifyOtp(otp)}
+          disabled={otp.length !== 6 || isVerifyingOtp}
         >
-          {isVerifying ? (
+          {isVerifyingOtp ? (
             <>
               <Spinner data-icon="inline-start" />
               Verifying...
@@ -109,7 +123,7 @@ export function LoginOtpStep({
           )}
         </Button>
 
-        <div className="text-center">
+        <div className="mt-5 text-center">
           {countdown > 0 ? (
             <p className="text-muted-foreground text-xs">
               Resend code in{" "}
@@ -121,16 +135,16 @@ export function LoginOtpStep({
               variant="ghost"
               size="xs"
               className="text-muted-foreground text-xs hover:text-foreground"
-              onClick={onResend}
-              disabled={isResending}
+              onClick={resendOtp}
+              disabled={isSendingOtp}
             >
-              {isResending
+              {isSendingOtp
                 ? "Sending new code..."
                 : "Didn't get a code? Resend"}
             </Button>
           )}
         </div>
-      </CardContent>
-    </>
+      </div>
+    </div>
   );
 }

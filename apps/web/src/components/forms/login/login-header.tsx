@@ -19,23 +19,25 @@ export function LoginHeader({
   backLabel = "Go back",
 }: LoginHeaderProps) {
   return (
-    <CardHeader className="relative text-center">
+    <CardHeader className="p-0 text-left">
       {onBack && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-xs"
-          className="absolute top-6 left-5 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-          onClick={onBack}
-          aria-label={backLabel}
-        >
-          <ArrowLeftIcon />
-        </Button>
+        <div className="-mt-1 mb-4 flex items-center">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="-ml-2 text-muted-foreground transition-colors hover:text-foreground"
+            onClick={onBack}
+            aria-label={backLabel}
+          >
+            <ArrowLeftIcon className="size-4" />
+          </Button>
+        </div>
       )}
-      <CardTitle className="font-extrabold text-2xl tracking-tight">
+      <CardTitle className="font-semibold text-2xl text-foreground tracking-tight">
         {title}
       </CardTitle>
-      <CardDescription className="text-muted-foreground text-sm leading-relaxed">
+      <CardDescription className="mt-1.5 text-muted-foreground text-sm leading-relaxed">
         {description}
       </CardDescription>
     </CardHeader>
