@@ -14,16 +14,8 @@ interface BunDnsExtended {
 export async function validateEmailDeliverability(
   email: string,
 ): Promise<string> {
-  const parsed = emailSchema.safeParse(email.trim());
-  if (!parsed.success) {
-    throw new Error("Invalid email address format.");
-  }
-
-  const normalized = parsed.data.toLowerCase();
-  const domain = normalized.split("@")[1];
-  if (!domain) {
-    throw new Error("Invalid email address format.");
-  }
+  const normalized = emailSchema.parse(email.trim()).toLowerCase();
+  const domain = normalized.slice(normalized.lastIndexOf("@") + 1);
 
   try {
     const dns = Bun.dns as unknown as BunDnsExtended;
