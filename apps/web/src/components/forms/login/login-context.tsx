@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, startTransition, useContext, useState } from "react";
+import {
+  addTransitionType,
+  createContext,
+  startTransition,
+  useContext,
+  useState,
+} from "react";
 import type { Step } from "./types";
 
 interface LoginFormContextValue {
@@ -28,18 +34,22 @@ export function LoginFormProvider({ children }: { children: React.ReactNode }) {
 
   const goToMethods = () => {
     startTransition(() => {
+      addTransitionType("back");
       setStep("methods");
     });
   };
 
   const goToEmail = () => {
+    const type = step === "otp" ? "back" : "forward";
     startTransition(() => {
+      addTransitionType(type);
       setStep("email");
     });
   };
 
   const goToOtp = (nextEmail?: string) => {
     startTransition(() => {
+      addTransitionType("forward");
       if (nextEmail) setEmail(nextEmail);
       setStep("otp");
     });

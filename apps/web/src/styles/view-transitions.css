@@ -1,0 +1,92 @@
+:root {
+  --duration-slide: 500ms;
+  --ease-slide: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+/* Container morphs height cleanly */
+::view-transition-group(*) {
+  animation-duration: var(--duration-slide);
+  animation-timing-function: var(--ease-slide);
+  overflow: clip;
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  height: 100%;
+  width: 100%;
+}
+
+/* Forward: Outgoing card slides left (-100%), Incoming card slides in from right (+100%) */
+::view-transition-old(.slide-out-left) {
+  animation: var(--duration-slide) var(--ease-slide) both slideOutLeft;
+}
+
+::view-transition-new(.slide-in-right) {
+  animation: var(--duration-slide) var(--ease-slide) both slideInRight;
+}
+
+/* Backward: Outgoing card slides right (+100%), Incoming card slides in from left (-100%) */
+::view-transition-old(.slide-out-right) {
+  animation: var(--duration-slide) var(--ease-slide) both slideOutRight;
+}
+
+::view-transition-new(.slide-in-left) {
+  animation: var(--duration-slide) var(--ease-slide) both slideInLeft;
+}
+
+@keyframes slideOutLeft {
+  from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  to {
+    translate: -100% 0;
+    opacity: 0;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    translate: 100% 0;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  to {
+    translate: 100% 0;
+    opacity: 0;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    translate: -100% 0;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s;
+    animation-delay: 0s;
+  }
+}

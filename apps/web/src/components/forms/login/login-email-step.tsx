@@ -5,7 +5,6 @@ import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -16,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/client";
 import { useLoginForm } from "./login-context";
+import { StepTransition } from "./step-transition";
 
 const emailSchema = z.email("Please enter a valid email address");
 
@@ -56,7 +56,7 @@ export function LoginEmailStep() {
   };
 
   return (
-    <Card>
+    <StepTransition>
       <CardHeader className="text-center">
         <CardTitle className="font-extrabold text-2xl tracking-tight">
           Sign in with email
@@ -110,6 +110,6 @@ export function LoginEmailStep() {
           </Button>
         </form>
       </CardContent>
-    </Card>
+    </StepTransition>
   );
 }

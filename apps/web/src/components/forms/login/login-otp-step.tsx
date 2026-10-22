@@ -4,7 +4,6 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -19,6 +18,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/client";
 import { useLoginForm } from "./login-context";
+import { StepTransition } from "./step-transition";
 
 export function LoginOtpStep() {
   const { email, goToEmail } = useLoginForm();
@@ -81,7 +81,7 @@ export function LoginOtpStep() {
   };
 
   return (
-    <Card>
+    <StepTransition>
       <CardHeader className="text-center">
         <CardTitle className="font-extrabold text-2xl tracking-tight">
           Check your email
@@ -166,6 +166,6 @@ export function LoginOtpStep() {
           Change email
         </Button>
       </CardContent>
-    </Card>
+    </StepTransition>
   );
 }

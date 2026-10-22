@@ -5,16 +5,17 @@ import { useState } from "react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
 import { useLoginForm } from "./login-context";
+import { StepTransition } from "./step-transition";
 import type { SocialProvider } from "./types";
 
 export function LoginMethodsStep() {
@@ -63,14 +64,14 @@ export function LoginMethodsStep() {
   };
 
   return (
-    <Card>
+    <StepTransition>
       <CardHeader className="text-center">
         <CardTitle className="font-extrabold text-2xl tracking-tight">
           Welcome back
         </CardTitle>
         <CardDescription>Hop back in and keep writing.</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-2">
         <Button
           variant="outline"
           className="w-full"
@@ -80,6 +81,7 @@ export function LoginMethodsStep() {
           <MailIcon data-icon="inline-start" />
           Sign in with Email
         </Button>
+        <Separator />
         <Button
           variant="outline"
           className="w-full"
@@ -106,6 +108,8 @@ export function LoginMethodsStep() {
           )}
           Sign in with GitHub
         </Button>
+        <Separator />
+
         <Button
           variant="outline"
           className="w-full"
@@ -120,6 +124,6 @@ export function LoginMethodsStep() {
           Sign in with Passkey
         </Button>
       </CardContent>
-    </Card>
+    </StepTransition>
   );
 }
