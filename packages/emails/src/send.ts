@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { env } from "./env";
 import { SignInOtpEmail } from "./templates/sign-in-otp";
+import { validateEmailDeliverability } from "./validate";
 
 export async function sendSignInOtpEmail({
   email,
@@ -9,6 +10,7 @@ export async function sendSignInOtpEmail({
   email: string;
   otp: string;
 }) {
+  const validatedEmail = await validateEmailDeliverability(email);
   if (!env.RESEND_API_KEY) {
     console.warn(
       `[AUTH] RESEND_API_KEY not configured. Verification code for ${email} is: ${otp}`,
@@ -20,9 +22,9 @@ export async function sendSignInOtpEmail({
 
   const { data, error } = await resend.emails.send({
     from: env.EMAIL_FROM,
-    to: [email],
+    to: [validatedEmail],
     subject: "Your login code - Baretext",
-    react: SignInOtpEmail({ email, otp, expiresInMinutes: 5 }),
+    react: SignInOtpEmail({ email: validatedEmail, otp, expiresInMinutes: 5 }),
   });
 
   if (error) {
