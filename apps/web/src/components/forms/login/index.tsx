@@ -1,13 +1,13 @@
 "use client";
 
 import { ViewTransition } from "react";
-import { LoginProvider, useLogin } from "./login-context";
+import { LoginFormProvider, useLoginForm } from "./login-context";
 import { LoginEmailStep } from "./login-email-step";
 import { LoginMethodsStep } from "./login-methods-step";
 import { LoginOtpStep } from "./login-otp-step";
 
 function LoginContent() {
-  const { step } = useLogin();
+  const { step } = useLoginForm();
 
   return (
     <div className="w-full">
@@ -22,8 +22,8 @@ function LoginContent() {
 
 export function LoginForm() {
   return (
-    <LoginProvider>
+    <LoginFormProvider>
       <LoginContent />
-    </LoginProvider>
+    </LoginFormProvider>
   );
 }

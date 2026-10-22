@@ -15,12 +15,12 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/client";
-import { useLogin } from "./login-context";
+import { useLoginForm } from "./login-context";
 
 const emailSchema = z.email("Please enter a valid email address");
 
 export function LoginEmailStep() {
-  const { email, setEmail, goToMethods, goToOtp } = useLogin();
+  const { email, setEmail, goToMethods, goToOtp } = useLoginForm();
   const [emailInput, setEmailInput] = useState(email);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);

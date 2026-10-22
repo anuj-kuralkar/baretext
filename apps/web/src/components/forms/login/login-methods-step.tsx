@@ -14,11 +14,11 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth/client";
-import { useLogin } from "./login-context";
+import { useLoginForm } from "./login-context";
 import type { SocialProvider } from "./types";
 
 export function LoginMethodsStep() {
-  const { goToEmail } = useLogin();
+  const { goToEmail } = useLoginForm();
   const [loadingProvider, setLoadingProvider] = useState<
     SocialProvider | "passkey" | null
   >(null);

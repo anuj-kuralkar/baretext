@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/client";
-import { useLogin } from "./login-context";
+import { useLoginForm } from "./login-context";
 
 export function LoginOtpStep() {
-  const { email, goToEmail } = useLogin();
+  const { email, goToEmail } = useLoginForm();
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);

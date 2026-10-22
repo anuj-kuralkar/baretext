@@ -3,7 +3,7 @@
 import { createContext, startTransition, useContext, useState } from "react";
 import type { Step } from "./types";
 
-interface LoginContextValue {
+interface LoginFormContextValue {
   step: Step;
   email: string;
   setEmail: (email: string) => void;
@@ -12,17 +12,17 @@ interface LoginContextValue {
   goToOtp: (email?: string) => void;
 }
 
-const LoginContext = createContext<LoginContextValue | null>(null);
+const LoginFormContext = createContext<LoginFormContextValue | null>(null);
 
-export function useLogin() {
-  const context = useContext(LoginContext);
+export function useLoginForm() {
+  const context = useContext(LoginFormContext);
   if (!context) {
-    throw new Error("useLogin must be used within a LoginProvider");
+    throw new Error("useLoginForm must be used within a LoginFormProvider");
   }
   return context;
 }
 
-export function LoginProvider({ children }: { children: React.ReactNode }) {
+export function LoginFormProvider({ children }: { children: React.ReactNode }) {
   const [step, setStep] = useState<Step>("methods");
   const [email, setEmail] = useState("");
 
@@ -46,7 +46,7 @@ export function LoginProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LoginContext.Provider
+    <LoginFormContext.Provider
       value={{
         step,
         email,
@@ -57,6 +57,6 @@ export function LoginProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </LoginContext.Provider>
+    </LoginFormContext.Provider>
   );
 }
