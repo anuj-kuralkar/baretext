@@ -1,16 +1,7 @@
+import { resolveMx } from "node:dns/promises";
 import { z } from "zod";
 
 const emailSchema = z.email("Invalid email address format.");
-
-interface MxRecord {
-  priority: number;
-  exchange: string;
-}
-
-interface BunDnsExtended {
-  resolveMx: (hostname: string) => Promise<MxRecord[]>;
-}
-
 export async function validateEmailDeliverability(
   email: string,
 ): Promise<string> {
@@ -18,8 +9,7 @@ export async function validateEmailDeliverability(
   const domain = normalized.slice(normalized.lastIndexOf("@") + 1);
 
   try {
-    const dns = Bun.dns as unknown as BunDnsExtended;
-    const mx = await dns.resolveMx(domain);
+    const mx = await resolveMx(domain);
 
     if (!mx || mx.length === 0 || (mx.length === 1 && !mx[0]?.exchange)) {
       throw new Error("This email domain cannot receive incoming mail.");
@@ -32,6 +22,8 @@ export async function validateEmailDeliverability(
 
       const code = "code" in error ? (error.code as string) : undefined;
       if (
+        code === "ENOTFOUND" ||
+        code === "ENODATA" ||
         code === "DNS_ENOTFOUND" ||
         code === "DNS_ENODATA" ||
         error.message.includes("ENOTFOUND")
@@ -39,7 +31,7 @@ export async function validateEmailDeliverability(
         throw new Error("The specified email domain does not exist.");
       }
 
-      console.warn(`[AUTH] Bun.dns.resolveMx lookup skipped: ${error.message}`);
+      console.warn(`[AUTH] DNS MX lookup skipped: ${error.message}`);
     }
   }
 
