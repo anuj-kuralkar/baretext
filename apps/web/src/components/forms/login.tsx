@@ -13,6 +13,7 @@ import {
   useState,
   ViewTransition,
 } from "react";
+
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -683,7 +684,7 @@ function LoginContent() {
       </Activity>
 
       <Activity mode={state.step === "otp" ? "visible" : "hidden"}>
-        <LoginOtpStep key={state.step === "otp" ? state.email : "otp"} />
+        <LoginOtpStep />
       </Activity>
     </Card>
   );

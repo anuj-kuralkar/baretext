@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "bun --filter '*' --parallel build",
-    "test": "bun --filter '*' test",
+    "test": "vitest run",
     "dev:web": "bun --filter @baretext/web dev",
     "dev:api": "bun --filter @baretext/api dev",
     "build:web": "bun --filter @baretext/web build",
@@ -39,5 +39,8 @@
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
     "lefthook": "^2.2.2"
+  },
+  "dependencies": {
+    "vitest": "catalog:"
   }
 }

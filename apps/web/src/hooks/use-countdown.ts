@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 
-/**
- * Returns remaining seconds until `targetTimestamp` (in ms) is reached.
- * Automatically stops ticking when 0 is reached.
- */
 export function useCountdown(targetTimestamp: number): number {
   const [now, setNow] = useState(() => Date.now());
 

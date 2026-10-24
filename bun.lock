@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "baretext",
+      "dependencies": {
+        "vitest": "catalog:",
+      },
       "devDependencies": {
         "@biomejs/biome": "2.5.15",
         "@commitlint/cli": "^21.2.4",
