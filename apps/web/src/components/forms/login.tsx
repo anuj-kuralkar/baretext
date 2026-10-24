@@ -92,7 +92,7 @@ export function loginReducer(
       if (state.step === "email") {
         return {
           step: "otp",
-          email: state.email,
+          email: state.email.trim(),
           otp: "",
           resendAvailableAt: Date.now() + 30_000,
           isPending: false,

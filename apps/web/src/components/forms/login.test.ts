@@ -11,10 +11,10 @@ describe("loginReducer state reset across email changes", () => {
 
     state = loginReducer(state, {
       type: "SET_VALUE",
-      value: "first@example.com",
+      value: "  first@example.com  ",
     });
     if (state.step !== "email") throw new Error("Expected email step");
-    expect(state.email).toBe("first@example.com");
+    expect(state.email).toBe("  first@example.com  ");
 
     state = loginReducer(state, { type: "NEXT" });
     expect(state.step).toBe("otp");
@@ -45,10 +45,10 @@ describe("loginReducer state reset across email changes", () => {
 
     state = loginReducer(state, {
       type: "SET_VALUE",
-      value: "second@example.com",
+      value: "  second@example.com  ",
     });
     if (state.step !== "email") throw new Error("Expected email step");
-    expect(state.email).toBe("second@example.com");
+    expect(state.email).toBe("  second@example.com  ");
 
     state = loginReducer(state, { type: "NEXT" });
     expect(state.step).toBe("otp");
