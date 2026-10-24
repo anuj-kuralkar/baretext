@@ -475,7 +475,7 @@ function LoginEmailStep() {
   const { state, prev, setValue, submit } = useLoginForm();
   if (state.step !== "email") return null;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     submit();
   };
@@ -526,7 +526,7 @@ function LoginEmailStep() {
                 Sending code...
               </>
             ) : (
-              "Continue with code"
+              "Send Verification code"
             )}
           </Button>
 
@@ -611,6 +611,7 @@ function LoginOtpStep() {
             aria-label="6-digit verification code"
             aria-invalid={Boolean(state.error)}
             aria-describedby={state.error ? "otp-error" : undefined}
+            containerClassName="justify-center"
           >
             <InputOTPGroup>
               {OTP_SLOTS.map((slot) => (
