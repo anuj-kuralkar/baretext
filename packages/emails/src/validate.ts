@@ -54,8 +54,11 @@ export async function validateEmailDeliverability(
   email: string,
   options: ValidateEmailOptions = {},
 ): Promise<string> {
-  const normalized = emailSchema.parse(email.trim()).toLowerCase();
-  const domain = normalized.slice(normalized.lastIndexOf("@") + 1);
+  email = email.trim().toLowerCase();
+  if (!emailSchema.validate(email)) {
+    throw new Error("Invalid email address format");
+  }
+  const domain = email.slice(email.lastIndexOf("@") + 1);
 
   // 1. Static Blocklist check (< 0.01ms)
   const set = options.disposableDomains ?? getDisposableSet();
@@ -115,5 +118,5 @@ export async function validateEmailDeliverability(
     }
   }
 
-  return normalized;
+  return email;
 }
