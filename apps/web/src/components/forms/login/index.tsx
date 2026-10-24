@@ -8,20 +8,20 @@ import { LoginMethodsStep } from "./login-methods-step";
 import { LoginOtpStep } from "./login-otp-step";
 
 function LoginContent() {
-  const { step } = useLoginForm();
+  const { state } = useLoginForm();
 
   return (
     <Card>
-      <Activity mode={step === "methods" ? "visible" : "hidden"}>
+      <Activity mode={state.step === "methods" ? "visible" : "hidden"}>
         <LoginMethodsStep />
       </Activity>
 
-      <Activity mode={step === "email" ? "visible" : "hidden"}>
+      <Activity mode={state.step === "email" ? "visible" : "hidden"}>
         <LoginEmailStep />
       </Activity>
 
-      <Activity mode={step === "otp" ? "visible" : "hidden"}>
-        <LoginOtpStep />
+      <Activity mode={state.step === "otp" ? "visible" : "hidden"}>
+        <LoginOtpStep key={state.step === "otp" ? state.email : "otp"} />
       </Activity>
     </Card>
   );

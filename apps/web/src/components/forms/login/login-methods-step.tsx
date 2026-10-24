@@ -1,7 +1,6 @@
 "use client";
 
 import { FingerprintIcon, MailIcon } from "lucide-react";
-import { useState } from "react";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,56 +11,14 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "@/components/ui/toast";
-import { authClient } from "@/lib/auth/client";
 import { useLoginForm } from "./login-context";
 import { StepTransition } from "./step-transition";
-import type { SocialProvider } from "./types";
 
 export function LoginMethodsStep() {
-  const { goToEmail } = useLoginForm();
-  const [loadingProvider, setLoadingProvider] = useState<
-    SocialProvider | "passkey" | null
-  >(null);
+  const { state, next, signInSocial, signInPasskey } = useLoginForm();
+  if (state.step !== "methods") return null;
 
-  const isPending = loadingProvider !== null;
-
-  const handleSocialLogin = async (provider: SocialProvider) => {
-    setLoadingProvider(provider);
-    const { error } = await authClient.signIn.social({
-      provider,
-      callbackURL: `${window.location.origin}/`,
-      errorCallbackURL: `${window.location.origin}/login`,
-    });
-    setLoadingProvider(null);
-
-    if (error) {
-      toast.add({
-        type: "error",
-        title:
-          error.message ??
-          error.statusText ??
-          `Failed to sign in with ${provider}`,
-      });
-    }
-  };
-
-  const handlePasskeyLogin = async () => {
-    setLoadingProvider("passkey");
-    const { error } = await authClient.signIn.passkey();
-    setLoadingProvider(null);
-
-    if (error) {
-      toast.add({
-        type: "error",
-        title:
-          error.message ?? error.statusText ?? "Passkey authentication failed",
-      });
-      return;
-    }
-
-    window.location.href = "/";
-  };
+  const isPending = state.loadingProvider !== null;
 
   return (
     <StepTransition>
@@ -75,7 +32,7 @@ export function LoginMethodsStep() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={goToEmail}
+          onClick={next}
           disabled={isPending}
         >
           <MailIcon data-icon="inline-start" />
@@ -85,10 +42,10 @@ export function LoginMethodsStep() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => handleSocialLogin("google")}
+          onClick={() => signInSocial("google")}
           disabled={isPending}
         >
-          {loadingProvider === "google" ? (
+          {state.loadingProvider === "google" ? (
             <Spinner data-icon="inline-start" />
           ) : (
             <GoogleIcon data-icon="inline-start" />
@@ -98,10 +55,10 @@ export function LoginMethodsStep() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => handleSocialLogin("github")}
+          onClick={() => signInSocial("github")}
           disabled={isPending}
         >
-          {loadingProvider === "github" ? (
+          {state.loadingProvider === "github" ? (
             <Spinner data-icon="inline-start" />
           ) : (
             <GithubIcon data-icon="inline-start" />
@@ -113,10 +70,10 @@ export function LoginMethodsStep() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={handlePasskeyLogin}
+          onClick={signInPasskey}
           disabled={isPending}
         >
-          {loadingProvider === "passkey" ? (
+          {state.loadingProvider === "passkey" ? (
             <Spinner data-icon="inline-start" />
           ) : (
             <FingerprintIcon data-icon="inline-start" />

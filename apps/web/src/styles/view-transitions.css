@@ -83,6 +83,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-slide: 0s;
+  }
+
   ::view-transition-old(*),
   ::view-transition-new(*),
   ::view-transition-group(*) {

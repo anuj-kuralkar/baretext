@@ -1,8 +1,5 @@
 "use client";
 
-import type * as React from "react";
-import { useState } from "react";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -13,46 +10,16 @@ import {
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth/client";
 import { useLoginForm } from "./login-context";
 import { StepTransition } from "./step-transition";
 
-const emailSchema = z.email("Please enter a valid email address");
-
 export function LoginEmailStep() {
-  const { email, setEmail, goToMethods, goToOtp } = useLoginForm();
-  const [emailInput, setEmailInput] = useState(email);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [isSending, setIsSending] = useState(false);
+  const { state, prev, setValue, submit } = useLoginForm();
+  if (state.step !== "email") return null;
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const trimmed = emailInput.trim();
-    if (!emailSchema.validate(trimmed)) {
-      setEmailError("Please enter a valid email address");
-      return;
-    }
-
-    setEmailError(null);
-    setIsSending(true);
-
-    const { error } = await authClient.emailOtp.sendVerificationOtp({
-      email: trimmed,
-      type: "sign-in",
-    });
-
-    setIsSending(false);
-
-    if (error) {
-      setEmailError(
-        error.message ?? error.statusText ?? "Failed to send verification code",
-      );
-      return;
-    }
-
-    setEmail(trimmed);
-    goToOtp(trimmed);
+    submit();
   };
 
   return (
@@ -66,31 +33,36 @@ export function LoginEmailStep() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <Field>
+        <form
+          noValidate
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4"
+        >
+          <Field data-invalid={Boolean(state.error)}>
             <FieldLabel htmlFor="email-input">Email address</FieldLabel>
             <Input
               id="email-input"
               type="email"
               placeholder="name@example.com"
-              value={emailInput}
-              onChange={(e) => {
-                setEmailInput(e.target.value);
-                if (emailError) setEmailError(null);
-              }}
+              value={state.email}
+              onChange={(e) => setValue(e.target.value)}
               autoFocus
               autoComplete="email"
-              disabled={isSending}
-              aria-invalid={!!emailError}
+              disabled={state.isPending}
+              aria-invalid={Boolean(state.error)}
+              aria-describedby={state.error ? "email-error" : undefined}
             />
-            {emailError && <FieldError>{emailError}</FieldError>}
+            {state.error && (
+              <FieldError id="email-error">{state.error}</FieldError>
+            )}
           </Field>
+
           <Button
             type="submit"
             className="w-full"
-            disabled={isSending || !emailInput.trim()}
+            disabled={state.isPending || !state.email.trim()}
           >
-            {isSending ? (
+            {state.isPending ? (
               <>
                 <Spinner data-icon="inline-start" />
                 Sending code...
@@ -99,12 +71,13 @@ export function LoginEmailStep() {
               "Continue with code"
             )}
           </Button>
+
           <Button
             type="button"
             variant="ghost"
             className="w-full"
-            onClick={goToMethods}
-            disabled={isSending}
+            onClick={prev}
+            disabled={state.isPending}
           >
             Back
           </Button>
