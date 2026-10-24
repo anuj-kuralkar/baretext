@@ -20,24 +20,19 @@ export interface ValidateEmailOptions {
   disposableDomains?: Set<string>;
 }
 
+import disposableDomainsText from "./disposable-domains.txt";
+
 let disposableSet: Set<string> | null = null;
 
-async function getDisposableSet(): Promise<Set<string>> {
+function getDisposableSet(): Set<string> {
   if (disposableSet) return disposableSet;
 
-  try {
-    const file = Bun.file(new URL("./disposable-domains.txt", import.meta.url));
-    const text = await file.text();
-    disposableSet = new Set(
-      text
-        .split("\n")
-        .map((d) => d.trim().toLowerCase())
-        .filter(Boolean),
-    );
-  } catch (error) {
-    console.warn("[AUTH] Failed to load disposable domains list:", error);
-    disposableSet = new Set();
-  }
+  disposableSet = new Set(
+    disposableDomainsText
+      .split("\n")
+      .map((d) => d.trim().toLowerCase())
+      .filter(Boolean),
+  );
 
   return disposableSet;
 }
@@ -63,7 +58,7 @@ export async function validateEmailDeliverability(
   const domain = normalized.slice(normalized.lastIndexOf("@") + 1);
 
   // 1. Static Blocklist check (< 0.01ms)
-  const set = options.disposableDomains ?? (await getDisposableSet());
+  const set = options.disposableDomains ?? getDisposableSet();
   if (set.has(domain)) {
     throw new Error("Disposable email addresses are not supported.");
   }

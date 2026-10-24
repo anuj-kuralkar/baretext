@@ -60,6 +60,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "@vitest/browser-playwright": "^5.0.5",
     "babel-plugin-react-compiler": "1.0.0",
+    "raw-loader": "^4.0.2",
     "tailwindcss": "^4.3.3",
     "typescript": "catalog:",
     "vitest": "catalog:",
