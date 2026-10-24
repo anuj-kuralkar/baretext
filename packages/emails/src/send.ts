@@ -1,7 +1,6 @@
 import { Resend } from "resend";
 import { env } from "./env";
 import { SignInOtpEmail } from "./templates/sign-in-otp";
-import { validateEmailDeliverability } from "./validate";
 
 export async function sendSignInOtpEmail({
   email,
@@ -10,14 +9,14 @@ export async function sendSignInOtpEmail({
   email: string;
   otp: string;
 }) {
-  const validatedEmail = await validateEmailDeliverability(email);
+  const recipientEmail = email.trim().toLowerCase();
   const resend = new Resend(env.RESEND_API_KEY);
 
   const { data, error } = await resend.emails.send({
     from: env.EMAIL_FROM,
-    to: [validatedEmail],
+    to: [recipientEmail],
     subject: "Your login code - Baretext",
-    react: SignInOtpEmail({ email: validatedEmail, otp, expiresInMinutes: 5 }),
+    react: SignInOtpEmail({ email: recipientEmail, otp, expiresInMinutes: 5 }),
   });
 
   if (error) {

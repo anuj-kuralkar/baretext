@@ -3,6 +3,23 @@ import { z } from "zod";
 
 const emailSchema = z.email("Invalid email address format.");
 
+export interface DnsResolver {
+  resolveMx(
+    domain: string,
+  ): Promise<Array<{ exchange: string; priority: number }>>;
+  resolveTxt(domain: string): Promise<string[][]>;
+}
+
+export const systemDnsResolver: DnsResolver = {
+  resolveMx,
+  resolveTxt,
+};
+
+export interface ValidateEmailOptions {
+  dnsResolver?: DnsResolver;
+  disposableDomains?: Set<string>;
+}
+
 let disposableSet: Set<string> | null = null;
 
 async function getDisposableSet(): Promise<Set<string>> {
@@ -18,14 +35,14 @@ async function getDisposableSet(): Promise<Set<string>> {
         .filter(Boolean),
     );
   } catch (error) {
-    console.warn("[AUTH] Could not load disposable-domains.txt:", error);
+    console.warn("[AUTH] Failed to load disposable domains list:", error);
     disposableSet = new Set();
   }
 
   return disposableSet;
 }
 
-const BURNER_MX_KEYWORDS = [
+export const BURNER_MX_KEYWORDS = [
   "temp-mail",
   "mailinator",
   "guerrillamail",
@@ -36,23 +53,25 @@ const BURNER_MX_KEYWORDS = [
   "yopmail",
   "dispostable",
   "agaexpress",
-];
+] as const;
 
 export async function validateEmailDeliverability(
   email: string,
+  options: ValidateEmailOptions = {},
 ): Promise<string> {
   const normalized = emailSchema.parse(email.trim()).toLowerCase();
   const domain = normalized.slice(normalized.lastIndexOf("@") + 1);
 
   // 1. Static Blocklist check (< 0.01ms)
-  const set = await getDisposableSet();
+  const set = options.disposableDomains ?? (await getDisposableSet());
   if (set.has(domain)) {
     throw new Error("Disposable email addresses are not supported.");
   }
 
-  // 2. DNS MX records check (~20-40ms)
+  // 2. DNS MX records check
+  const resolver = options.dnsResolver ?? systemDnsResolver;
   try {
-    const mx = await resolveMx(domain);
+    const mx = await resolver.resolveMx(domain);
 
     if (!mx || mx.length === 0 || (mx.length === 1 && !mx[0]?.exchange)) {
       throw new Error("This email domain cannot receive incoming mail.");
@@ -69,7 +88,7 @@ export async function validateEmailDeliverability(
     }
 
     // 3. Check for dummy SPF record signature (temp-mail networks commonly use ip4:1.1.1.1)
-    const txtRecords = await resolveTxt(domain).catch(() => []);
+    const txtRecords = await resolver.resolveTxt(domain).catch(() => []);
     const hasDummySpf = txtRecords.some((txt) =>
       txt.some((t) => t.includes("ip4:1.1.1.1")),
     );

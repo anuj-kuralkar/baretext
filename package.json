@@ -17,11 +17,13 @@
       "better-auth": "^1.7.12",
       "drizzle-orm": "1.0.0-rc.4",
       "typescript": "^7.0.2",
+      "vitest": "^5.0.5",
       "zod": "^4.6.7"
     }
   },
   "scripts": {
     "build": "bun --filter '*' --parallel build",
+    "test": "bun --filter '*' test",
     "dev:web": "bun --filter @baretext/web dev",
     "dev:api": "bun --filter @baretext/api dev",
     "build:web": "bun --filter @baretext/web build",
