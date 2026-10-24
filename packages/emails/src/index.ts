@@ -1,4 +1,11 @@
-export { sendSignInOtpEmail } from "./send";
+export {
+  type EmailSender,
+  MemoryEmailSender,
+  ResendEmailSender,
+  type SendEmailPayload,
+  type SendSignInOtpOptions,
+  sendSignInOtpEmail,
+} from "./send";
 export {
   SignInOtpEmail,
   type SignInOtpEmailProps,

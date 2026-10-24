@@ -7,5 +7,6 @@ export const env = createEnv({
     EMAIL_FROM: z.string().default("Baretext <no-reply@baretext.app>"),
   },
   runtimeEnv: process.env,
-  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
+  skipValidation:
+    process.env.SKIP_ENV_VALIDATION === "true" || Boolean(process.env.VITEST),
 });
