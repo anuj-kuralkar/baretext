@@ -9,8 +9,7 @@
   },
   "scripts": {
     "dev": "email dev --dir src/templates",
-    "test": "vitest run",
-    "update:disposable-email-domains": "curl -s https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/master/disposable_email_blocklist.conf > src/disposable-domains.txt"
+    "test": "vitest run"
   },
   "dependencies": {
     "@t3-oss/env-core": "catalog:",

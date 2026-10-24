@@ -4,14 +4,17 @@ export function useCountdown(targetTimestamp: number): number {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    if (now >= targetTimestamp) return;
+    setNow(Date.now());
+    if (Date.now() >= targetTimestamp) return;
 
     const interval = setInterval(() => {
-      setNow(Date.now());
+      const current = Date.now();
+      setNow(current);
+      if (current >= targetTimestamp) clearInterval(interval);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [targetTimestamp, now]);
+  }, [targetTimestamp]);
 
   return Math.max(0, Math.ceil((targetTimestamp - now) / 1000));
 }

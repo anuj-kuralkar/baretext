@@ -20,11 +20,11 @@ function createFakeDnsResolver(overrides: {
 describe("validateEmailDeliverability", () => {
   it("rejects invalid email syntax format", async () => {
     await expect(validateEmailDeliverability("not-an-email")).rejects.toThrow(
-      "Invalid email address format.",
+      "Invalid email address format",
     );
     await expect(
       validateEmailDeliverability("missing-domain@"),
-    ).rejects.toThrow("Invalid email address format.");
+    ).rejects.toThrow("Invalid email address format");
   });
 
   it("rejects static disposable blocklist domains", async () => {

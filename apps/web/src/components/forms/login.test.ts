@@ -1,7 +1,16 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { initialLoginFormState, loginReducer } from "./login";
 
 describe("loginReducer state reset across email changes", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00.000Z"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("clears stale OTP digits, error, and pending state when navigating back to change email", () => {
     let state = initialLoginFormState;
     expect(state.step).toBe("methods");
@@ -23,7 +32,7 @@ describe("loginReducer state reset across email changes", () => {
     expect(state.otp).toBe("");
     expect(state.error).toBeNull();
     const firstResendAvailableAt = state.resendAvailableAt;
-    expect(firstResendAvailableAt).toBeGreaterThan(Date.now());
+    expect(firstResendAvailableAt).toBe(Date.now() + 30_000);
 
     state = loginReducer(state, { type: "SET_VALUE", value: "111111" });
     if (state.step !== "otp") throw new Error("Expected otp step");
@@ -50,6 +59,9 @@ describe("loginReducer state reset across email changes", () => {
     if (state.step !== "email") throw new Error("Expected email step");
     expect(state.email).toBe("  second@example.com  ");
 
+    // Advance clock by 10 seconds before generating second OTP deadline
+    vi.advanceTimersByTime(10_000);
+
     state = loginReducer(state, { type: "NEXT" });
     expect(state.step).toBe("otp");
     if (state.step !== "otp") throw new Error("Expected otp step");
@@ -58,8 +70,7 @@ describe("loginReducer state reset across email changes", () => {
     expect(state.otp).toBe("");
     expect(state.error).toBeNull();
     expect(state.isPending).toBe(false);
-    expect(state.resendAvailableAt).toBeGreaterThanOrEqual(
-      firstResendAvailableAt,
-    );
+    expect(state.resendAvailableAt).toBe(Date.now() + 30_000);
+    expect(state.resendAvailableAt).toBe(firstResendAvailableAt + 10_000);
   });
 });

@@ -30,7 +30,6 @@
     "build:api": "bun --filter @baretext/api build",
     "start:api": "bun --filter @baretext/api start",
     "start:web": "bun --filter @baretext/web start",
-    "update:disposable-email-domains": "bun --filter @baretext/emails update:disposable-email-domains",
     "check": "biome check",
     "check:write": "biome check --write"
   },
