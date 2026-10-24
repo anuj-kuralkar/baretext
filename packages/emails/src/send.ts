@@ -69,7 +69,7 @@ export async function sendSignInOtpEmail(
   const sender = options.sender ?? new ResendEmailSender();
 
   return await sender.send({
-    from: env.EMAIL_FROM,
+    from: env.AUTH_SENDER_EMAIL,
     to: [recipientEmail],
     subject: "Your login code - Baretext",
     react: SignInOtpEmail({ email: recipientEmail, otp, expiresInMinutes: 5 }),
