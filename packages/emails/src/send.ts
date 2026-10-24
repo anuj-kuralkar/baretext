@@ -11,13 +11,6 @@ export async function sendSignInOtpEmail({
   otp: string;
 }) {
   const validatedEmail = await validateEmailDeliverability(email);
-  if (!env.RESEND_API_KEY) {
-    console.warn(
-      `[AUTH] RESEND_API_KEY not configured. Verification code for ${email} is: ${otp}`,
-    );
-    return;
-  }
-
   const resend = new Resend(env.RESEND_API_KEY);
 
   const { data, error } = await resend.emails.send({
