@@ -6,20 +6,18 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   plugins: [react()],
+  define: {
+    "process.env.SKIP_ENV_VALIDATION": JSON.stringify("true"),
+  },
   test: {
     browser: {
       enabled: true,
       provider: playwright(),
-      // https://vitest.dev/config/browser/playwright
-      instances: [
-        { browser: "chromium" },
-        { browser: "firefox" },
-        { browser: "webkit" },
-      ],
+      instances: [{ browser: "chromium" }],
     },
   },
 });

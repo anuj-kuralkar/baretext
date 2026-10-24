@@ -7,11 +7,12 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@baretext/db": "workspace:*",
+    "@baretext/emails": "workspace:*",
     "@better-auth/drizzle-adapter": "^1.7.10",
     "@better-auth/passkey": "catalog:",
     "@t3-oss/env-core": "catalog:",
     "better-auth": "catalog:",
-    "@baretext/db": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {

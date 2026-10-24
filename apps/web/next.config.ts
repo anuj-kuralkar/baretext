@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   turbopack: {
     rules: {
+      "*.txt": {
+        loaders: ["raw-loader"],
+        as: "*.js",
+      },
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],
         as: "*.css",

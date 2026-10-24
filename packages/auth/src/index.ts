@@ -1,8 +1,14 @@
 import { db } from "@baretext/db";
 import * as schema from "@baretext/db/schema";
+import {
+  sendSignInOtpEmail,
+  validateEmailDeliverability,
+} from "@baretext/emails";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { passkey } from "@better-auth/passkey";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";
+import { emailOTP } from "better-auth/plugins";
 import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";
 import { env } from "./env";
 
@@ -35,6 +41,22 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/email-otp/send-verification-otp") {
+        const email = ctx.body?.email;
+        if (typeof email === "string") {
+          try {
+            await validateEmailDeliverability(email);
+          } catch (err: unknown) {
+            const message =
+              err instanceof Error ? err.message : "Invalid email address";
+            throw new APIError("BAD_REQUEST", { message });
+          }
+        }
+      }
+    }),
+  },
   plugins: [
     passkey({
       rpName: "Baretext",
@@ -42,6 +64,15 @@ export const auth = betterAuth({
         rpID: new URL(env.WEB_URL).hostname,
         origin: env.WEB_URL,
       }),
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "sign-in" || type === "email-verification") {
+          await sendSignInOtpEmail({ email, otp });
+        }
+      },
+      expiresIn: 300,
+      otpLength: 6,
     }),
   ],
 });
