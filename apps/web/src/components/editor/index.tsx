@@ -1,14 +1,13 @@
 "use client";
 
-import { LocalStorageResumeStateProvider } from "@electric-sql/y-electric";
 import { ClipboardDOMImportExtension } from "@lexical/clipboard";
 import { CodePrismExtension } from "@lexical/code-prism";
 import {
   AutoFocusExtension,
   configExtension,
   defineExtension,
+  getExtensionDependencyFromEditor,
 } from "@lexical/extension";
-import { HistoryExtension } from "@lexical/history";
 import {
   MdastCommonMarkExtension,
   MdastExtension,
@@ -16,36 +15,76 @@ import {
   MdastHtmlExtension,
   MdastShortcutsExtension,
 } from "@lexical/mdast";
-import { LexicalCollaboration } from "@lexical/react/LexicalCollaborationContext";
-import { CollaborationPluginV2__EXPERIMENTAL } from "@lexical/react/LexicalCollaborationPlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
 import { RichTextExtension } from "@lexical/rich-text";
-import { useEffect } from "react";
-import { IndexeddbPersistence } from "y-indexeddb";
-import { Awareness } from "y-protocols/awareness";
-import * as Y from "yjs";
+import { createYDoc, YCollabExtension, type YDoc } from "@lexical/y";
+import { WebsocketProvider } from "@y/websocket";
+import { useEffect, useRef } from "react";
 
 import { useNotePacedMutations } from "@/collections/note";
 import { ContentEditable } from "@/components/editor/content-editable";
 import { EditorWrapper } from "@/components/editor/editor-wrapper";
 import { textContentExtension } from "@/components/editor/extensions/text-content";
 import { editorTheme } from "@/components/editor/theme";
-import {
-  createElectricProvider,
-  createTrivialProvider,
-} from "@/lib/electric-provider";
+import { env } from "@/lib/env/client";
+
+function CollabSync({ doc, noteId }: { doc: YDoc; noteId: string }) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    const wsUrl = env.NEXT_PUBLIC_COLLAB_WS_URL;
+    const provider = new WebsocketProvider(
+      wsUrl,
+      `default/${noteId}`,
+      doc as unknown as ConstructorParameters<typeof WebsocketProvider>[2],
+    );
+
+    const { binding } = getExtensionDependencyFromEditor(
+      editor,
+      YCollabExtension,
+    ).output;
+
+    const onSync = (isSynced: boolean) => {
+      if (isSynced) {
+        binding.initialize();
+      }
+    };
+
+    if (provider.synced) {
+      binding.initialize();
+    } else {
+      provider.on("sync", onSync);
+    }
+
+    return () => {
+      provider.off("sync", onSync);
+      provider.destroy();
+    };
+  }, [doc, editor, noteId]);
+
+  return null;
+}
 
 export function Editor({ noteId }: { noteId: string }) {
-  const doc = new Y.Doc();
-  const provider = createTrivialProvider();
+  const docRef = useRef<YDoc | null>(null);
+  if (!docRef.current) {
+    docRef.current = createYDoc();
+  }
+  const doc = docRef.current;
   const mutateNotePaced = useNotePacedMutations();
+
+  useEffect(() => {
+    return () => {
+      doc.destroy();
+    };
+  }, [doc]);
 
   const app = defineExtension({
     name: "@baretext/editor",
     dependencies: [
       RichTextExtension,
       AutoFocusExtension,
-      HistoryExtension,
       MdastExtension,
       MdastCommonMarkExtension,
       MdastGfmExtension,
@@ -53,6 +92,10 @@ export function Editor({ noteId }: { noteId: string }) {
       MdastHtmlExtension,
       ClipboardDOMImportExtension,
       CodePrismExtension,
+      configExtension(YCollabExtension, {
+        doc,
+        schemaVersion: 1,
+      }),
       configExtension(textContentExtension, {
         persist: (text) => {
           mutateNotePaced({ id: noteId, text });
@@ -62,42 +105,14 @@ export function Editor({ noteId }: { noteId: string }) {
     theme: editorTheme,
   });
 
-  useEffect(() => {
-    new IndexeddbPersistence(noteId, doc);
-    const awareness = new Awareness(doc);
-    const resumeStateProvider = new LocalStorageResumeStateProvider(noteId);
-    const electricProvider = createElectricProvider(
-      doc,
-      noteId,
-      awareness,
-      resumeStateProvider.load(),
-    );
-    const unsubscribeResumeState =
-      resumeStateProvider.subscribeToResumeState(electricProvider);
-
-    return () => {
-      unsubscribeResumeState();
-      awareness.destroy();
-      electricProvider.destroy();
-      doc.destroy();
-    };
-  }, [doc, noteId]);
-
   return (
-    <LexicalCollaboration>
-      <LexicalExtensionComposer extension={app} contentEditable={null}>
-        <CollaborationPluginV2__EXPERIMENTAL
-          id={noteId}
-          doc={doc}
-          provider={provider}
-          __shouldBootstrapUnsafe={true}
-        />
-        <EditorWrapper>
-          <div className="relative mx-auto w-full min-w-0 max-w-[210mm] flex-1 overflow-y-auto">
-            <ContentEditable />
-          </div>
-        </EditorWrapper>
-      </LexicalExtensionComposer>
-    </LexicalCollaboration>
+    <LexicalExtensionComposer extension={app} contentEditable={null}>
+      <CollabSync doc={doc} noteId={noteId} />
+      <EditorWrapper>
+        <div className="relative mx-auto w-full min-w-0 max-w-[210mm] flex-1 overflow-y-auto">
+          <ContentEditable />
+        </div>
+      </EditorWrapper>
+    </LexicalExtensionComposer>
   );
 }
