@@ -1,5 +1,6 @@
 import { defineRelations, sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   bytea,
   index,
@@ -113,6 +114,37 @@ export const ydocAwareness = pgTable(
       .notNull(),
   },
   (table) => [primaryKey({ columns: [table.userId, table.noteId] })],
+);
+
+export const yhubYdocV1 = pgTable(
+  "yhub_ydoc_v1",
+  {
+    org: text("org").notNull(),
+    docid: text("docid").notNull(),
+    branch: text("branch").notNull(),
+    t: text("t").notNull(),
+    created: bigint("created", { mode: "number" }),
+    gcDoc: bytea("gcdoc"),
+    nongcDoc: bytea("nongcdoc"),
+    contentmap: bytea("contentmap"),
+    contentids: bytea("contentids"),
+  },
+  (table) => [
+    primaryKey({ columns: [table.org, table.docid, table.branch, table.t] }),
+  ],
+);
+
+export const yhubYdocTombstonesV1 = pgTable(
+  "yhub_ydoc_tombstones_v1",
+  {
+    org: text("org").notNull(),
+    docid: text("docid").notNull(),
+    branch: text("branch").notNull(),
+    deletedAt: bigint("deleted_at", { mode: "number" }).notNull(),
+    hard: boolean("hard").notNull(),
+    purgedAt: bigint("purged_at", { mode: "number" }),
+  },
+  (table) => [primaryKey({ columns: [table.org, table.docid, table.branch] })],
 );
 
 export const relations = defineRelations(
