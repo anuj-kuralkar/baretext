@@ -27,10 +27,12 @@
     "test": "vitest run",
     "dev:web": "bun --filter @baretext/web dev",
     "dev:api": "bun --filter @baretext/api dev",
+    "dev:collab": "bun --filter @baretext/collab dev",
     "build:web": "bun --filter @baretext/web build",
     "build:api": "bun --filter @baretext/api build",
     "start:api": "bun --filter @baretext/api start",
     "start:web": "bun --filter @baretext/web start",
+    "start:collab": "bun --filter @baretext/collab start",
     "check": "biome check",
     "check:write": "biome check --write"
   },
