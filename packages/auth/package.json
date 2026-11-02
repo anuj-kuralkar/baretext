@@ -1,7 +1,7 @@
 {
   "name": "@baretext/auth",
-  "type": "module",
   "private": true,
+  "type": "module",
   "module": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts"
@@ -9,7 +9,7 @@
   "dependencies": {
     "@baretext/db": "workspace:*",
     "@baretext/emails": "workspace:*",
-    "@better-auth/drizzle-adapter": "^1.7.10",
+    "@better-auth/drizzle-adapter": "^1.7.15",
     "@better-auth/passkey": "catalog:",
     "@t3-oss/env-core": "catalog:",
     "better-auth": "catalog:",

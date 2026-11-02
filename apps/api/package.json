@@ -1,8 +1,13 @@
 {
   "name": "@baretext/api",
-  "type": "module",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/app.ts"
+    }
+  },
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "build": "bun build.ts",
@@ -10,11 +15,6 @@
     "check": "biome check",
     "check:write": "biome check --write",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "exports": {
-    ".": {
-      "types": "./src/app.ts"
-    }
   },
   "dependencies": {
     "@baretext/auth": "workspace:*",
@@ -29,7 +29,7 @@
     "@t3-oss/env-core": "catalog:",
     "drizzle-orm": "catalog:",
     "elysia": "^2.0.0-rc.1",
-    "posthog-node": "^5.56.2",
+    "posthog-node": "^5.61.1",
     "zod": "catalog:"
   },
   "devDependencies": {

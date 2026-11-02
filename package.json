@@ -1,20 +1,18 @@
 {
   "name": "baretext",
-  "type": "module",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "bun@1.4.2",
   "workspaces": {
     "packages": [
       "apps/*",
       "packages/*"
     ],
     "catalog": {
-      "@better-auth/passkey": "^1.7.12",
+      "@better-auth/passkey": "^1.7.15",
       "@electric-sql/client": "^1.5.28",
       "@t3-oss/env-core": "^0.13.11",
-      "@types/bun": "^1.4.3",
-      "better-auth": "^1.7.12",
+      "@types/bun": "^1.4.4",
+      "better-auth": "^1.7.15",
       "drizzle-orm": "1.0.0-rc.5",
       "react": "^19.3.1",
       "react-dom": "^19.3.1",
@@ -23,6 +21,7 @@
       "zod": "^4.6.7"
     }
   },
+  "type": "module",
   "scripts": {
     "build": "bun --filter '*' --parallel build",
     "test": "vitest run",
@@ -41,5 +40,6 @@
     "@commitlint/config-conventional": "^21.2.4",
     "lefthook": "^2.2.2",
     "vitest": "catalog:"
-  }
+  },
+  "packageManager": "bun@1.4.2"
 }
