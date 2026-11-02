@@ -14,7 +14,7 @@
     "@baretext/auth": "workspace:*",
     "@baretext/db": "workspace:*",
     "@t3-oss/env-core": "catalog:",
-    "@y/hub": "^0.2.27",
+    "@y/hub": "^0.10.1",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
     "zod": "catalog:"

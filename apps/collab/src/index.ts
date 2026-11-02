@@ -27,7 +27,7 @@ const docPermissions = {
     },
     endpoint: { "*": "-r--" },
   },
-};
+} as const;
 
 const authPlugin = createAuthPlugin({
   async authenticate(req: { getHeader: (name: string) => string | undefined }) {
@@ -49,11 +49,13 @@ const authPlugin = createAuthPlugin({
     ) => {
       if (!user) return null;
 
-      const noteRecord = await db.query.note.findFirst({
-        where: and(eq(note.id, docid), eq(note.userId, user.userid)),
-      });
+      const [existingNote] = await db
+        .select({ id: note.id })
+        .from(note)
+        .where(and(eq(note.id, docid), eq(note.userId, user.userid)))
+        .limit(1);
 
-      if (!noteRecord) return null;
+      if (!existingNote) return null;
       return docPermissions.rw;
     },
   }),
@@ -70,6 +72,7 @@ async function main() {
       prefix: "yhub:baretext",
     },
     postgres: env.DATABASE_URL,
+    persistence: [],
     server: {
       port: env.PORT,
       auth: authPlugin,
