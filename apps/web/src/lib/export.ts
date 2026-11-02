@@ -27,7 +27,7 @@ export async function exportNote(
   const provider = new WebsocketProvider(
     env.NEXT_PUBLIC_COLLAB_WS_URL,
     `default/${noteId}`,
-    doc as unknown as ConstructorParameters<typeof WebsocketProvider>[2],
+    doc,
   );
 
   await new Promise<void>((resolve) => {
@@ -77,6 +77,7 @@ export async function exportNote(
   );
 
   provider.destroy();
+  provider.awareness.destroy();
   doc.destroy();
 
   return result;

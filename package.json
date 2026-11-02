@@ -19,6 +19,21 @@
       "typescript": "^7.0.2",
       "vitest": "^5.0.5",
       "zod": "^4.6.7"
+    },
+    "catalogs": {
+      "lexical": {
+        "@lexical/clipboard": "nightly",
+        "@lexical/code-prism": "nightly",
+        "@lexical/extension": "nightly",
+        "@lexical/html": "nightly",
+        "@lexical/mdast": "nightly",
+        "@lexical/react": "nightly",
+        "@lexical/rich-text": "nightly",
+        "@lexical/y": "nightly",
+        "@y/websocket": "4.0.0-rc.2",
+        "@y/y": "14.0.0-rc.29",
+        "lexical": "nightly"
+      }
     }
   },
   "type": "module",

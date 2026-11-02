@@ -34,32 +34,26 @@ function CollabSync({ doc, noteId }: { doc: YDoc; noteId: string }) {
 
   useEffect(() => {
     const wsUrl = env.NEXT_PUBLIC_COLLAB_WS_URL;
-    const provider = new WebsocketProvider(
-      wsUrl,
-      `default/${noteId}`,
-      doc as unknown as ConstructorParameters<typeof WebsocketProvider>[2],
-    );
+    const provider = new WebsocketProvider(wsUrl, `default/${noteId}`, doc);
 
     const { binding } = getExtensionDependencyFromEditor(
       editor,
       YCollabExtension,
     ).output;
 
-    const onSync = (isSynced: boolean) => {
-      if (isSynced) {
-        binding.initialize();
-      }
-    };
-
-    if (provider.synced) {
+    provider.once("sync", () => {
       binding.initialize();
-    } else {
-      provider.on("sync", onSync);
-    }
+    });
+
+    // Share this client's selection via awareness as documented in Lexical y.md
+    const unregisterListener = editor.registerUpdateListener(() => {
+      provider.awareness.setLocalStateField("cursor", binding.getCursor());
+    });
 
     return () => {
-      provider.off("sync", onSync);
+      unregisterListener();
       provider.destroy();
+      provider.awareness.destroy();
     };
   }, [doc, editor, noteId]);
 
