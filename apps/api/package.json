@@ -28,7 +28,7 @@
     "@opentelemetry/sdk-node": "^0.300.0",
     "@t3-oss/env-core": "catalog:",
     "drizzle-orm": "catalog:",
-    "elysia": "^2.0.0-rc.0",
+    "elysia": "^2.0.0-rc.1",
     "posthog-node": "^5.56.2",
     "zod": "catalog:"
   },
