@@ -43,7 +43,7 @@ export const noteCollection = collectionOptions("note", (client) => {
       columnMapper: snakeCamelMapper(),
     },
 
-    onInsert: async ({ transaction }) => {
+    onInsert: async ({ collection, transaction }) => {
       const modified = transaction.mutations[0].modified;
       const { data, error } = await api.notes.post({
         id: modified.id,
@@ -54,16 +54,16 @@ export const noteCollection = collectionOptions("note", (client) => {
       if (error) {
         throw error;
       }
-      return { txid: data.txid };
+      await collection.utils.awaitTxId(data.txid);
     },
 
-    onDelete: async ({ transaction }) => {
+    onDelete: async ({ collection, transaction }) => {
       const original = transaction.mutations[0].original;
       const { data, error } = await api.notes({ id: original.id }).delete();
       if (error) {
         throw error;
       }
-      return { txid: data.txid };
+      await collection.utils.awaitTxId(data.txid);
     },
   });
 });
