@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
+    "start:server": "bun run src/server.ts",
+    "start:worker": "bun run src/worker.ts",
     "init": "bun run src/init.ts",
     "check": "biome check",
     "check:write": "biome check --write"
