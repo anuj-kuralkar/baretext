@@ -18,7 +18,15 @@ We use Bun for package management. From the project root, run:
 bun install
 ```
 
-## 3. Running Local Servers
+## 3. Install Chromium for Browser Tests
+
+Lefthook runs the Vitest suite before each commit. Install the Playwright Chromium browser required by browser-mode tests:
+
+```bash
+bun --filter @baretext/web install-browser
+```
+
+## 4. Running Local Servers
 
 To start the development servers in watch mode:
 
@@ -30,7 +38,7 @@ bun dev:web
 bun dev:api
 ```
 
-## 4. Code Quality (Linting & Formatting)
+## 5. Code Quality (Linting & Formatting)
 
 We use [Biome](https://biomejs.dev/) as our formatter and linter. To check your code before committing:
 
