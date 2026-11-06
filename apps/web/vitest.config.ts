@@ -16,7 +16,10 @@ export default defineConfig({
   test: {
     browser: {
       enabled: true,
-      provider: playwright(),
+      provider: playwright({
+        // Use Chromium's new headless mode rather than the separate headless shell.
+        launchOptions: { channel: "chromium" },
+      }),
       instances: [{ browser: "chromium" }],
     },
   },
