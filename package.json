@@ -24,7 +24,11 @@
   "type": "module",
   "scripts": {
     "build": "bun --filter '*' --parallel build",
-    "test": "vitest run",
+    "test": "bun run test:unit",
+    "test:all": "bun run test:unit && bun run test:browser",
+    "test:unit": "vitest run --project=emails-unit --project=web-unit",
+    "test:browser": "vitest run --project=web-browser --browser.headless --passWithNoTests",
+    "test:browser:ui": "vitest --project=web-browser --browser.headless=false --passWithNoTests",
     "dev:web": "bun --filter @baretext/web dev",
     "dev:api": "bun --filter @baretext/api dev",
     "build:web": "bun --filter @baretext/web build",

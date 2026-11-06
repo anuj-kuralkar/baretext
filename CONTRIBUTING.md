@@ -20,11 +20,21 @@ bun install
 
 ## 3. Install Chromium for Browser Tests
 
-Lefthook runs the Vitest suite before each commit. Install the Playwright Chromium browser required by browser-mode tests:
+Install the Playwright Chromium browser before running browser-mode tests locally:
 
 ```bash
 bun --filter @baretext/web install-browser
 ```
+
+Lefthook runs only fast unit tests before each commit. Run browser tests headlessly with `bun run test:browser`, or interactively with `bun run test:browser:ui`.
+
+### Test Commands and Naming
+
+- `bun run test` runs fast unit tests and is used by Lefthook.
+- `bun run test:browser` runs `*.browser.test.ts(x)` files headlessly.
+- `bun run test:all` runs both tiers, as CI does.
+
+Name pure logic and service tests `*.test.ts(x)`. Name tests that require a real browser `*.browser.test.ts(x)`; this keeps Chromium out of the fast feedback loop.
 
 ## 4. Running Local Servers
 

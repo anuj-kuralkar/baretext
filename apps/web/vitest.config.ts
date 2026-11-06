@@ -1,9 +1,9 @@
 import path from "node:path";
 import react from "@vitejs/plugin-react";
-import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  root: import.meta.dirname,
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
@@ -14,13 +14,8 @@ export default defineConfig({
     "process.env.SKIP_ENV_VALIDATION": JSON.stringify("true"),
   },
   test: {
-    browser: {
-      enabled: true,
-      provider: playwright({
-        // Use Chromium's new headless mode rather than the separate headless shell.
-        launchOptions: { channel: "chromium" },
-      }),
-      instances: [{ browser: "chromium" }],
-    },
+    name: "web-unit",
+    include: ["src/**/*.test.{ts,tsx}"],
+    exclude: ["src/**/*.browser.test.{ts,tsx}"],
   },
 });
