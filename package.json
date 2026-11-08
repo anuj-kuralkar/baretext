@@ -19,6 +19,21 @@
       "typescript": "^7.0.2",
       "vitest": "^5.0.5",
       "zod": "^4.6.7"
+    },
+    "catalogs": {
+      "lexical": {
+        "@lexical/clipboard": "nightly",
+        "@lexical/code-prism": "nightly",
+        "@lexical/extension": "nightly",
+        "@lexical/html": "nightly",
+        "@lexical/mdast": "nightly",
+        "@lexical/react": "nightly",
+        "@lexical/rich-text": "nightly",
+        "@lexical/y": "nightly",
+        "@y/websocket": "4.0.0-rc.2",
+        "@y/y": "14.0.0-rc.29",
+        "lexical": "nightly"
+      }
     }
   },
   "type": "module",
@@ -27,10 +42,12 @@
     "test": "vitest run",
     "dev:web": "bun --filter @baretext/web dev",
     "dev:api": "bun --filter @baretext/api dev",
+    "dev:collab": "bun --filter @baretext/collab dev",
     "build:web": "bun --filter @baretext/web build",
     "build:api": "bun --filter @baretext/api build",
     "start:api": "bun --filter @baretext/api start",
     "start:web": "bun --filter @baretext/web start",
+    "start:collab": "bun --filter @baretext/collab start",
     "check": "biome check",
     "check:write": "biome check --write"
   },

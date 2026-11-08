@@ -1,0 +1,29 @@
+{
+  "name": "@baretext/collab",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "start:server": "bun run src/server.ts",
+    "start:worker": "bun run src/worker.ts",
+    "init": "bun run src/init.ts",
+    "check": "biome check",
+    "check:write": "biome check --write"
+  },
+  "dependencies": {
+    "@baretext/auth": "workspace:*",
+    "@baretext/db": "workspace:*",
+    "@t3-oss/env-core": "catalog:",
+    "@y/hub": "^0.10.1",
+    "@y/y": "catalog:lexical",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,5 +1,6 @@
 import { defineRelations, sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   bytea,
   index,
@@ -86,37 +87,75 @@ export const note = pgTable("note", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
-export const ydocUpdate = pgTable("ydoc_update", {
-  id: uuid("id").primaryKey().default(sql`uuidv7()`),
-  noteId: uuid("note_id")
-    .notNull()
-    .references(() => note.id, { onDelete: "cascade" }),
-  op: bytea("op").notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-});
-
-export const ydocAwareness = pgTable(
-  "ydoc_awareness",
+export const yhubYdocV1 = pgTable(
+  "yhub_ydoc_v1",
   {
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    noteId: uuid("note_id")
-      .notNull()
-      .references(() => note.id, { onDelete: "cascade" }),
-    op: bytea("op").notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
+    org: text("org"),
+    docid: text("docid"),
+    branch: text("branch"),
+    t: text("t"),
+    created: bigint("created", { mode: "number" }),
+    gcDoc: bytea("gc_doc"),
+    nongcDoc: bytea("nongc_doc"),
+    contentmap: bytea("contentmap"),
+    contentids: bytea("contentids"),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.noteId] })],
+  (table) => [
+    primaryKey({
+      columns: [table.org, table.docid, table.branch, table.t],
+    }),
+    index("yhub_ydoc_v1_updated").on(table.org, table.created),
+  ],
+);
+
+export const yhubYdocTombstonesV1 = pgTable(
+  "yhub_ydoc_tombstones_v1",
+  {
+    org: text("org"),
+    docid: text("docid"),
+    branch: text("branch"),
+    deletedAt: bigint("deleted_at", { mode: "number" }).notNull(),
+    hard: boolean("hard").notNull(),
+    purgedAt: bigint("purged_at", { mode: "number" }),
+    by: text("by"),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.org, table.docid, table.branch],
+    }),
+    index("yhub_ydoc_tombstones_v1_pending")
+      .on(table.deletedAt)
+      .where(sql`${table.purgedAt} IS NULL`),
+    index("yhub_ydoc_tombstones_v1_updated").on(table.org, table.deletedAt),
+  ],
+);
+
+export const yhubYdocVersionsV1 = pgTable(
+  "yhub_ydoc_versions_v1",
+  {
+    org: text("org"),
+    docid: text("docid"),
+    branch: text("branch"),
+    t: bigint("t", { mode: "number" }),
+    name: text("name").notNull(),
+    custom: bytea("custom").notNull(),
+    published: boolean("published").notNull().default(false),
+    publishedAt: bigint("published_at", { mode: "number" }),
+    publishedBy: text("published_by"),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+    createdBy: text("created_by"),
+    updatedBy: text("updated_by"),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.org, table.docid, table.branch, table.t],
+    }),
+  ],
 );
 
 export const relations = defineRelations(
-  { user, account, passkey, note, ydocUpdate },
+  { user, account, passkey, note },
   (r) => ({
     user: {
       accounts: r.many.account(),
@@ -138,17 +177,6 @@ export const relations = defineRelations(
     note: {
       user: r.one.user({
         from: r.note.userId,
-        to: r.user.id,
-      }),
-      ydocUpdates: r.many.ydocUpdate(),
-    },
-    ydocUpdate: {
-      note: r.one.note({
-        from: r.ydocUpdate.noteId,
-        to: r.note.id,
-      }),
-      user: r.one.user({
-        from: r.ydocUpdate.userId,
         to: r.user.id,
       }),
     },

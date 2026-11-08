@@ -1,7 +1,5 @@
-import { clearDocument } from "y-indexeddb";
-
 /**
- * Deletes all IndexedDB databases associated with Yjs notes and cleans up
+ * Deletes all IndexedDB databases associated with notes and cleans up
  * cached resume states in localStorage.
  */
 export async function clearAllNotesIndexedDb(): Promise<void> {
@@ -24,7 +22,7 @@ export async function clearAllNotesIndexedDb(): Promise<void> {
     }
   }
 
-  // 2. Discover note IDs stored in localStorage by LocalStorageResumeStateProvider
+  // 2. Discover note IDs stored in localStorage
   try {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -42,22 +40,26 @@ export async function clearAllNotesIndexedDb(): Promise<void> {
   // 3. Delete each IndexedDB database and any corresponding localStorage keys
   await Promise.all(
     Array.from(dbNames).map(async (name) => {
-      try {
-        await clearDocument(name);
-      } catch {
-        try {
-          indexedDB.deleteDatabase(name);
-        } catch {
-          // Ignore
-        }
-      }
-
+      clearNoteIndexedDb(name);
       try {
         localStorage.removeItem(name);
         localStorage.removeItem(`${name}_vector`);
+        localStorage.removeItem(`${name}_clock`);
       } catch {
-        // Ignore
+        // Ignore localStorage access failures
       }
     }),
   );
+}
+
+/**
+ * Clean up local indexedDB database for a single note if any exists.
+ */
+export function clearNoteIndexedDb(noteId: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    indexedDB.deleteDatabase(noteId);
+  } catch {
+    // Ignore errors
+  }
 }
