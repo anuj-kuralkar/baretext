@@ -14,7 +14,6 @@ export interface NoteDeleteTriggerProps
   disabled?: boolean;
 }
 
-/** The context-menu row that triggers a note delete. */
 export function NoteDeleteTrigger({
   noteId,
   render,
@@ -25,12 +24,6 @@ export function NoteDeleteTrigger({
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
-  /**
-   * Deletes the note optimistically, immediately navigating away from an open
-   * note page so the UI never shows a deleted note. The offline IndexedDB
-   * document is cleared once the transaction settles; that cleanup is
-   * fire-and-forget and must not fail the delete.
-   */
   const handleDelete = () => {
     startTransition(async () => {
       try {

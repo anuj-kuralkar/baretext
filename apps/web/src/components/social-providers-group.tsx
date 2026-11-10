@@ -36,15 +36,10 @@ const SOCIAL_PROVIDERS: SocialProviderConfig[] = [
   },
 ];
 
-/** Connect/disconnect rows for the supported social providers, driven by the user's linked accounts. */
 export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  /**
-   * Links the auth provider to the signed-in account, then refreshes the
-   * account list. Errors surface as toasts.
-   */
   const handleLink = (provider: "google" | "github") => {
     startTransition(async () => {
       const { error } = await authClient.linkSocial({
@@ -61,11 +56,6 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
     });
   };
 
-  /**
-   * Unlinks the account. The provider error type only exposes its fields
-   * conditionally (hence the `in` narrowing); anything undefined falls back to
-   * friendly toast copy.
-   */
   const handleUnlink = (accountId: string) => {
     startTransition(async () => {
       const { error } = await authClient.unlinkAccount({

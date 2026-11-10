@@ -35,16 +35,8 @@ const exportExtension = defineExtension({
   ],
 });
 
-/** Serialization targets {@link exportNote} can produce. */
 export type ExportFormat = "html" | "markdown";
 
-/**
- * Serializes a note to HTML or Markdown through a throwaway headless Lexical
- * editor bound to a throwaway Y.Doc. Loads the offline IndexedDB copy first
- * (bounded at ~2s), then, when online, best-effort catches up from the
- * Electric stream (bounded at ~1.5s) before serializing. Does not mutate the
- * note; all handles are destroyed before returning.
- */
 export async function exportNote(
   noteId: string,
   format: ExportFormat,

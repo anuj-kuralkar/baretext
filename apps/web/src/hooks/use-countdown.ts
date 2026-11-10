@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 
 const SECOND_MS = 1000;
 
-/**
- * Whole seconds remaining until `targetTimestamp`, clamped at 0. Ticks once
- * per second and stops (clears its interval) once the target time passes.
- */
 export function useCountdown(targetTimestamp: number): number {
   const [now, setNow] = useState(() => Date.now());
 

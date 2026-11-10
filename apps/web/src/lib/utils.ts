@@ -13,12 +13,6 @@ export function getInitials(name?: string): string {
     .toUpperCase();
 }
 
-/**
- * Relative-time label for a mixed `date | Date | number` input: "Just now"
- * under a minute, then minute/hour/day buckets via Intl, then a fixed
- * month-day (or month-day-year after a year boundary) date label. Future
- * dates flow through the same absolute-value buckets.
- */
 export function formatRelativeTime(date: string | Date | number): string {
   const d = new Date(date);
   const now = new Date();
