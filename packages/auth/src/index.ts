@@ -12,6 +12,13 @@ import { emailOTP } from "better-auth/plugins";
 import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";
 import { env } from "./env";
 
+/**
+ * Better Auth server instance shared by the API app and the web middleware:
+ * drizzle/pg adapter over the db schema, Redis secondary storage, GitHub +
+ * Google OAuth, passkeys, and email-OTP — whose send path first runs
+ * `validateEmailDeliverability` and rejects undeliverable addresses as
+ * BAD_REQUEST.
+ */
 export const auth = betterAuth({
   appName: "Baretext",
   baseURL: env.BETTER_AUTH_URL,

@@ -3,10 +3,8 @@ import { z } from "zod";
 
 const emailSchema = z.email("Invalid email address format.");
 
-/**
- * Marks rejections the checker itself decided on. The catch block rethrows
- * these by type instead of by matching message text.
- */
+// Marks rejections the checker itself decided on. The catch block rethrows
+// these by type instead of by matching message text.
 export class EmailDeliveryRejected extends Error {}
 
 const DISPOSABLE_EMAIL_MESSAGE =
@@ -36,11 +34,6 @@ export const systemDnsResolver: DnsResolver = {
   resolveTxt,
 };
 
-/**
- * Options overriding network and blocklist sources; both default to the real
- * system resolver and the bundled `disposable-domains.txt` list. Test passes
- * inject fakes here.
- */
 export interface ValidateEmailOptions {
   dnsResolver?: DnsResolver;
   disposableDomains?: ReadonlySet<string>;
@@ -76,10 +69,6 @@ export const BURNER_MX_KEYWORDS = [
   "agaexpress",
 ] as const;
 
-/**
- * True when a lookup error means the domain itself does not resolve — either
- * via the errno code, or via the code some DNS layers echo only in the message.
- */
 const isDomainNotFoundLookupError = (
   error: Error,
   code: string | undefined,

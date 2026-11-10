@@ -3,15 +3,10 @@ import { Resend } from "resend";
 import { env } from "./env";
 import { SignInOtpEmail } from "./templates/sign-in-otp";
 
-/**
- * One outbound email: Resend serializes `react` through react-dom, so the
- * template must be a rendered element, not an arbitrary node.
- */
 export interface SendEmailPayload {
   from: string;
   to: string[];
   subject: string;
-  // Resend serializes the template with react-dom, so only elements can be sent.
   react: React.ReactElement;
 }
 
@@ -60,6 +55,11 @@ export interface SendSignInOtpOptions {
   sender?: EmailSender;
 }
 
+/**
+ * Renders the sign-in OTP template and sends it from `AUTH_SENDER_EMAIL` to
+ * `email` (trimmed and lowercased) under the fixed "Your login code -
+ * Baretext" subject. Returns the transport response, Resend's email id if any.
+ */
 export async function sendSignInOtpEmail(
   {
     email,
