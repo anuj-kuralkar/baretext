@@ -35,9 +35,11 @@ const exportExtension = defineExtension({
   ],
 });
 
+export type ExportFormat = "html" | "markdown";
+
 export async function exportNote(
   noteId: string,
-  format: "html" | "markdown",
+  format: ExportFormat,
 ): Promise<string> {
   const doc = new Y.Doc();
 

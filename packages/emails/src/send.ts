@@ -7,7 +7,7 @@ export interface SendEmailPayload {
   from: string;
   to: string[];
   subject: string;
-  react: React.ReactNode;
+  react: React.ReactElement;
 }
 
 export interface EmailSender {
@@ -26,7 +26,7 @@ export class ResendEmailSender implements EmailSender {
       from: payload.from,
       to: payload.to,
       subject: payload.subject,
-      react: payload.react as React.ReactElement,
+      react: payload.react,
     });
 
     if (error) {
@@ -55,6 +55,11 @@ export interface SendSignInOtpOptions {
   sender?: EmailSender;
 }
 
+/**
+ * Renders the sign-in OTP template and sends it from `AUTH_SENDER_EMAIL` to
+ * `email` (trimmed and lowercased) under the fixed "Your login code -
+ * Baretext" subject. Returns the transport response, Resend's email id if any.
+ */
 export async function sendSignInOtpEmail(
   {
     email,

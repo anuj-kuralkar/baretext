@@ -10,6 +10,12 @@ import type * as Y from "yjs";
 
 import { env } from "@/lib/env/client";
 
+// Cast: modules type Electric's fetch option as `typeof fetch`, which carries a
+// `preconnect` static the closure can never provide; the body is a plain fetch
+// with auth cookies included.
+const FETCH_WITH_CREDENTIALS = ((url, init) =>
+  fetch(url, { ...init, credentials: "include" })) as typeof fetch;
+
 export function createElectricProvider(
   ydoc: Y.Doc,
   noteId: string,
@@ -26,8 +32,7 @@ export function createElectricProvider(
           room: noteId,
         },
         parser: parseToDecoder,
-        fetchClient: ((url, init) =>
-          fetch(url, { ...init, credentials: "include" })) as typeof fetch,
+        fetchClient: FETCH_WITH_CREDENTIALS,
       },
       sendUrl: new URL(
         `/yjs/update?room=${noteId}`,
@@ -43,8 +48,7 @@ export function createElectricProvider(
           room: noteId,
         },
         parser: parseToDecoder,
-        fetchClient: ((url, init) =>
-          fetch(url, { ...init, credentials: "include" })) as typeof fetch,
+        fetchClient: FETCH_WITH_CREDENTIALS,
       },
       sendUrl: new URL(
         `/yjs/awareness?room=${noteId}`,
@@ -56,8 +60,7 @@ export function createElectricProvider(
 
     resumeState,
     debounceMs: 1000,
-    fetchClient: ((url, init) =>
-      fetch(url, { ...init, credentials: "include" })) as typeof fetch,
+    fetchClient: FETCH_WITH_CREDENTIALS,
   });
 }
 

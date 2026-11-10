@@ -1,10 +1,14 @@
 import { aot } from "elysia/plugin/aot/bun";
 
-Bun.build({
+const build = await Bun.build({
   entrypoints: ["src/index.ts"],
   outdir: ".",
   target: "bun",
   plugins: [aot("src/index.ts")],
-}).then(() => {
-  process.exit(0);
 });
+
+if (!build.success) {
+  console.error("Failed to build api:", build.logs);
+  process.exit(1);
+}
+process.exit(0);

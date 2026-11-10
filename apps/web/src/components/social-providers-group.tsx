@@ -63,13 +63,17 @@ export function SocialProvidersGroup({ accounts }: { accounts: Account[] }) {
       });
       if (error) {
         const errCode =
-          "code" in error ? String(error.code) : String(error.status);
+          "code" in error && typeof error.code === "string"
+            ? error.code
+            : undefined;
+        const errMessage =
+          "message" in error && typeof error.message === "string"
+            ? error.message
+            : undefined;
         toast.add({
           type: "error",
-          title: errCode,
-          description:
-            ("message" in error ? String(error.message) : undefined) ??
-            "An unknown error occurred.",
+          title: errCode ?? "Failed to unlink account",
+          description: errMessage ?? "An unknown error occurred.",
         });
       } else {
         toast.add({

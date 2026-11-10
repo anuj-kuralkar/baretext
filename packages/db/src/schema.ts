@@ -11,6 +11,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+/** Identity and profile fields, per Better Auth's `user` model. */
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -24,6 +25,7 @@ export const user = pgTable("user", {
     .notNull(),
 });
 
+/** One linked login identity — provider credentials and tokens — owned by a user. */
 export const account = pgTable(
   "account",
   {
@@ -48,6 +50,7 @@ export const account = pgTable(
   (table) => [index("account_userId_idx").on(table.userId)],
 );
 
+/** One WebAuthn credential registered through the passkey plugin, per user. */
 export const passkey = pgTable(
   "passkey",
   {
@@ -71,6 +74,7 @@ export const passkey = pgTable(
   ],
 );
 
+/** One note document: plain editor text plus timestamps, owned by one user. */
 export const note = pgTable("note", {
   id: uuid("id").primaryKey().default(sql`uuidv7()`),
   textContent: text("text_content").notNull(),
@@ -86,6 +90,10 @@ export const note = pgTable("note", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
+/**
+ * One Yjs document update for a note's room, stored as raw bytes; the
+ * Electric update shape streams these rows to editors over the API.
+ */
 export const ydocUpdate = pgTable("ydoc_update", {
   id: uuid("id").primaryKey().default(sql`uuidv7()`),
   noteId: uuid("note_id")
@@ -97,6 +105,11 @@ export const ydocUpdate = pgTable("ydoc_update", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
+/**
+ * A user's latest Yjs awareness (presence) op on a note, stored in place:
+ * (userId, noteId) is the primary key, so there is one row per participant
+ * per note.
+ */
 export const ydocAwareness = pgTable(
   "ydoc_awareness",
   {
@@ -115,6 +128,7 @@ export const ydocAwareness = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.noteId] })],
 );
 
+/** Drizzle relation graph consumed by the relational query builder and the auth drizzle adapter. */
 export const relations = defineRelations(
   { user, account, passkey, note, ydocUpdate },
   (r) => ({

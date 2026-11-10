@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+const SECOND_MS = 1000;
+
 export function useCountdown(targetTimestamp: number): number {
   const [now, setNow] = useState(() => Date.now());
 
@@ -11,10 +13,10 @@ export function useCountdown(targetTimestamp: number): number {
       const current = Date.now();
       setNow(current);
       if (current >= targetTimestamp) clearInterval(interval);
-    }, 1000);
+    }, SECOND_MS);
 
     return () => clearInterval(interval);
   }, [targetTimestamp]);
 
-  return Math.max(0, Math.ceil((targetTimestamp - now) / 1000));
+  return Math.max(0, Math.ceil((targetTimestamp - now) / SECOND_MS));
 }

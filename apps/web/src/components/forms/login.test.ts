@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { initialLoginFormState, loginReducer } from "./login";
+import {
+  initialLoginFormState,
+  loginReducer,
+  RESEND_COOLDOWN_MS,
+} from "./login";
 
 describe("loginReducer state reset across email changes", () => {
   beforeEach(() => {
@@ -32,7 +36,7 @@ describe("loginReducer state reset across email changes", () => {
     expect(state.otp).toBe("");
     expect(state.error).toBeNull();
     const firstResendAvailableAt = state.resendAvailableAt;
-    expect(firstResendAvailableAt).toBe(Date.now() + 30_000);
+    expect(firstResendAvailableAt).toBe(Date.now() + RESEND_COOLDOWN_MS);
 
     state = loginReducer(state, { type: "SET_VALUE", value: "111111" });
     if (state.step !== "otp") throw new Error("Expected otp step");
@@ -70,7 +74,7 @@ describe("loginReducer state reset across email changes", () => {
     expect(state.otp).toBe("");
     expect(state.error).toBeNull();
     expect(state.isPending).toBe(false);
-    expect(state.resendAvailableAt).toBe(Date.now() + 30_000);
+    expect(state.resendAvailableAt).toBe(Date.now() + RESEND_COOLDOWN_MS);
     expect(state.resendAvailableAt).toBe(firstResendAvailableAt + 10_000);
   });
 });

@@ -15,7 +15,7 @@ import { NoteContextMenu } from "./note-context-menu";
 export function NoteList() {
   const { noteId } = useParams<{ noteId?: string }>();
   const { data: notes } = useLiveSuspenseQuery(noteListQuery);
-  if (notes.length === 0) {
+  if (!notes.length) {
     return <NoteListEmpty />;
   }
 
@@ -75,6 +75,8 @@ function NotePreview({
 }: NotePreviewProps) {
   const { setOpenMobile } = useSidebar();
 
+  // Runs of newlines split the editor text into preview lines: "a\n\nb" → ["a", "", "b"]; "one" → ["one"].
+  // https://regex101.com/?flavor=javascript&regex=%5Cn%2B&flags=g&testString=a%5Cn%5Cnb%0Aone
   const [title = "A blank page", description = "Your next idea starts here"] =
     textContent.split(/\n+/).filter(Boolean).slice(0, 2);
 

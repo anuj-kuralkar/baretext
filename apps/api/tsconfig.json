@@ -7,6 +7,9 @@
     "moduleDetection": "force",
     "allowJs": true,
     "types": ["bun"],
+    // Workspace email templates (raw .tsx sources from @baretext/emails)
+    // resolve into this project's graph, so JSX needs a parser flag
+    "jsx": "react-jsx",
 
     // Bundler mode
     "moduleResolution": "bundler",
@@ -20,10 +23,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noPropertyAccessFromIndexSignature": false
   }
 }
