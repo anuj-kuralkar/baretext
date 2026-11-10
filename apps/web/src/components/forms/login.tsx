@@ -70,99 +70,126 @@ export type LoginFormAction =
   | { type: "START_PROVIDER_AUTH"; provider: SocialProvider | "passkey" }
   | { type: "FINISH_PROVIDER_AUTH" };
 
+// Mirrors the resend cooldown the API allows; shared with the reducer test.
+export const RESEND_COOLDOWN_MS = 30_000;
+export const OTP_LENGTH = 6;
+const AFTER_SIGN_IN_PATH = "/";
+
 export const initialLoginFormState: LoginFormState = {
   step: "methods",
   loadingProvider: null,
+};
+
+const goEmailStep = (): LoginFormState => {
+  return { step: "email", email: "", isPending: false, error: null };
+};
+
+const goOtpStep = (email: string): LoginFormState => {
+  return {
+    step: "otp",
+    email: email.trim(),
+    otp: "",
+    resendAvailableAt: Date.now() + RESEND_COOLDOWN_MS,
+    isPending: false,
+    error: null,
+  };
+};
+
+// One entry per LoginFormAction tag; a new action type that forgets its
+// reducer arm is a compile error on this Record instead of a silent noop.
+const reduceAction: Readonly<{
+  [Key in LoginFormAction["type"]]: (
+    state: LoginFormState,
+    action: Extract<LoginFormAction, { type: Key }>,
+  ) => LoginFormState;
+}> = {
+  NEXT: (state) => {
+    if (state.step === "methods") {
+      return goEmailStep();
+    }
+    if (state.step === "email") {
+      return goOtpStep(state.email);
+    }
+    return state;
+  },
+
+  PREV: (state) => {
+    if (state.step === "otp") {
+      return {
+        step: "email",
+        email: state.email,
+        isPending: false,
+        error: null,
+      };
+    }
+    if (state.step === "email") {
+      return { step: "methods", loadingProvider: null };
+    }
+    return state;
+  },
+
+  SET_VALUE: (state, { value }) => {
+    if (state.step === "email") {
+      return { ...state, email: value, error: null };
+    }
+    if (state.step === "otp") {
+      return { ...state, otp: value, error: null };
+    }
+    return state;
+  },
+
+  SET_PENDING: (state, { isPending }) => {
+    if (state.step === "methods") return state;
+    return {
+      ...state,
+      isPending,
+      error: isPending ? null : state.error,
+    };
+  },
+
+  SET_ERROR: (state, { error }) => {
+    if (state.step === "methods") return state;
+    return { ...state, isPending: false, error };
+  },
+
+  RESET_RESEND: (state, { resendAvailableAt }) => {
+    if (state.step !== "otp") return state;
+    return {
+      ...state,
+      isPending: false,
+      resendAvailableAt,
+      error: null,
+    };
+  },
+
+  START_PROVIDER_AUTH: (state, { provider }) => {
+    if (state.step !== "methods") return state;
+    return { ...state, loadingProvider: provider };
+  },
+
+  FINISH_PROVIDER_AUTH: (state) => {
+    if (state.step !== "methods") return state;
+    return { ...state, loadingProvider: null };
+  },
+
+  CLEAR_ERROR: (state) => {
+    if (state.step === "methods") return state;
+    return { ...state, error: null };
+  },
 };
 
 export function loginReducer(
   state: LoginFormState,
   action: LoginFormAction,
 ): LoginFormState {
-  switch (action.type) {
-    case "NEXT":
-      if (state.step === "methods") {
-        return {
-          step: "email",
-          email: "",
-          isPending: false,
-          error: null,
-        };
-      }
-      if (state.step === "email") {
-        return {
-          step: "otp",
-          email: state.email.trim(),
-          otp: "",
-          resendAvailableAt: Date.now() + 30_000,
-          isPending: false,
-          error: null,
-        };
-      }
-      return state;
-
-    case "PREV":
-      if (state.step === "otp") {
-        return {
-          step: "email",
-          email: state.email,
-          isPending: false,
-          error: null,
-        };
-      }
-      if (state.step === "email") {
-        return {
-          step: "methods",
-          loadingProvider: null,
-        };
-      }
-      return state;
-
-    case "SET_VALUE":
-      if (state.step === "email") {
-        return { ...state, email: action.value, error: null };
-      }
-      if (state.step === "otp") {
-        return { ...state, otp: action.value, error: null };
-      }
-      return state;
-
-    case "SET_PENDING":
-      if (state.step === "methods") return state;
-      return {
-        ...state,
-        isPending: action.isPending,
-        error: action.isPending ? null : state.error,
-      };
-
-    case "SET_ERROR":
-      if (state.step === "methods") return state;
-      return { ...state, isPending: false, error: action.error };
-
-    case "RESET_RESEND":
-      if (state.step !== "otp") return state;
-      return {
-        ...state,
-        isPending: false,
-        resendAvailableAt: action.resendAvailableAt,
-        error: null,
-      };
-
-    case "START_PROVIDER_AUTH":
-      if (state.step !== "methods") return state;
-      return { ...state, loadingProvider: action.provider };
-
-    case "FINISH_PROVIDER_AUTH":
-      if (state.step !== "methods") return state;
-      return { ...state, loadingProvider: null };
-
-    case "CLEAR_ERROR":
-      if (state.step === "methods") return state;
-      return { ...state, error: null };
-
-    default:
-      return state;
-  }
+  // The looked-up handler's parameter can't be correlated with `action`'s
+  // variant across the index access; the mapped Record's keys are what
+  // guarantee each action type gets exactly its own reducer.
+  const reduce = reduceAction[action.type] as (
+    state: LoginFormState,
+    action: LoginFormAction,
+  ) => LoginFormState;
+  return reduce(state, action);
 }
 
 interface LoginFormContextValue {
@@ -244,7 +271,7 @@ function LoginFormProvider({ children }: { children: ReactNode }) {
 
     if (state.step === "otp") {
       const code = (explicitValue ?? state.otp).trim();
-      if (code.length !== 6 || state.isPending) return;
+      if (code.length !== OTP_LENGTH || state.isPending) return;
 
       dispatch({ type: "SET_PENDING", isPending: true });
 
@@ -262,7 +289,7 @@ function LoginFormProvider({ children }: { children: ReactNode }) {
           return;
         }
 
-        window.location.href = "/";
+        window.location.href = AFTER_SIGN_IN_PATH;
       } catch {
         dispatch({
           type: "SET_ERROR",
@@ -294,7 +321,7 @@ function LoginFormProvider({ children }: { children: ReactNode }) {
 
       dispatch({
         type: "RESET_RESEND",
-        resendAvailableAt: Date.now() + 30_000,
+        resendAvailableAt: Date.now() + RESEND_COOLDOWN_MS,
       });
     } catch {
       dispatch({
@@ -351,7 +378,7 @@ function LoginFormProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      window.location.href = "/";
+      window.location.href = AFTER_SIGN_IN_PATH;
     } catch {
       toast.add({
         type: "error",
@@ -545,7 +572,7 @@ function LoginEmailStep() {
   );
 }
 
-const OTP_SLOTS = [0, 1, 2, 3, 4, 5] as const;
+const OTP_SLOTS = Array.from({ length: OTP_LENGTH }, (_, index) => index);
 
 function LoginOtpStep() {
   const { state, prev, setValue, submit, resend } = useLoginForm();
@@ -578,7 +605,7 @@ function LoginOtpStep() {
 
   const handleOtpChange = (val: string) => {
     setValue(val);
-    if (val.length === 6) {
+    if (val.length === OTP_LENGTH) {
       handleVerify(val);
     }
   };
@@ -602,7 +629,7 @@ function LoginOtpStep() {
 
           <InputOTP
             id="otp-input"
-            maxLength={6}
+            maxLength={OTP_LENGTH}
             pattern={REGEXP_ONLY_DIGITS}
             value={state.otp}
             onChange={handleOtpChange}
@@ -631,7 +658,7 @@ function LoginOtpStep() {
           type="button"
           className="w-full"
           onClick={() => handleVerify(state.otp)}
-          disabled={state.otp.length !== 6 || state.isPending}
+          disabled={state.otp.length !== OTP_LENGTH || state.isPending}
         >
           {state.isPending && actionType === "verify" ? (
             <>
