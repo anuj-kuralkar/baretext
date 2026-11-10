@@ -7,7 +7,8 @@ export interface SendEmailPayload {
   from: string;
   to: string[];
   subject: string;
-  react: React.ReactNode;
+  // Resend serializes the template with react-dom, so only elements can be sent.
+  react: React.ReactElement;
 }
 
 export interface EmailSender {
@@ -26,7 +27,7 @@ export class ResendEmailSender implements EmailSender {
       from: payload.from,
       to: payload.to,
       subject: payload.subject,
-      react: payload.react as React.ReactElement,
+      react: payload.react,
     });
 
     if (error) {
