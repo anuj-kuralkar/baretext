@@ -19,8 +19,6 @@ export interface NoteContextMenuProps {
   noteId: string;
 }
 
-// The single place naming what each export format renders as on disk:
-// label for toasts, download extension and blob mime share keys with ExportFormat.
 const EXPORT_FORMAT_META = {
   html: {
     label: "HTML",

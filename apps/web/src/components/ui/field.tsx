@@ -173,8 +173,6 @@ function FieldSeparator({
   );
 }
 
-// Kept out of the component body so the React Compiler memoizes content per
-// props rather than per closure identity.
 function fieldErrorContent(
   children: React.ReactNode,
   errors?: ReadonlyArray<{ message?: string } | undefined>,

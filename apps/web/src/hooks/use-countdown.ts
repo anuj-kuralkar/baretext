@@ -7,7 +7,6 @@ export function useCountdown(targetTimestamp: number): number {
 
   useEffect(() => {
     setNow(Date.now());
-    // Ticks only while the counter is still running down.
     if (Date.now() >= targetTimestamp) return;
 
     const interval = setInterval(() => {

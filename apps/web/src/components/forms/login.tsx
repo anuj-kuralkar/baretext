@@ -70,7 +70,6 @@ export type LoginFormAction =
   | { type: "START_PROVIDER_AUTH"; provider: SocialProvider | "passkey" }
   | { type: "FINISH_PROVIDER_AUTH" };
 
-// Mirrors the resend cooldown the API allows; shared with the reducer test.
 export const RESEND_COOLDOWN_MS = 30_000;
 export const OTP_LENGTH = 6;
 const AFTER_SIGN_IN_PATH = "/";

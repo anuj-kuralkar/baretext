@@ -1,5 +1,3 @@
-// Breakpoints and divisors for the relative-time buckets; each unit pairs
-// with the next coarser unit's exact size.
 const SECONDS_PER_MINUTE = 60;
 const MINUTES_PER_HOUR = 60;
 const HOURS_PER_DAY = 24;

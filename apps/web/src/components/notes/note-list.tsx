@@ -15,8 +15,6 @@ import { NoteContextMenu } from "./note-context-menu";
 export function NoteList() {
   const { noteId } = useParams<{ noteId?: string }>();
   const { data: notes } = useLiveSuspenseQuery(noteListQuery);
-  // Runs of newlines split the preview into lines: "Hello\n\nworld" → ["Hello", "", "world"]; "one\nline two" → ["one", "line two"].
-  // https://regex101.com/?flavor=javascript&regex=%5Cn%2B&flags=g&testString=Hello%5Cn%5Cnworld%0Aone%5Cnline%20two%0Ano-newlines
   if (!notes.length) {
     return <NoteListEmpty />;
   }
