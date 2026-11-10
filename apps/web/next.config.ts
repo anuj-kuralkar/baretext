@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-// biome-ignore lint/correctness/noUnusedImports: validate env at build
-import { env } from "@/lib/env/client";
+// Evaluates the env schema on import: fail fast on an invalid API URL at build.
+import "@/lib/env/client";
 
 const nextConfig: NextConfig = {
   /* config options here */

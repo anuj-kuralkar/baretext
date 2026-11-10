@@ -18,6 +18,10 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
 
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
