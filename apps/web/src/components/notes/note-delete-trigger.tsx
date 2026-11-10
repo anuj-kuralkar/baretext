@@ -34,9 +34,16 @@ export function NoteDeleteTrigger({
         }
 
         await tx.when("settled");
-        clearDocument(noteId).catch((err) => {
-          console.error("Failed to clear indexeddb for note:", err);
-        });
+        // Best-effort cleanup: the note is already gone server-side, so a
+        // failure clearing its offline document must not fail the delete.
+        // Fire-and-forget keeps the transition from waiting on IndexedDB.
+        void (async () => {
+          try {
+            await clearDocument(noteId);
+          } catch (error) {
+            console.error("Failed to clear indexeddb for note:", error);
+          }
+        })();
       } catch (error) {
         console.error("Failed to delete note:", error);
         toast.add({ type: "error", title: "Failed to delete note" });
