@@ -15,12 +15,18 @@ export function buildElectricOriginUrl({
   const { table, room } = query;
   const originUrl = new URL(env.ELECTRIC_URL);
 
-  for (const [key, value] of Object.entries(query)) {
-    if (value !== undefined && ELECTRIC_PROTOCOL_QUERY_PARAMS.includes(key)) {
+  Object.entries(query)
+    .filter(
+      ([key, value]) =>
+        value !== undefined && ELECTRIC_PROTOCOL_QUERY_PARAMS.includes(key),
+    )
+    .forEach(([key, value]) => {
       originUrl.searchParams.set(key, String(value));
-    }
-  }
+    });
 
+  // Only the note table is per-user. The ydoc tables are additionally
+  // per-room; if a malformed request omits `room`, matching against an empty
+  // noteId yields no rows, so the shape stays safe rather than widening access.
   const tables = {
     note: {
       tableDef: note,
@@ -49,6 +55,9 @@ export function buildElectricOriginUrl({
     .where(target.whereExpr)
     .toSQL();
 
+  // Drizzle SELECT strings look like: select "id" from "note" where "note"."user_id" = $1 —
+  // "… = $1" matches, "no where clause" rejects; input → output: the fragment after WHERE keeps only the predicate.
+  // https://regex101.com/?flavor=javascript&regex=%5ESELECT%20.%2A%20FROM%20.%2A%20WHERE%5Cs%2B&flags=gi&testString=select%20%22id%22%20from%20%22note%22%20where%20%22note%22.%22user_id%22%20%3D%20%241%0ASELECT%20updated_at%20FROM%20changes%20ORDER%20BY%20seq
   const fragment = queryString.replace(/^SELECT .* FROM .* WHERE\s+/i, "");
   originUrl.searchParams.set("where", fragment);
 
