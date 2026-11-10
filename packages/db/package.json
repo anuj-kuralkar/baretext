@@ -7,10 +7,13 @@
     ".": "./src/index.ts",
     "./schema": "./src/schema.ts",
     "./redis": "./src/redis.ts",
+    "./realtime": "./src/realtime.ts",
     "./zod/schema": "./src/zod/schema.ts",
     "./zod/codec": "./src/zod/codec.ts"
   },
   "dependencies": {
+    "@neon/realtime": "^0.2.1",
+    "@neon/realtime-drizzle": "^0.2.0",
     "@neondatabase/serverless": "^1.2.0",
     "@t3-oss/env-core": "catalog:",
     "@upstash/redis": "^1.40.0",
