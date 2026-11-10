@@ -10,33 +10,46 @@ export class NoteCreationFailed extends HTTPError.id(
   500,
 ) {}
 
+// Shared by every write: Postgres ≤14 has no pg_last_xact_id(), so the txid
+// must be read inside the same statement that writes.
+const TXID_SELECTION = {
+  txid: sql<string>`pg_current_xact_id()::xid::text`,
+} as const;
+
+const xidToNumber = (txid: string): number => Number.parseInt(txid, 10);
+
+export interface NoteWriteResult {
+  txid: number;
+}
+
 export async function createNote(
   createBody: NoteModel.Post["Body"] & { userId: string },
-) {
+): Promise<NoteWriteResult | NoteCreationFailed> {
   const result = await db
     .insert(note)
     .values(createBody)
-    .returning({ txid: sql<string>`pg_current_xact_id()::xid::text` });
+    .returning(TXID_SELECTION);
 
   const row = result[0];
   if (!row) {
     return new NoteCreationFailed("Failed to create note");
   }
 
-  const txid = row.txid;
-  return { txid: parseInt(txid, 10) };
+  return { txid: xidToNumber(row.txid) };
 }
 
 export async function updateNote({
   id,
   userId,
   ...updateBody
-}: NoteModel.ByIdPatch["Body"] & { id: string; userId: string }) {
+}: NoteModel.ByIdPatch["Body"] & { id: string; userId: string }): Promise<
+  NoteWriteResult | NoteNotFound
+> {
   const result = await db
     .update(note)
     .set(updateBody)
     .where(and(eq(note.id, id), eq(note.userId, userId)))
-    .returning({ txid: sql<string>`pg_current_xact_id()::xid::text` });
+    .returning(TXID_SELECTION);
 
   const row = result[0];
   if (!row) {
@@ -45,8 +58,7 @@ export async function updateNote({
     );
   }
 
-  const txid = row.txid;
-  return { txid: parseInt(txid, 10) };
+  return { txid: xidToNumber(row.txid) };
 }
 
 export async function deleteNote({
@@ -55,11 +67,11 @@ export async function deleteNote({
 }: {
   id: string;
   userId: string;
-}) {
+}): Promise<NoteWriteResult | NoteNotFound> {
   const result = await db
     .delete(note)
     .where(and(eq(note.id, id), eq(note.userId, userId)))
-    .returning({ txid: sql<string>`pg_current_xact_id()::xid::text` });
+    .returning(TXID_SELECTION);
 
   const row = result[0];
   if (!row) {
@@ -68,6 +80,5 @@ export async function deleteNote({
     );
   }
 
-  const txid = row.txid;
-  return { txid: parseInt(txid, 10) };
+  return { txid: xidToNumber(row.txid) };
 }
