@@ -1,10 +1,17 @@
 import { Elysia } from "elysia";
 import { authPlugin } from "../../plugins/auth";
 import * as NoteModel from "./model";
-import { createNote, deleteNote, updateNote } from "./service";
+import { createNote, deleteNote, getNotesLive, updateNote } from "./service";
 
 export const note = new Elysia({ prefix: "/notes" })
   .use(authPlugin)
+  .get(
+    "/live",
+    {
+      auth: true,
+    },
+    async ({ user }) => getNotesLive({ userId: user.id }),
+  )
   .post(
     "/",
     {
