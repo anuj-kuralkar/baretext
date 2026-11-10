@@ -52,6 +52,7 @@ function useSidebar() {
   return context;
 }
 
+/** Controlled/uncontrolled sidebar shell: exposes open state via context and persists it to a cookie. */
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,

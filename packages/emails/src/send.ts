@@ -3,6 +3,10 @@ import { Resend } from "resend";
 import { env } from "./env";
 import { SignInOtpEmail } from "./templates/sign-in-otp";
 
+/**
+ * One outbound email: Resend serializes `react` through react-dom, so the
+ * template must be a rendered element, not an arbitrary node.
+ */
 export interface SendEmailPayload {
   from: string;
   to: string[];

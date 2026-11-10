@@ -5,6 +5,13 @@ import { sql } from "drizzle-orm/sql";
 import { env } from "../../libs/env";
 import type * as ShapeModel from "./model";
 
+/**
+ * Builds the proxied Electric origin URL for one shape request: keeps only
+ * Electric protocol query params, then injects the tenant-safe WHERE clause
+ * for the requested table — always scoped to `userId`, plus the `room` filter
+ * for the ydoc tables. Drizzle's placeholder columns are re-materialized as
+ * `params[1..n]` query params.
+ */
 export function buildElectricOriginUrl({
   userId,
   query,

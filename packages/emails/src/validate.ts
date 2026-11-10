@@ -3,8 +3,10 @@ import { z } from "zod";
 
 const emailSchema = z.email("Invalid email address format.");
 
-// Marks rejections the checker itself decided on. The catch block rethrows
-// these by type instead of by matching message text.
+/**
+ * Marks rejections the checker itself decided on. The catch block rethrows
+ * these by type instead of by matching message text.
+ */
 export class EmailDeliveryRejected extends Error {}
 
 const DISPOSABLE_EMAIL_MESSAGE =
@@ -34,6 +36,11 @@ export const systemDnsResolver: DnsResolver = {
   resolveTxt,
 };
 
+/**
+ * Options overriding network and blocklist sources; both default to the real
+ * system resolver and the bundled `disposable-domains.txt` list. Test passes
+ * inject fakes here.
+ */
 export interface ValidateEmailOptions {
   dnsResolver?: DnsResolver;
   disposableDomains?: ReadonlySet<string>;
@@ -69,6 +76,10 @@ export const BURNER_MX_KEYWORDS = [
   "agaexpress",
 ] as const;
 
+/**
+ * True when a lookup error means the domain itself does not resolve — either
+ * via the errno code, or via the code some DNS layers echo only in the message.
+ */
 const isDomainNotFoundLookupError = (
   error: Error,
   code: string | undefined,
@@ -76,6 +87,16 @@ const isDomainNotFoundLookupError = (
   (code && DOMAIN_NOT_FOUND_CODES.includes(code)) ||
   DOMAIN_NOT_FOUND_CODES.some((errorCode) => error.message.includes(errorCode));
 
+/**
+ * Validates an account email for deliverability: syntactic shape, static
+ * disposable-domain blocklist, resolvability of MX records, burner-MX hosts
+ * and the dummy-SPF signature.
+ *
+ * Returns the email normalized (trimmed, lowercased). Throws
+ * {@link EmailDeliveryRejected} with a user-facing message for each rejection
+ * reason. Transient DNS failures (SERVFAIL, timeouts) fail soft: they are
+ * logged and the email is accepted.
+ */
 export async function validateEmailDeliverability(
   email: string,
   options: ValidateEmailOptions = {},

@@ -35,6 +35,12 @@ const EXPORT_FORMAT_META = {
   { label: string; downloadMime: string; extension: string }
 >;
 
+/**
+ * Copies the note to the clipboard in the requested format. The serialize
+ * pass runs once, up front; HTML additionally carries a promoted text/html
+ * blob. Both clipboard blobs are promised, since ClipboardItem materializes
+ * them at write time.
+ */
 const handleCopy = async (noteId: string, format: ExportFormat) => {
   const { label } = EXPORT_FORMAT_META[format];
   try {
@@ -57,6 +63,7 @@ const handleCopy = async (noteId: string, format: ExportFormat) => {
   }
 };
 
+/** Downloads the serialized note as a temp-object-URL file; the URL is revoked a minute later. */
 const handleDownload = async (noteId: string, format: ExportFormat) => {
   const meta = EXPORT_FORMAT_META[format];
   try {
@@ -78,6 +85,7 @@ const handleDownload = async (noteId: string, format: ExportFormat) => {
   }
 };
 
+/** Wraps a note preview in the copy/download/delete context menu. */
 export function NoteContextMenu({ children, noteId }: NoteContextMenuProps) {
   return (
     <ContextMenu>

@@ -16,6 +16,12 @@ import { env } from "@/lib/env/client";
 const FETCH_WITH_CREDENTIALS = ((url, init) =>
   fetch(url, { ...init, credentials: "include" })) as typeof fetch;
 
+/**
+ * Builds the Electric-backed provider for one note room: authenticated
+ * document updates (ydoc_update shape) plus a second shape bound to
+ * `awareness`, both scoped server-side by auth cookies. Casts: see the
+ * document above {@link FETCH_WITH_CREDENTIALS}.
+ */
 export function createElectricProvider(
   ydoc: Y.Doc,
   noteId: string,

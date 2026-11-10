@@ -9,12 +9,14 @@ import { clearDocument } from "y-indexeddb";
 // alongside the store name, under "<noteId>_vector".
 const RESUME_STATE_VECTOR_SUFFIX = "_vector";
 
+/** Maps a resume-state localStorage key to its Yjs store name by dropping the vector suffix. */
 function localStorageKeyToDbName(key: string): string {
   return key.endsWith(RESUME_STATE_VECTOR_SUFFIX)
     ? key.slice(0, -RESUME_STATE_VECTOR_SUFFIX.length)
     : key;
 }
 
+/** Store names reported by indexedDB.databases(), or [] when the API or policy is unavailable. */
 async function discoverIndexedDbNames(): Promise<string[]> {
   if (
     typeof indexedDB === "undefined" ||
@@ -32,6 +34,7 @@ async function discoverIndexedDbNames(): Promise<string[]> {
   }
 }
 
+/** Resume-state ids read off localStorage, suffix-stripped; [] when storage is inaccessible. */
 function discoverLocalStorageDbNames(): string[] {
   try {
     const keys = Array.from({ length: localStorage.length }, (_, index) =>

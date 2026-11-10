@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatRelativeTime } from "@/lib/utils";
 import { NoteContextMenu } from "./note-context-menu";
 
+/** Live note list: previews linking into each note, or an empty state when none exist. */
 export function NoteList() {
   const { noteId } = useParams<{ noteId?: string }>();
   const { data: notes } = useLiveSuspenseQuery(noteListQuery);
@@ -67,6 +68,7 @@ interface NotePreviewProps {
   isActive: boolean;
 }
 
+/** One note preview: first editor lines as title/description plus relative time. */
 function NotePreview({
   id,
   textContent,

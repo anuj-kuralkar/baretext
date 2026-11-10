@@ -173,6 +173,11 @@ function FieldSeparator({
   );
 }
 
+/**
+ * Picks what a field error renders: the `children` delivered on the error,
+ * the single unique message if exactly one, an inline list otherwise, or
+ * nothing at all.
+ */
 function fieldErrorContent(
   children: React.ReactNode,
   errors?: ReadonlyArray<{ message?: string } | undefined>,

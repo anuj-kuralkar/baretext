@@ -79,10 +79,12 @@ export const initialLoginFormState: LoginFormState = {
   loadingProvider: null,
 };
 
+/** Enter the email step from the methods step; clears any stale form state. */
 const goEmailStep = (): LoginFormState => {
   return { step: "email", email: "", isPending: false, error: null };
 };
 
+/** Enter the OTP step from the email step, normalizing the email immediately. */
 const goOtpStep = (email: string): LoginFormState => {
   return {
     step: "otp",
@@ -177,6 +179,11 @@ const reduceAction: Readonly<{
   },
 };
 
+/**
+ * Pure next-state function for the login form: `NEXT`/`PREV` move between
+ * methods → email → otp, values/errors/pending are cleared as the step
+ * changes, and provider-auth flags only apply on the methods step.
+ */
 export function loginReducer(
   state: LoginFormState,
   action: LoginFormAction,
@@ -573,6 +580,11 @@ function LoginEmailStep() {
 
 const OTP_SLOTS = Array.from({ length: OTP_LENGTH }, (_, index) => index);
 
+/**
+ * OTP verification and resend views: auto-verifies once six digits are
+ * entered, gates the resend behind the cooldown countdown, and renders the
+ * shared error state.
+ */
 function LoginOtpStep() {
   const { state, prev, setValue, submit, resend } = useLoginForm();
   const [actionType, setActionType] = useState<"verify" | "resend" | null>(
