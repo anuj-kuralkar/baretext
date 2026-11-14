@@ -6,6 +6,8 @@ export const env = createEnv({
     DATABASE_URL: z.url(),
     DATABASE_URL_UNPOOLED: z.url().optional(),
 
+    NEON_REALTIME_SECRET: z.string(),
+
     UPSTASH_REDIS_REST_URL: z.url(),
     UPSTASH_REDIS_REST_TOKEN: z.string(),
   },

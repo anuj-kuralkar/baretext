@@ -1,10 +1,22 @@
 import { Elysia } from "elysia";
 import { authPlugin } from "../../plugins/auth";
 import * as NoteModel from "./model";
-import { createNote, deleteNote, updateNote } from "./service";
+import { createNote, deleteNote, getNotesLive, updateNote } from "./service";
 
 export const note = new Elysia({ prefix: "/notes" })
   .use(authPlugin)
+  .get(
+    "/live",
+    {
+      auth: true,
+    },
+    async ({ set, user }) => {
+      // Sealed queries are short-lived bearer capabilities: never cache them.
+      set.headers["cache-control"] = "no-store";
+      set.headers["vary"] = "cookie";
+      return getNotesLive({ userId: user.id });
+    },
+  )
   .post(
     "/",
     {

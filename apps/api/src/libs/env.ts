@@ -5,6 +5,8 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.url(),
 
+    NEON_REALTIME_SECRET: z.string(),
+
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
 
