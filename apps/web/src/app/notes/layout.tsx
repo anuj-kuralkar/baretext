@@ -10,6 +10,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { api } from "@/lib/api";
+import { createAppRealtime } from "@/lib/realtime";
 import { requireSession } from "@/lib/session";
 
 export const instant = false;
@@ -22,17 +24,33 @@ export default async function NotesLayout({
   await connection();
   await requireSession();
 
-  const dbClient = new DbClient({
-    cookie: (await cookies()).toString(),
+  const { data, error } = await api.notes.live.get({
+    fetch: {
+      headers: {
+        cookie: (await cookies()).toString(),
+      },
+    },
   });
-  void dbClient.preloadLiveQuery(noteListQuery);
+  if (error) {
+    throw error;
+  }
+
+  const realtime = createAppRealtime();
+  const dbClient = new DbClient({
+    realtime,
+    sealedQuery: data.sealedQuery,
+  });
+  void dbClient
+    .preloadLiveQuery(noteListQuery)
+    .catch(() => {}) // failure streams to the client via the snapshot's error status
+    .finally(() => dbClient.cleanup().finally(() => realtime.close()));
   const state = dbClient.dehydrate({
     shouldDehydrateCollection: () => false,
     shouldDehydrateLiveQuery: () => true,
   });
 
   return (
-    <NotesDbProvider state={state}>
+    <NotesDbProvider state={state} sealedQuery={data.sealedQuery}>
       <SidebarProvider>
         <NotesSidebar />
         <SidebarInset>

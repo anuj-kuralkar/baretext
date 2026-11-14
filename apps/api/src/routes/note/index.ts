@@ -10,7 +10,12 @@ export const note = new Elysia({ prefix: "/notes" })
     {
       auth: true,
     },
-    async ({ user }) => getNotesLive({ userId: user.id }),
+    async ({ set, user }) => {
+      // Sealed queries are short-lived bearer capabilities: never cache them.
+      set.headers["cache-control"] = "no-store";
+      set.headers["vary"] = "cookie";
+      return getNotesLive({ userId: user.id });
+    },
   )
   .post(
     "/",
