@@ -1,5 +1,7 @@
 # 0001. Offline-First Sync Architecture
 
+> Status: partially superseded by ADR-0005 — Note metadata now syncs via Neon Realtime; Yjs document sync still follows this ADR.
+
 We use ElectricSQL, TanStack DB, Yjs, and `y-indexeddb` to manage note state, entirely discarding Lexical JSON persistence.
 
 For an offline-first rich text editor, simple REST calls and standard Postgres fail when the network drops. Resolving offline edits requires a Conflict-free Replicated Data Type (CRDT) to guarantee mathematical convergence when two devices edit the same text while disconnected.
