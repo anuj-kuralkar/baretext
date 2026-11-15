@@ -3,29 +3,16 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    DATABASE_URL: z.url(),
-
-    GITHUB_CLIENT_ID: z.string(),
-    GITHUB_CLIENT_SECRET: z.string(),
-
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
-
-    BETTER_AUTH_URL: z.url(),
-    BETTER_AUTH_SECRET: z.string(),
-
-    UPSTASH_REDIS_REST_URL: z.url(),
-    UPSTASH_REDIS_REST_TOKEN: z.string(),
+    WEB_URL: z.url(),
 
     ELECTRIC_URL: z.url(),
 
     POSTHOG_PROJECT_TOKEN: z.string().optional(),
     POSTHOG_HOST: z.url().optional(),
 
-    WEB_URL: z.url(),
-
     PORT: z.coerce.number().default(8080),
   },
   runtimeEnv: process.env,
-  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
+  skipValidation:
+    process.env.SKIP_ENV_VALIDATION === "true" || Boolean(process.env.VITEST),
 });

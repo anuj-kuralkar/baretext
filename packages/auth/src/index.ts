@@ -9,8 +9,82 @@ import { passkey } from "@better-auth/passkey";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";
 import { emailOTP } from "better-auth/plugins";
+import type { BetterAuthOptions } from "better-auth/types";
 import { redisSecondaryStorage } from "./adapters/redis-secondary-storage";
 import { env } from "./env";
+
+export interface CreateAuthConfig {
+  database: BetterAuthOptions["database"];
+  secondaryStorage?: BetterAuthOptions["secondaryStorage"];
+  socialProviders: BetterAuthOptions["socialProviders"];
+  baseURL: string;
+  secret: string;
+  webUrl: string;
+  crossSubDomainCookies?: NonNullable<
+    BetterAuthOptions["advanced"]
+  >["crossSubDomainCookies"];
+}
+
+export function createAuth({
+  database,
+  secondaryStorage,
+  socialProviders,
+  baseURL,
+  secret,
+  webUrl,
+  crossSubDomainCookies = { enabled: false },
+}: CreateAuthConfig) {
+  return betterAuth({
+    appName: "Baretext",
+    baseURL,
+    secret,
+    trustedOrigins: [webUrl],
+    database,
+    secondaryStorage,
+    socialProviders,
+    advanced: {
+      database: {
+        joins: true,
+      },
+      crossSubDomainCookies,
+    },
+    plugins: [
+      passkey({
+        rpName: "Baretext",
+        // webUrl is unset during env-skipped builds; passkeys are runtime-only.
+        ...(webUrl && {
+          rpID: new URL(webUrl).hostname,
+          origin: webUrl,
+        }),
+      }),
+      emailOTP({
+        async sendVerificationOTP({ email, otp, type }) {
+          if (type === "sign-in" || type === "email-verification") {
+            await sendSignInOtpEmail({ email, otp });
+          }
+        },
+        expiresIn: 300,
+        otpLength: 6,
+      }),
+    ],
+    hooks: {
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path === "/email-otp/send-verification-otp") {
+          const email = ctx.body?.email;
+          if (typeof email === "string") {
+            try {
+              await validateEmailDeliverability(email);
+            } catch (err: unknown) {
+              const message =
+                err instanceof Error ? err.message : "Invalid email address";
+              throw new APIError("BAD_REQUEST", { message });
+            }
+          }
+        }
+      }),
+    },
+  });
+}
 
 /**
  * Better Auth server instance shared by the API app and the web middleware:
@@ -19,24 +93,14 @@ import { env } from "./env";
  * `validateEmailDeliverability` and rejects undeliverable addresses as
  * BAD_REQUEST.
  */
-export const auth = betterAuth({
-  appName: "Baretext",
+export const auth = createAuth({
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: [env.WEB_URL],
+  webUrl: env.WEB_URL,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
   }),
-  advanced: {
-    database: {
-      joins: true,
-    },
-    crossSubDomainCookies:
-      env.VERCEL_ENV === "production"
-        ? { enabled: true, domain: "baretext.app" }
-        : { enabled: false },
-  },
   secondaryStorage: redisSecondaryStorage,
   socialProviders: {
     github: {
@@ -48,38 +112,8 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
-  hooks: {
-    before: createAuthMiddleware(async (ctx) => {
-      if (ctx.path === "/email-otp/send-verification-otp") {
-        const email = ctx.body?.email;
-        if (typeof email === "string") {
-          try {
-            await validateEmailDeliverability(email);
-          } catch (err: unknown) {
-            const message =
-              err instanceof Error ? err.message : "Invalid email address";
-            throw new APIError("BAD_REQUEST", { message });
-          }
-        }
-      }
-    }),
-  },
-  plugins: [
-    passkey({
-      rpName: "Baretext",
-      ...(process.env.SKIP_ENV_VALIDATION !== "true" && {
-        rpID: new URL(env.WEB_URL).hostname,
-        origin: env.WEB_URL,
-      }),
-    }),
-    emailOTP({
-      async sendVerificationOTP({ email, otp, type }) {
-        if (type === "sign-in" || type === "email-verification") {
-          await sendSignInOtpEmail({ email, otp });
-        }
-      },
-      expiresIn: 300,
-      otpLength: 6,
-    }),
-  ],
+  crossSubDomainCookies:
+    env.VERCEL_ENV === "production"
+      ? { enabled: true, domain: "baretext.app" }
+      : { enabled: false },
 });
