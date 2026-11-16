@@ -10,6 +10,8 @@
     "catalog": {
       "@better-auth/passkey": "^1.7.15",
       "@electric-sql/client": "^1.5.28",
+      "@neon/realtime": "^0.2.1",
+      "@neon/realtime-drizzle": "^0.2.0",
       "@t3-oss/env-core": "^0.13.11",
       "@types/bun": "^1.4.4",
       "better-auth": "^1.7.15",

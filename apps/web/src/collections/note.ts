@@ -1,6 +1,6 @@
 import { type Note, noteSchema } from "@baretext/db/zod/schema";
-import { snakeCamelMapper } from "@electric-sql/client";
-import { electricCollectionOptions } from "@tanstack/electric-db-collection";
+import type { RealtimeClient, SealedLiveQuery } from "@neon/realtime/client";
+import { realtimeCollectionOptions } from "@neon/realtime-tanstack";
 import {
   collectionOptions,
   debounceStrategy,
@@ -10,38 +10,34 @@ import {
 } from "@tanstack/react-db";
 
 import { api } from "@/lib/api";
-import { env } from "@/lib/env/client";
+
+// Neon's txid handshake resolves as soon as the server commit lands; anything
+// longer than this means the sync pipeline is wedged.
+const TXID_TIMEOUT_MS = 10_000;
+
+async function fetchSealedNotesQuery(): Promise<SealedLiveQuery<Note>> {
+  const { data, error } = await api.notes.live.get();
+  if (error) {
+    throw error;
+  }
+  return data.sealedQuery;
+}
 
 export const noteCollection = collectionOptions("note", (client) => {
-  // Set only by the server layout, for SSR preloads.
-  const serverCookie = client.getDependency<string>("cookie");
+  const realtime = client.requireDependency<RealtimeClient>("realtime");
+  const sealedQuery =
+    client.requireDependency<SealedLiveQuery<Note>>("sealedQuery");
 
-  // Cast: Bun adds a `preconnect` static to `typeof fetch` that Electric's
-  // option type requires but never calls.
-  const shapeFetch = ((url, init) =>
-    fetch(url, {
-      ...init,
-      credentials: "include",
-      ...(serverCookie
-        ? { headers: { ...init?.headers, Cookie: serverCookie } }
-        : {}),
-    })) as typeof fetch;
-
-  return electricCollectionOptions({
+  return realtimeCollectionOptions({
+    id: "note",
+    client: realtime,
+    query: sealedQuery,
+    refreshQuery: fetchSealedNotesQuery,
     schema: noteSchema,
     getKey: (row) => row.id,
-    shapeOptions: {
-      url: new URL("/shape", env.NEXT_PUBLIC_API_URL).toString(),
-      fetchClient: shapeFetch,
-      params: {
-        table: "note",
-      },
-      parser: {
-        timestamptz: (date: string) => new Date(date),
-        timestamp: (date: string) => new Date(date),
-      },
-      columnMapper: snakeCamelMapper(),
-    },
+    // Never collected while mounted: a rebuilt collection would reuse an
+    // expired sealed query.
+    gcTime: 0,
 
     onInsert: async ({ collection, transaction }) => {
       const modified = transaction.mutations[0].modified;
@@ -54,7 +50,7 @@ export const noteCollection = collectionOptions("note", (client) => {
       if (error) {
         throw error;
       }
-      await collection.utils.awaitTxId(data.txid);
+      await collection.utils.awaitTxId(data.txid, TXID_TIMEOUT_MS);
     },
 
     onDelete: async ({ collection, transaction }) => {
@@ -63,7 +59,7 @@ export const noteCollection = collectionOptions("note", (client) => {
       if (error) {
         throw error;
       }
-      await collection.utils.awaitTxId(data.txid);
+      await collection.utils.awaitTxId(data.txid, TXID_TIMEOUT_MS);
     },
   });
 });
@@ -117,7 +113,7 @@ export function useNotePacedMutations() {
             if (error) {
               throw error;
             }
-            await notes.utils.awaitTxId(data.txid);
+            await notes.utils.awaitTxId(data.txid, TXID_TIMEOUT_MS);
           }
         }),
       );

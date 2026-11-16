@@ -1,4 +1,5 @@
 import { db } from "@baretext/db";
+import { realtime } from "@baretext/db/realtime";
 import { note } from "@baretext/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { HTTPError } from "elysia";
@@ -10,16 +11,27 @@ export class NoteCreationFailed extends HTTPError.id(
   500,
 ) {}
 
-// Shared by every write: Postgres ≤14 has no pg_last_xact_id(), so the txid
-// must be read inside the same statement that writes.
 const TXID_SELECTION = {
-  txid: sql<string>`pg_current_xact_id()::xid::text`,
+  txid: sql<string>`pg_current_xact_id()::text`,
 } as const;
 
-const xidToNumber = (txid: string): number => Number.parseInt(txid, 10);
-
 export interface NoteWriteResult {
-  txid: number;
+  txid: string;
+}
+
+export async function getNotesLive({ userId }: { userId: string }) {
+  const query = db
+    .select({
+      id: note.id,
+      // Neon Realtime returns raw PostgreSQL column names, so camelCase fields need explicit aliases.
+      textContent: sql<string>`${note.textContent}`.as("textContent"),
+      createdAt: sql<Date>`${note.createdAt}`.as("createdAt"),
+      updatedAt: sql<Date>`${note.updatedAt}`.as("updatedAt"),
+    })
+    .from(note)
+    .where(eq(note.userId, userId));
+
+  return { sealedQuery: await realtime.seal({ query }) };
 }
 
 export async function createNote(
@@ -35,7 +47,7 @@ export async function createNote(
     return new NoteCreationFailed("Failed to create note");
   }
 
-  return { txid: xidToNumber(row.txid) };
+  return { txid: row.txid };
 }
 
 export async function updateNote({
@@ -58,7 +70,7 @@ export async function updateNote({
     );
   }
 
-  return { txid: xidToNumber(row.txid) };
+  return { txid: row.txid };
 }
 
 export async function deleteNote({
@@ -80,5 +92,5 @@ export async function deleteNote({
     );
   }
 
-  return { txid: xidToNumber(row.txid) };
+  return { txid: row.txid };
 }
