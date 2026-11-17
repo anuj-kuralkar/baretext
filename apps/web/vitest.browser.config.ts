@@ -11,12 +11,10 @@ export default defineConfig({
     },
   },
   plugins: [react()],
-  define: {
-    "process.env.SKIP_ENV_VALIDATION": JSON.stringify("true"),
-  },
   test: {
     name: "web-browser",
     include: ["src/**/*.browser.test.{ts,tsx}"],
+    restoreMocks: true,
     browser: {
       enabled: true,
       provider: playwright({

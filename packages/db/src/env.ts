@@ -4,7 +4,6 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     DATABASE_URL: z.url(),
-    DATABASE_URL_UNPOOLED: z.url().optional(),
 
     NEON_REALTIME_SECRET: z.string(),
 
@@ -12,5 +11,6 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_TOKEN: z.string(),
   },
   runtimeEnv: process.env,
-  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
+  skipValidation:
+    process.env.SKIP_ENV_VALIDATION === "true" || Boolean(process.env.VITEST),
 });

@@ -10,12 +10,10 @@ export default defineConfig({
     },
   },
   plugins: [react()],
-  define: {
-    "process.env.SKIP_ENV_VALIDATION": JSON.stringify("true"),
-  },
   test: {
     name: "web-unit",
     include: ["src/**/*.test.{ts,tsx}"],
     exclude: ["src/**/*.browser.test.{ts,tsx}"],
+    restoreMocks: true,
   },
 });
