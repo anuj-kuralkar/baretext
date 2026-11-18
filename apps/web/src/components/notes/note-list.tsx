@@ -96,7 +96,7 @@ function NotePreview({
       onClick={() => setOpenMobile(false)}
     >
       <span className="w-full truncate font-medium">{title}</span>
-      <span className="line-clamp-2 whitespace-break-spaces text-xs">
+      <span className="line-clamp-2 text-xs whitespace-break-spaces">
         {description}
       </span>
       <span className="text-xs">{relativeTime}</span>

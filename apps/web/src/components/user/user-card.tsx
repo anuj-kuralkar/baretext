@@ -22,7 +22,7 @@ export async function UserCard() {
         <AvatarImage src={user.image ?? undefined} alt={user.name} />
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
-      <span className="select-none truncate font-medium text-sm leading-none">
+      <span className="truncate text-sm leading-none font-medium select-none">
         {user.name}
       </span>
     </div>

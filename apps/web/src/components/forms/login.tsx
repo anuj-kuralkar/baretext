@@ -435,7 +435,7 @@ function LoginMethodsStep() {
   return (
     <StepTransition>
       <CardHeader className="text-center">
-        <CardTitle className="font-extrabold text-2xl tracking-tight">
+        <CardTitle className="text-2xl font-extrabold tracking-tight">
           Welcome back
         </CardTitle>
         <CardDescription>Hop back in and keep writing.</CardDescription>
@@ -509,7 +509,7 @@ function LoginEmailStep() {
   return (
     <StepTransition>
       <CardHeader className="text-center">
-        <CardTitle className="font-extrabold text-2xl tracking-tight">
+        <CardTitle className="text-2xl font-extrabold tracking-tight">
           Sign in with email
         </CardTitle>
         <CardDescription>
@@ -612,7 +612,7 @@ function LoginOtpStep() {
   return (
     <StepTransition>
       <CardHeader className="text-center">
-        <CardTitle className="font-extrabold text-2xl tracking-tight">
+        <CardTitle className="text-2xl font-extrabold tracking-tight">
           Check your email
         </CardTitle>
         <CardDescription>

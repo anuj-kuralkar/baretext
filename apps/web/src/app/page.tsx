@@ -60,11 +60,11 @@ export default function Home() {
         <Background />
 
         <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-4 text-center md:gap-6 md:px-6">
-          <h1 className="max-w-3xl text-balance font-semibold text-4xl text-primary tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">
+          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance text-primary sm:text-5xl lg:text-6xl lg:leading-[1.1]">
             Your thoughts, beautifully organized.
           </h1>
 
-          <p className="max-w-2xl text-balance text-base text-muted-foreground sm:text-lg md:text-xl">
+          <p className="max-w-2xl text-base text-balance text-muted-foreground sm:text-lg md:text-xl">
             A simple place to write, organize, and revisit your notes. Easy to
             get started with, comfortable to use every day.
           </p>
