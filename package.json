@@ -9,7 +9,6 @@
     ],
     "catalog": {
       "@better-auth/passkey": "^1.7.15",
-      "@electric-sql/client": "^1.5.28",
       "@neon/realtime": "^0.2.1",
       "@neon/realtime-drizzle": "^0.2.0",
       "@t3-oss/env-core": "^0.13.11",
@@ -27,8 +26,9 @@
   "scripts": {
     "build": "bun --filter '*' --parallel build",
     "test": "bun run test:unit",
-    "test:all": "bun run test:unit && bun run test:browser",
-    "test:unit": "vitest run --project=emails-unit --project=web-unit",
+    "test:all": "bun run test:unit && bun run test:browser && bun run test:e2e",
+    "test:unit": "vitest run --project=emails-unit --project=api-unit --project=web-unit",
+    "test:e2e": "vitest run --project=e2e",
     "test:browser": "vitest run --project=web-browser --browser.headless --passWithNoTests",
     "test:browser:ui": "vitest --project=web-browser --browser.headless=false --passWithNoTests",
     "dev:web": "bun --filter @baretext/web dev",
@@ -41,6 +41,7 @@
     "check:write": "biome check --write"
   },
   "devDependencies": {
+    "@baretext/test": "workspace:*",
     "@biomejs/biome": "2.6.8",
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",

@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
+  experimental: {
+    turbopackPluginRuntimeStrategy: "forceWorkerThreads",
+  },
   turbopack: {
     rules: {
       "*.txt": {

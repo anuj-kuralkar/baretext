@@ -19,8 +19,6 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_URL: z.url(),
     UPSTASH_REDIS_REST_TOKEN: z.string(),
 
-    ELECTRIC_URL: z.url(),
-
     POSTHOG_PROJECT_TOKEN: z.string().optional(),
     POSTHOG_HOST: z.url().optional(),
 
@@ -29,5 +27,6 @@ export const env = createEnv({
     PORT: z.coerce.number().default(8080),
   },
   runtimeEnv: process.env,
-  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
+  skipValidation:
+    process.env.SKIP_ENV_VALIDATION === "true" || Boolean(process.env.VITEST),
 });

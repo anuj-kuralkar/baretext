@@ -89,19 +89,26 @@ export const note = snakeCase.table("note", {
 });
 
 /**
- * One Yjs document update for a note's room, stored as raw bytes; the
- * Electric update shape streams these rows to editors over the API.
+ * One Yjs document update for a note, stored as raw bytes; Neon Realtime
+ * live queries stream these rows to editors over the API.
  */
-export const ydocUpdate = snakeCase.table("ydoc_update", {
-  id: uuid().primaryKey().default(sql`uuidv7()`),
-  noteId: uuid()
-    .notNull()
-    .references(() => note.id, { onDelete: "cascade" }),
-  op: bytea().notNull(),
-  userId: text()
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-});
+export const ydocUpdate = snakeCase.table(
+  "ydoc_update",
+  {
+    id: uuid().primaryKey().default(sql`uuidv7()`),
+    noteId: uuid()
+      .notNull()
+      .references(() => note.id, { onDelete: "cascade" }),
+    op: bytea().notNull(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    index("ydoc_update_noteId_idx").on(table.noteId),
+    index("ydoc_update_noteId_id_idx").on(table.noteId, table.id),
+  ],
+);
 
 /**
  * A user's latest Yjs awareness (presence) op on a note, stored in place:
@@ -123,7 +130,10 @@ export const ydocAwareness = snakeCase.table(
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.noteId] })],
+  (table) => [
+    primaryKey({ columns: [table.userId, table.noteId] }),
+    index("ydoc_awareness_noteId_idx").on(table.noteId),
+  ],
 );
 
 /** Drizzle relation graph consumed by the relational query builder and the auth drizzle adapter. */
