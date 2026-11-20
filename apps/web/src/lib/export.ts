@@ -61,17 +61,16 @@ export async function exportNote(
   // 2. If online, fetch latest changes from Neon Realtime
   if (typeof navigator !== "undefined" && navigator.onLine) {
     const provider = new NeonRealtimeProvider({ doc, noteId });
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     try {
-      if (!provider.synced) {
-        await new Promise<void>((resolve) => {
-          const timeout = setTimeout(() => resolve(), 1500);
-          provider.once("synced", () => {
-            clearTimeout(timeout);
-            resolve();
-          });
-        });
-      }
+      const timeout = new Promise<void>((resolve) => {
+        timeoutId = setTimeout(resolve, 1500);
+      });
+      await Promise.race([provider.connect().catch(() => {}), timeout]);
     } finally {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
       provider.destroy();
     }
   }

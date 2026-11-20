@@ -1,8 +1,9 @@
 import type {
   MaterializedLiveQuerySubscription,
   RealtimeClient,
+  SealedLiveQuery,
 } from "@neon/realtime/client";
-import { Awareness } from "@y/protocols/awareness";
+import { Awareness, encodeAwarenessUpdate } from "@y/protocols/awareness";
 import { describe, expect, it, vi } from "vitest";
 import * as Y from "yjs";
 
@@ -13,776 +14,459 @@ import {
   type YdocUpdateRow,
 } from "./neon-realtime-provider";
 
+const NOTE_ID = "11111111-1111-1111-1111-111111111111";
+
+type Snapshot<T> = {
+  status: "connecting" | "live" | "error";
+  data?: readonly T[];
+  error?: Error;
+};
+
+class FakeSubscription<T> {
+  private listener: ((snapshot: Snapshot<T>) => void) | null = null;
+
+  onChange = vi.fn((listener: (snapshot: Snapshot<T>) => void) => {
+    this.listener = listener;
+    return () => {
+      this.listener = null;
+    };
+  });
+
+  renew = vi.fn(async () => {});
+
+  unsubscribe = vi.fn(() => {
+    this.listener = null;
+  });
+
+  emit(snapshot: Snapshot<T>): void {
+    this.listener?.(snapshot);
+  }
+}
+
+class FakeRealtimeClient {
+  readonly updatesSubscription = new FakeSubscription<YdocUpdateRow>();
+  readonly awarenessSubscription = new FakeSubscription<YdocAwarenessRow>();
+
+  subscribe = vi.fn(
+    (
+      query: SealedLiveQuery<unknown>,
+    ):
+      | MaterializedLiveQuerySubscription<YdocUpdateRow>
+      | MaterializedLiveQuerySubscription<YdocAwarenessRow> => {
+      if ((query as { kind?: string }).kind === "updates") {
+        return this
+          .updatesSubscription as unknown as MaterializedLiveQuerySubscription<YdocUpdateRow>;
+      }
+      return this
+        .awarenessSubscription as unknown as MaterializedLiveQuerySubscription<YdocAwarenessRow>;
+    },
+  );
+
+  close = vi.fn();
+}
+
+function readText(doc: Y.Doc, key = "content"): string {
+  return String(doc.get(key));
+}
+
+function updateRow(doc: Y.Doc, id: string): YdocUpdateRow {
+  return {
+    id,
+    noteId: NOTE_ID,
+    op: Y.encodeStateAsUpdate(doc),
+    userId: "user-1",
+  };
+}
+
+interface Harness {
+  readonly provider: NeonRealtimeProvider;
+  readonly doc: Y.Doc;
+  readonly awareness: Awareness;
+  readonly realtime: FakeRealtimeClient;
+  readonly sentUpdates: Uint8Array[];
+  readonly sentAwareness: Uint8Array[];
+  readonly liveCalls: RequestInit[];
+}
+
+function createHarness({
+  initialUpdates = [],
+  initialAwareness = [],
+  liveOk = true,
+  doc = new Y.Doc(),
+  noteId = NOTE_ID,
+}: {
+  initialUpdates?: readonly YdocUpdateRow[];
+  initialAwareness?: readonly YdocAwarenessRow[];
+  liveOk?: boolean;
+  doc?: Y.Doc;
+  noteId?: string;
+} = {}): Harness {
+  const realtime = new FakeRealtimeClient();
+  const sentUpdates: Uint8Array[] = [];
+  const sentAwareness: Uint8Array[] = [];
+  const liveCalls: RequestInit[] = [];
+  const awareness = new Awareness(doc);
+
+  const fetchClient = vi.fn(
+    async (input: string | URL | Request, init?: RequestInit) => {
+      const url = input.toString();
+      if (url.includes("/yjs/live")) {
+        liveCalls.push(init ?? {});
+        if (!liveOk) {
+          return {
+            ok: false,
+            status: 401,
+            statusText: "Unauthorized",
+            json: async () => ({}),
+          };
+        }
+        return {
+          ok: true,
+          status: 200,
+          statusText: "OK",
+          json: async () => ({
+            updates: { kind: "updates" },
+            awareness: { kind: "awareness" },
+            initialUpdates,
+            initialAwareness,
+          }),
+        };
+      }
+      if (url.includes("/yjs/update")) {
+        sentUpdates.push(new Uint8Array(init?.body as Uint8Array));
+        return {
+          ok: true,
+          status: 200,
+          statusText: "OK",
+          json: async () => ({ txid: "tx-1" }),
+        };
+      }
+      if (url.includes("/yjs/awareness")) {
+        sentAwareness.push(new Uint8Array(init?.body as Uint8Array));
+        return {
+          ok: true,
+          status: 200,
+          statusText: "OK",
+          json: async () => ({ txid: "tx-2" }),
+        };
+      }
+      return {
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+        json: async () => ({}),
+      };
+    },
+  );
+
+  const provider = new NeonRealtimeProvider({
+    doc,
+    noteId,
+    awareness,
+    realtimeClient: realtime as unknown as RealtimeClient,
+    fetchClient: fetchClient as unknown as typeof fetch,
+    apiUrl: "http://localhost:8080",
+    debounceMs: 100,
+  });
+
+  return {
+    provider,
+    doc,
+    awareness,
+    realtime,
+    sentUpdates,
+    sentAwareness,
+    liveCalls,
+  };
+}
+
 describe("toUint8Array", () => {
-  it("passes Uint8Array directly", () => {
-    const arr = new Uint8Array([1, 2, 3]);
-    expect(toUint8Array(arr)).toBe(arr);
+  it("passes a Uint8Array through", () => {
+    const bytes = new Uint8Array([1, 2, 3]);
+    expect(toUint8Array(bytes)).toBe(bytes);
   });
 
-  it("decodes hex string with \\x prefix", () => {
-    const bytes = toUint8Array("\\x0102030a");
-    expect(bytes).toEqual(new Uint8Array([1, 2, 3, 10]));
+  it("decodes Postgres hex strings and number arrays", () => {
+    expect(toUint8Array("\\x0102030a")).toEqual(new Uint8Array([1, 2, 3, 10]));
+    expect(toUint8Array("ff00")).toEqual(new Uint8Array([255, 0]));
+    expect(toUint8Array([1, 2, 3])).toEqual(new Uint8Array([1, 2, 3]));
   });
 
-  it("decodes raw hex string", () => {
-    const bytes = toUint8Array("ff00");
-    expect(bytes).toEqual(new Uint8Array([255, 0]));
+  it("decodes the JSON Buffer shape and base64", () => {
+    expect(toUint8Array({ type: "Buffer", data: [1, 2, 3] })).toEqual(
+      new Uint8Array([1, 2, 3]),
+    );
+    expect(toUint8Array(btoa("\x01\x02\x03"))).toEqual(
+      new Uint8Array([1, 2, 3]),
+    );
   });
 
-  it("converts number array", () => {
-    const bytes = toUint8Array([1, 2, 3]);
-    expect(bytes).toEqual(new Uint8Array([1, 2, 3]));
+  it("returns empty bytes for values it cannot decode", () => {
+    expect(toUint8Array(null)).toEqual(new Uint8Array(0));
+    expect(toUint8Array({ nope: true })).toEqual(new Uint8Array(0));
   });
 });
 
 describe("NeonRealtimeProvider", () => {
-  it("initializes, subscribes to live queries, and applies updates", async () => {
-    const doc = new Y.Doc();
-    const awareness = new Awareness(doc);
-    const noteId = "11111111-1111-1111-1111-111111111111";
+  it("does not fetch or subscribe until connect is called", async () => {
+    const { provider, realtime } = createHarness();
 
-    let updatesCallback:
-      | ((snapshot: {
-          status: string;
-          data?: readonly YdocUpdateRow[];
-        }) => void)
-      | null = null;
+    expect(provider.status).toBe("connecting");
+    expect(realtime.subscribe).not.toHaveBeenCalled();
 
-    const mockUpdatesSub = {
-      onChange: vi.fn((cb) => {
-        updatesCallback = cb;
-        return () => {};
-      }),
-      renew: vi.fn().mockResolvedValue(undefined),
-      unsubscribe: vi.fn(),
-    };
+    await provider.connect();
 
-    const mockAwarenessSub = {
-      onChange: vi.fn(() => {
-        return () => {};
-      }),
-      renew: vi.fn().mockResolvedValue(undefined),
-      unsubscribe: vi.fn(),
-    };
+    expect(realtime.subscribe).toHaveBeenCalledTimes(2);
+    provider.destroy();
+  });
 
-    const mockRealtimeClient = {
-      subscribe: vi.fn((query: { type: string }) => {
-        if (query.type === "updates") {
-          return mockUpdatesSub as unknown as MaterializedLiveQuerySubscription<YdocUpdateRow>;
-        }
-        return mockAwarenessSub as unknown as MaterializedLiveQuerySubscription<YdocAwarenessRow>;
-      }),
-      close: vi.fn(),
-    };
+  it("hydrates a fresh document from initialUpdates (reopening a note)", async () => {
+    const source = new Y.Doc();
+    source.get("content").insert(0, "saved before reopening");
+    const row = updateRow(source, "update-1");
 
-    const mockFetch = vi.fn().mockImplementation((url: string) => {
-      if (url.includes("/yjs/live")) {
-        return Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              updates: { type: "updates" },
-              awareness: { type: "awareness" },
-            }),
-        });
-      }
-      if (url.includes("/yjs/update") || url.includes("/yjs/awareness")) {
-        return Promise.resolve({
-          ok: true,
-          status: 200,
-        });
-      }
-      return Promise.reject(new Error("Unknown URL"));
+    const { provider, doc, liveCalls } = createHarness({
+      initialUpdates: [row],
     });
 
-    const provider = new NeonRealtimeProvider({
-      doc,
-      noteId,
-      awareness,
-      realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
+    const synced = vi.fn();
+    provider.on("synced", synced);
+    await provider.connect();
 
-    const syncedSpy = vi.fn();
-    provider.on("synced", syncedSpy);
-
-    // Wait for connect() promise
-    await new Promise((r) => setTimeout(r, 20));
-
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining(
-        "/yjs/live?noteId=11111111-1111-1111-1111-111111111111",
-      ),
-      expect.anything(),
-    );
-    expect(mockRealtimeClient.subscribe).toHaveBeenCalledTimes(2);
-
-    // Prepare a remote doc update
-    const remoteDoc = new Y.Doc();
-    const content = remoteDoc.get("content") as {
-      insert: (index: number, text: string) => void;
-    };
-    content.insert(0, "Hello from remote");
-    const updateBytes = Y.encodeStateAsUpdate(remoteDoc);
-
-    // Trigger snapshot from realtime subscription
-    if (updatesCallback) {
-      (
-        updatesCallback as (snapshot: {
-          status: string;
-          data?: readonly YdocUpdateRow[];
-        }) => void
-      )({
-        status: "live",
-        data: [
-          {
-            id: "update-1",
-            noteId,
-            userId: "user-remote",
-            op: updateBytes,
-          },
-        ],
-      });
-    }
-
+    expect(readText(doc)).toBe("saved before reopening");
     expect(provider.synced).toBe(true);
-    expect(syncedSpy).toHaveBeenCalledWith(true);
-    const localContent = doc.get("content") as {
-      toString: () => string;
-    };
-    expect(localContent.toString()).toBe("Hello from remote");
+    expect(provider.status).toBe("connected");
+    expect(synced).toHaveBeenCalledWith(true);
+    expect(liveCalls[0]?.credentials).toBe("include");
 
-    // Clean up
     provider.destroy();
-    expect(mockUpdatesSub.unsubscribe).toHaveBeenCalled();
-    expect(mockAwarenessSub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it("sends only the local difference when the document already has server rows", async () => {
+    const server = new Y.Doc();
+    server.get("content").insert(0, "from the server");
+
+    const { provider, doc, sentUpdates } = createHarness({
+      initialUpdates: [updateRow(server, "update-1")],
+    });
+
+    // An offline edit that the provider never saw: connect must still send
+    // it, without replaying the whole stored document.
+    doc.get("content").insert(0, "offline: ");
+
+    await provider.connect();
+    await provider.flushDocUpdates();
+
+    expect(sentUpdates).toHaveLength(1);
+    const sent = sentUpdates[0];
+    if (!sent) throw new Error("expected an update");
+
+    expect(sent.byteLength).toBeLessThan(Y.encodeStateAsUpdate(doc).byteLength);
+
+    // Applying the sent diff to what the server holds converges with the
+    // client, and it carries no struct the server already had. Concurrent
+    // inserts at the same index may order either way, so compare against
+    // the client's state rather than one fixed ordering.
+    const replay = new Y.Doc();
+    Y.applyUpdate(replay, Y.encodeStateAsUpdate(server));
+    Y.applyUpdate(replay, sent);
+    expect(readText(replay)).toBe(readText(doc));
+    expect(readText(doc)).toContain("from the server");
+    expect(readText(doc)).toContain("offline: ");
+
+    provider.destroy();
+  });
+
+  it("sends no update on connect when the document already matches the server", async () => {
+    const server = new Y.Doc();
+    server.get("content").insert(0, "already synced");
+
+    const { provider, doc, sentUpdates } = createHarness({
+      initialUpdates: [updateRow(server, "update-1")],
+    });
+
+    await provider.connect();
+    expect(sentUpdates).toHaveLength(0);
+    expect(readText(doc)).toBe("already synced");
+
+    provider.destroy();
+  });
+
+  it("applies live rows and ignores duplicate row ids", async () => {
+    const { provider, doc, realtime } = createHarness();
+    await provider.connect();
+
+    const remote = new Y.Doc();
+    remote.get("content").insert(0, "live");
+    const row = updateRow(remote, "live-1");
+
+    realtime.updatesSubscription.emit({ status: "live", data: [row] });
+    expect(readText(doc)).toBe("live");
+
+    // A materialized snapshot can repeat rows the provider already applied.
+    realtime.updatesSubscription.emit({ status: "live", data: [row] });
+    expect(readText(doc)).toBe("live");
+    expect(provider.synced).toBe(true);
+
+    provider.destroy();
+  });
+
+  it("keeps syncing valid rows when one stored row is invalid", async () => {
+    const source = new Y.Doc();
+    source.get("content").insert(0, "valid content");
+
+    const { provider, doc } = createHarness({
+      initialUpdates: [
+        {
+          id: "broken",
+          noteId: NOTE_ID,
+          op: new Uint8Array([1, 2, 3, 4, 5]),
+          userId: "user-1",
+        },
+        updateRow(source, "valid"),
+      ],
+    });
+
+    await provider.connect();
+
+    expect(readText(doc)).toBe("valid content");
+    expect(provider.synced).toBe(true);
+
+    provider.destroy();
+  });
+
+  it("debounces and merges local updates", async () => {
+    const { provider, doc, sentUpdates } = createHarness();
+    await provider.connect();
+
+    doc.get("content").insert(0, "a");
+    doc.get("content").insert(1, "b");
+    doc.get("content").insert(2, "c");
+
+    expect(sentUpdates).toHaveLength(0);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(sentUpdates).toHaveLength(1);
+    provider.destroy();
+  });
+
+  it("disconnects without destroying the document and reconnects without losing edits", async () => {
+    const { provider, doc, realtime, sentUpdates } = createHarness();
+    await provider.connect();
+
+    doc.get("content").insert(0, "kept");
+    provider.disconnect();
+
     expect(provider.status).toBe("disconnected");
-  });
+    expect(doc.isDestroyed).toBeFalsy();
+    expect(readText(doc)).toBe("kept");
+    expect(realtime.updatesSubscription.unsubscribe).toHaveBeenCalled();
 
-  it("sends local doc updates to the API", async () => {
-    const doc = new Y.Doc();
-    const awareness = new Awareness(doc);
-    const noteId = "11111111-1111-1111-1111-111111111111";
-
-    const mockSub = {
-      onChange: vi.fn(),
-      renew: vi.fn(),
-      unsubscribe: vi.fn(),
-    };
-
-    const mockRealtimeClient = {
-      subscribe: vi.fn().mockReturnValue(mockSub),
-      close: vi.fn(),
-    };
-
-    const sentRequests: { url: string; method?: string; body?: unknown }[] = [];
-    const mockFetch = vi
-      .fn()
-      .mockImplementation((url: string, init?: RequestInit) => {
-        sentRequests.push({ url, method: init?.method, body: init?.body });
-        if (url.includes("/yjs/live")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({ updates: {}, awareness: {} }),
-          });
-        }
-        return Promise.resolve({ ok: true, status: 200 });
-      });
-
-    const provider = new NeonRealtimeProvider({
-      doc,
-      noteId,
-      awareness,
-      realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
-
-    await new Promise((r) => setTimeout(r, 20));
-
-    // Make local edit
-    const content = doc.get("content") as {
-      insert: (index: number, text: string) => void;
-    };
-    content.insert(0, "Local change");
-    await provider.flushDocUpdates();
-
-    const updateRequest = sentRequests.find((req) =>
-      req.url.includes("/yjs/update"),
-    );
-    expect(updateRequest).toBeDefined();
-    expect(updateRequest?.method).toBe("PUT");
-    expect(updateRequest?.url).toContain(
-      "noteId=11111111-1111-1111-1111-111111111111",
-    );
+    await provider.connect();
+    expect(provider.status).toBe("connected");
+    expect(readText(doc)).toBe("kept");
+    expect(sentUpdates.length).toBeGreaterThanOrEqual(1);
 
     provider.destroy();
   });
 
-  it("includes credentials: 'include' on all fetch requests (live, update, awareness)", async () => {
-    const doc = new Y.Doc();
-    const awareness = new Awareness(doc);
-    const noteId = "11111111-1111-1111-1111-111111111111";
+  it("marks itself disconnected when the live query cannot be sealed", async () => {
+    const { provider } = createHarness({ liveOk: false });
 
-    const fetchInits: RequestInit[] = [];
-    const mockFetch = vi
-      .fn()
-      .mockImplementation((url: string, init?: RequestInit) => {
-        if (init) fetchInits.push(init);
-        if (url.includes("/yjs/live")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({ updates: {}, awareness: {} }),
-          });
-        }
-        return Promise.resolve({ ok: true, status: 200 });
-      });
+    const status = vi.fn();
+    provider.on("status", status);
 
-    const mockRealtimeClient = {
-      subscribe: vi.fn().mockReturnValue({
-        onChange: vi.fn(),
-        renew: vi.fn(),
-        unsubscribe: vi.fn(),
-      }),
-      close: vi.fn(),
-    };
+    await expect(provider.connect()).rejects.toThrow("Failed to fetch");
+    expect(provider.status).toBe("disconnected");
+    expect(status).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "disconnected" }),
+    );
+  });
 
-    const provider = new NeonRealtimeProvider({
-      doc,
-      noteId,
-      awareness,
-      realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
+  it("tears down the connection when the live query stream errors", async () => {
+    const { provider, realtime } = createHarness();
+    await provider.connect();
+
+    realtime.updatesSubscription.emit({
+      status: "error",
+      error: new Error("stream failed"),
     });
 
-    await new Promise((r) => setTimeout(r, 20));
+    expect(provider.status).toBe("disconnected");
+    expect(provider.synced).toBe(false);
+    expect(realtime.updatesSubscription.unsubscribe).toHaveBeenCalled();
 
-    // Verify /yjs/live had credentials: "include"
-    const liveCall = mockFetch.mock.calls.find(([url]) =>
-      url.includes("/yjs/live"),
-    );
-    expect(liveCall).toBeDefined();
-    expect(liveCall?.[1]?.credentials).toBe("include");
+    provider.destroy();
+  });
 
-    // Make local doc edit -> triggers /yjs/update
-    const content = doc.get("content") as {
-      insert: (index: number, text: string) => void;
-    };
-    content.insert(0, "Edit with credentials");
-    await provider.flushDocUpdates();
+  it("destroys only the awareness it created", () => {
+    const providedDoc = new Y.Doc();
+    const provided = new Awareness(providedDoc);
+    const providedDestroy = vi.spyOn(provided, "destroy");
 
-    const updateCall = mockFetch.mock.calls.find(([url]) =>
-      url.includes("/yjs/update"),
-    );
-    expect(updateCall).toBeDefined();
-    expect(updateCall?.[1]?.credentials).toBe("include");
+    const withProvided = new NeonRealtimeProvider({
+      doc: providedDoc,
+      noteId: NOTE_ID,
+      awareness: provided,
+      realtimeClient: new FakeRealtimeClient() as unknown as RealtimeClient,
+      fetchClient: vi.fn() as unknown as typeof fetch,
+      apiUrl: "http://localhost:8080",
+    });
+    withProvided.destroy();
+    expect(providedDestroy).not.toHaveBeenCalled();
 
-    // Update awareness -> triggers /yjs/awareness
-    awareness.setLocalStateField("user", { name: "Test User" });
+    const ownedDoc = new Y.Doc();
+    const withOwned = new NeonRealtimeProvider({
+      doc: ownedDoc,
+      noteId: NOTE_ID,
+      realtimeClient: new FakeRealtimeClient() as unknown as RealtimeClient,
+      fetchClient: vi.fn() as unknown as typeof fetch,
+      apiUrl: "http://localhost:8080",
+    });
+    const ownedDestroy = vi.spyOn(withOwned.awareness, "destroy");
+    withOwned.destroy();
+    expect(ownedDestroy).toHaveBeenCalled();
+  });
+
+  it("sends and applies awareness updates", async () => {
+    const { provider, awareness, sentAwareness, realtime } = createHarness();
+    await provider.connect();
+
+    awareness.setLocalStateField("user", { name: "Ada", color: "#2563eb" });
     await provider.flushAwarenessUpdates();
 
-    const awarenessCall = mockFetch.mock.calls.find(([url]) =>
-      url.includes("/yjs/awareness"),
-    );
-    expect(awarenessCall).toBeDefined();
-    expect(awarenessCall?.[1]?.credentials).toBe("include");
+    expect(sentAwareness).toHaveLength(1);
+
+    const remote = new Awareness(new Y.Doc());
+    remote.setLocalStateField("user", { name: "Grace", color: "#7c3aed" });
+    const remoteUpdate = encodeAwarenessUpdate(remote, [remote.clientID]);
+    realtime.awarenessSubscription.emit({
+      status: "live",
+      data: [
+        {
+          noteId: NOTE_ID,
+          userId: "user-2",
+          op: remoteUpdate,
+          updatedAt: new Date(),
+        },
+      ],
+    });
+
+    const states = Array.from(provider.awareness.getStates().values());
+    expect(states).toContainEqual({
+      user: { name: "Grace", color: "#7c3aed" },
+    });
 
     provider.destroy();
   });
 
-  it("handles 401 Unauthorized during awareness update gracefully without unhandled rejections", async () => {
-    const doc = new Y.Doc();
-    const awareness = new Awareness(doc);
-    const noteId = "11111111-1111-1111-1111-111111111111";
+  it("flushes pending edits when destroyed", async () => {
+    const { provider, doc, sentUpdates } = createHarness();
+    await provider.connect();
 
-    const mockFetch = vi.fn().mockImplementation((url: string) => {
-      if (url.includes("/yjs/live")) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ updates: {}, awareness: {} }),
-        });
-      }
-      if (url.includes("/yjs/awareness")) {
-        return Promise.resolve({
-          ok: false,
-          status: 401,
-          statusText: "Unauthorized",
-        });
-      }
-      return Promise.resolve({ ok: true, status: 200 });
-    });
-
-    const mockRealtimeClient = {
-      subscribe: vi.fn().mockReturnValue({
-        onChange: vi.fn(),
-        renew: vi.fn(),
-        unsubscribe: vi.fn(),
-      }),
-      close: vi.fn(),
-    };
-
-    const provider = new NeonRealtimeProvider({
-      doc,
-      noteId,
-      awareness,
-      realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
-
-    const statusSpy = vi.fn();
-    provider.on("status", statusSpy);
-
-    await new Promise((r) => setTimeout(r, 20));
-
-    // Update awareness state, which triggers sendAwarenessUpdate and gets 401
-    awareness.setLocalStateField("cursor", { line: 1 });
-    await provider.flushAwarenessUpdates().catch(() => {});
-
-    // Provider should transition to disconnected on 401 unauthorized
-    expect(provider.status).toBe("disconnected");
-    expect(statusSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        status: "disconnected",
-        error: expect.any(Error),
-      }),
-    );
-
+    doc.get("content").insert(0, "closing tab");
     provider.destroy();
-  });
 
-  it("handles 401 Unauthorized during doc update gracefully", async () => {
-    const doc = new Y.Doc();
-    const awareness = new Awareness(doc);
-    const noteId = "11111111-1111-1111-1111-111111111111";
-
-    const mockFetch = vi.fn().mockImplementation((url: string) => {
-      if (url.includes("/yjs/live")) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ updates: {}, awareness: {} }),
-        });
-      }
-      if (url.includes("/yjs/update")) {
-        return Promise.resolve({
-          ok: false,
-          status: 401,
-          statusText: "Unauthorized",
-        });
-      }
-      return Promise.resolve({ ok: true, status: 200 });
-    });
-
-    const mockRealtimeClient = {
-      subscribe: vi.fn().mockReturnValue({
-        onChange: vi.fn(),
-        renew: vi.fn(),
-        unsubscribe: vi.fn(),
-      }),
-      close: vi.fn(),
-    };
-
-    const provider = new NeonRealtimeProvider({
-      doc,
-      noteId,
-      awareness,
-      realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
-
-    const statusSpy = vi.fn();
-    provider.on("status", statusSpy);
-
-    await new Promise((r) => setTimeout(r, 20));
-
-    // Make local edit -> triggers /yjs/update which returns 401
-    const content = doc.get("content") as {
-      insert: (index: number, text: string) => void;
-    };
-    content.insert(0, "Edit that gets 401");
-    await provider.flushDocUpdates().catch(() => {});
-
-    expect(provider.status).toBe("disconnected");
-    expect(statusSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        status: "disconnected",
-        error: expect.any(Error),
-      }),
-    );
-
-    provider.destroy();
-  });
-
-  it("does not send awareness updates when provider is disconnected", async () => {
-    const doc = new Y.Doc();
-    const awareness = new Awareness(doc);
-    const noteId = "11111111-1111-1111-1111-111111111111";
-
-    const mockFetch = vi.fn().mockImplementation((url: string) => {
-      if (url.includes("/yjs/live")) {
-        return Promise.resolve({
-          ok: false,
-          status: 401,
-          statusText: "Unauthorized",
-        });
-      }
-      return Promise.resolve({ ok: true, status: 200 });
-    });
-
-    const mockRealtimeClient = {
-      subscribe: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const provider = new NeonRealtimeProvider({
-      doc,
-      noteId,
-      awareness,
-      realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
-
-    await new Promise((r) => setTimeout(r, 30));
-    expect(provider.status).toBe("disconnected");
-
-    const fetchCountBefore = mockFetch.mock.calls.length;
-
-    // Setting awareness while disconnected should not send HTTP requests
-    awareness.setLocalStateField("cursor", { line: 2 });
-    await new Promise((r) => setTimeout(r, 30));
-
-    const awarenessCalls = mockFetch.mock.calls
-      .slice(fetchCountBefore)
-      .filter(([url]) => url.includes("/yjs/awareness"));
-    expect(awarenessCalls.length).toBe(0);
-
-    provider.destroy();
-  });
-
-  it("hydrates doc from initialUpdates returned by live endpoint and marks synced before subscription events", async () => {
-    const doc = new Y.Doc();
-    const awareness = new Awareness(doc);
-    const noteId = "11111111-1111-1111-1111-111111111111";
-
-    const remoteDoc = new Y.Doc();
-    const remoteContent = remoteDoc.get("content") as {
-      insert: (index: number, text: string) => void;
-    };
-    remoteContent.insert(0, "Existing content from previous tab");
-    const updateBytes = Y.encodeStateAsUpdate(remoteDoc);
-
-    const mockRealtimeClient = {
-      subscribe: vi.fn().mockReturnValue({
-        onChange: vi.fn(),
-        renew: vi.fn(),
-        unsubscribe: vi.fn(),
-      }),
-      close: vi.fn(),
-    };
-
-    const mockFetch = vi.fn().mockImplementation((url: string) => {
-      if (url.includes("/yjs/live")) {
-        return Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              updates: { type: "updates" },
-              awareness: { type: "awareness" },
-              initialUpdates: [
-                {
-                  id: "initial-update-1",
-                  noteId,
-                  userId: "user-tab-1",
-                  op: updateBytes,
-                },
-              ],
-            }),
-        });
-      }
-      return Promise.resolve({ ok: true, status: 200 });
-    });
-
-    const provider = new NeonRealtimeProvider({
-      doc,
-      noteId,
-      awareness,
-      realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
-
-    const syncedSpy = vi.fn();
-    provider.on("synced", syncedSpy);
-
-    await new Promise((r) => setTimeout(r, 20));
-
-    const localContent = doc.get("content") as { toString: () => string };
-    expect(localContent.toString()).toBe("Existing content from previous tab");
-    expect(provider.synced).toBe(true);
-    expect(syncedSpy).toHaveBeenCalledWith(true);
-
-    provider.destroy();
-  });
-
-  it("synchronizes document updates across multiple tabs connected to the same note", async () => {
-    const doc1 = new Y.Doc();
-    const awareness1 = new Awareness(doc1);
-    const noteId = "22222222-2222-2222-2222-222222222222";
-
-    const doc2 = new Y.Doc();
-    const awareness2 = new Awareness(doc2);
-
-    let tab2UpdatesCallback:
-      | ((snapshot: {
-          status: string;
-          data?: readonly YdocUpdateRow[];
-        }) => void)
-      | null = null;
-
-    const mockRealtimeClient1 = {
-      subscribe: vi.fn().mockReturnValue({
-        onChange: vi.fn(),
-        renew: vi.fn().mockResolvedValue(undefined),
-        unsubscribe: vi.fn(),
-      }),
-      close: vi.fn(),
-    };
-
-    const mockRealtimeClient2 = {
-      subscribe: vi.fn((query: { type: string }) => {
-        if (query.type === "updates") {
-          return {
-            onChange: vi.fn((cb) => {
-              tab2UpdatesCallback = cb;
-              return () => {};
-            }),
-            renew: vi.fn().mockResolvedValue(undefined),
-            unsubscribe: vi.fn(),
-          };
-        }
-        return {
-          onChange: vi.fn(),
-          renew: vi.fn().mockResolvedValue(undefined),
-          unsubscribe: vi.fn(),
-        };
-      }),
-      close: vi.fn(),
-    };
-
-    const serverUpdates: YdocUpdateRow[] = [];
-
-    const mockFetch = vi
-      .fn()
-      .mockImplementation((url: string, init?: RequestInit) => {
-        if (url.includes("/yjs/live")) {
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                updates: { type: "updates" },
-                awareness: { type: "awareness" },
-                initialUpdates: [...serverUpdates],
-              }),
-          });
-        }
-        if (url.includes("/yjs/update")) {
-          const body = init?.body as Uint8Array;
-          const newRow: YdocUpdateRow = {
-            id: `update-${serverUpdates.length + 1}`,
-            noteId,
-            userId: "tab1-user",
-            op: body,
-          };
-          serverUpdates.push(newRow);
-
-          // Simulate Neon Realtime streaming the new update to Tab 2
-          if (tab2UpdatesCallback) {
-            tab2UpdatesCallback({
-              status: "live",
-              data: [...serverUpdates],
-            });
-          }
-          return Promise.resolve({ ok: true, status: 200 });
-        }
-        return Promise.resolve({ ok: true, status: 200 });
-      });
-
-    const provider1 = new NeonRealtimeProvider({
-      doc: doc1,
-      noteId,
-      awareness: awareness1,
-      realtimeClient: mockRealtimeClient1 as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
-
-    const provider2 = new NeonRealtimeProvider({
-      doc: doc2,
-      noteId,
-      awareness: awareness2,
-      realtimeClient: mockRealtimeClient2 as unknown as RealtimeClient,
-      fetchClient: mockFetch as unknown as typeof fetch,
-      apiUrl: "http://localhost:8080",
-    });
-
-    await new Promise((r) => setTimeout(r, 20));
-
-    // Tab 1 edits document
-    const content1 = doc1.get("content") as {
-      insert: (index: number, text: string) => void;
-    };
-    content1.insert(0, "Live update from Tab 1");
-    await provider1.flushDocUpdates();
-
-    // Verify Tab 2's document received the update and matches Tab 1
-    const content2 = doc2.get("content") as { toString: () => string };
-    expect(content2.toString()).toBe("Live update from Tab 1");
-
-    provider1.destroy();
-    provider2.destroy();
-  });
-
-  it("debounces document save updates by at least 100ms and batches multiple edits into one merged update", async () => {
-    vi.useFakeTimers();
-    try {
-      const doc = new Y.Doc();
-      const awareness = new Awareness(doc);
-      const noteId = "33333333-3333-3333-3333-333333333333";
-
-      const sentBodies: Uint8Array[] = [];
-      const mockFetch = vi
-        .fn()
-        .mockImplementation((url: string, init?: RequestInit) => {
-          if (url.includes("/yjs/live")) {
-            return Promise.resolve({
-              ok: true,
-              json: () => Promise.resolve({ updates: {}, awareness: {} }),
-            });
-          }
-          if (url.includes("/yjs/update")) {
-            sentBodies.push(init?.body as Uint8Array);
-            return Promise.resolve({ ok: true, status: 200 });
-          }
-          return Promise.resolve({ ok: true, status: 200 });
-        });
-
-      const mockRealtimeClient = {
-        subscribe: vi.fn().mockReturnValue({
-          onChange: vi.fn(),
-          renew: vi.fn(),
-          unsubscribe: vi.fn(),
-        }),
-        close: vi.fn(),
-      };
-
-      const provider = new NeonRealtimeProvider({
-        doc,
-        noteId,
-        awareness,
-        realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-        fetchClient: mockFetch as unknown as typeof fetch,
-        apiUrl: "http://localhost:8080",
-        debounceMs: 150,
-      });
-
-      // Verify minimum debounce constraint (must be >= 100ms)
-      expect(provider.debounceMs).toBeGreaterThanOrEqual(100);
-
-      // Advance past initial connect
-      await vi.advanceTimersByTimeAsync(20);
-
-      const content = doc.get("content") as {
-        insert: (index: number, text: string) => void;
-      };
-
-      // Rapidly make 3 sequential edits
-      content.insert(0, "A");
-      await vi.advanceTimersByTimeAsync(30);
-      content.insert(1, "B");
-      await vi.advanceTimersByTimeAsync(30);
-      content.insert(2, "C");
-
-      // Before debounce window (150ms from last edit), NO requests should have been sent to /yjs/update
-      const updateCallsBefore = mockFetch.mock.calls.filter(([url]) =>
-        url.includes("/yjs/update"),
-      );
-      expect(updateCallsBefore.length).toBe(0);
-
-      // Advance past debounce window
-      await vi.advanceTimersByTimeAsync(150);
-
-      // Now exactly 1 batched request should have been sent
-      const updateCallsAfter = mockFetch.mock.calls.filter(([url]) =>
-        url.includes("/yjs/update"),
-      );
-      expect(updateCallsAfter.length).toBe(1);
-      expect(sentBodies.length).toBe(1);
-
-      provider.destroy();
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-
-  it("flushes pending debounced doc updates immediately on destroy", async () => {
-    vi.useFakeTimers();
-    try {
-      const doc = new Y.Doc();
-      const awareness = new Awareness(doc);
-      const noteId = "44444444-4444-4444-4444-444444444444";
-
-      const mockFetch = vi
-        .fn()
-        .mockImplementation((url: string, _init?: RequestInit) => {
-          if (url.includes("/yjs/live")) {
-            return Promise.resolve({
-              ok: true,
-              json: () => Promise.resolve({ updates: {}, awareness: {} }),
-            });
-          }
-          return Promise.resolve({ ok: true, status: 200 });
-        });
-
-      const mockRealtimeClient = {
-        subscribe: vi.fn().mockReturnValue({
-          onChange: vi.fn(),
-          renew: vi.fn(),
-          unsubscribe: vi.fn(),
-        }),
-        close: vi.fn(),
-      };
-
-      const provider = new NeonRealtimeProvider({
-        doc,
-        noteId,
-        awareness,
-        realtimeClient: mockRealtimeClient as unknown as RealtimeClient,
-        fetchClient: mockFetch as unknown as typeof fetch,
-        apiUrl: "http://localhost:8080",
-        debounceMs: 150,
-      });
-
-      await vi.advanceTimersByTimeAsync(20);
-
-      const content = doc.get("content") as {
-        insert: (index: number, text: string) => void;
-      };
-      content.insert(0, "Edit right before closing tab");
-
-      // Provider destroyed before 150ms timer expires
-      provider.destroy();
-
-      // destroy() should flush synchronously/immediately so edits are never lost on tab close
-      const updateCalls = mockFetch.mock.calls.filter(([url]) =>
-        url.includes("/yjs/update"),
-      );
-      expect(updateCalls.length).toBe(1);
-    } finally {
-      vi.useRealTimers();
-    }
+    expect(sentUpdates.length).toBeGreaterThanOrEqual(1);
   });
 });

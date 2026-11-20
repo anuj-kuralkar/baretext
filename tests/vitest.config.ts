@@ -14,6 +14,12 @@ export default defineConfig({
         "../packages/test/src/index.ts",
       ),
       "@baretext/db": path.resolve(import.meta.dirname, "../packages/db/src"),
+      "@": path.resolve(import.meta.dirname, "../apps/web/src"),
+      yjs: path.resolve(import.meta.dirname, "../apps/web/node_modules/yjs"),
+      "@y/protocols": path.resolve(
+        import.meta.dirname,
+        "../apps/web/node_modules/@y/protocols",
+      ),
     },
   },
   test: {

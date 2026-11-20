@@ -25,38 +25,36 @@ vi.mock("@baretext/db/realtime", () => {
 import { db } from "@baretext/db";
 import { getYjsLive, NoteNotFound, saveAwareness, saveUpdate } from "./service";
 
+const NOTE_ID = "11111111-1111-1111-1111-111111111111";
+const USER_ID = "user-123";
+
+function mockNoteLookup(found: boolean) {
+  vi.mocked(db.select).mockReturnValueOnce({
+    from: vi.fn().mockReturnValue({
+      where: vi.fn().mockResolvedValue(found ? [{ id: NOTE_ID }] : []),
+    }),
+  } as unknown as ReturnType<typeof db.select>);
+}
+
 describe("Yjs API Service", () => {
   it("throws NoteNotFound when user does not own the note", async () => {
-    const mockFrom = vi.fn().mockReturnValue({
-      where: vi.fn().mockResolvedValue([]), // no note found
-    });
-    vi.mocked(db.select).mockReturnValue({
-      from: mockFrom,
-    } as unknown as ReturnType<typeof db.select>);
+    mockNoteLookup(false);
 
     await expect(
-      getYjsLive({
-        noteId: "11111111-1111-1111-1111-111111111111",
-        userId: "user-123",
-      }),
+      getYjsLive({ noteId: NOTE_ID, userId: USER_ID }),
     ).rejects.toThrow(NoteNotFound);
   });
 
   it("returns sealed queries and initialUpdates for valid note ownership", async () => {
-    const mockFrom = vi.fn().mockReturnValue({
-      where: vi
-        .fn()
-        .mockResolvedValue([{ id: "11111111-1111-1111-1111-111111111111" }]),
-    });
     const mockUpdatesQuery = {
       from: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
           orderBy: vi.fn().mockResolvedValue([
             {
               id: "update-1",
-              noteId: "11111111-1111-1111-1111-111111111111",
+              noteId: NOTE_ID,
               op: Buffer.from([1, 2, 3]),
-              userId: "user-123",
+              userId: USER_ID,
             },
           ]),
         }),
@@ -69,9 +67,11 @@ describe("Yjs API Service", () => {
     };
 
     vi.mocked(db.select)
-      .mockReturnValueOnce({ from: mockFrom } as unknown as ReturnType<
-        typeof db.select
-      >)
+      .mockReturnValueOnce({
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([{ id: NOTE_ID }]),
+        }),
+      } as unknown as ReturnType<typeof db.select>)
       .mockReturnValueOnce(
         mockUpdatesQuery as unknown as ReturnType<typeof db.select>,
       )
@@ -79,10 +79,7 @@ describe("Yjs API Service", () => {
         mockAwarenessQuery as unknown as ReturnType<typeof db.select>,
       );
 
-    const result = await getYjsLive({
-      noteId: "11111111-1111-1111-1111-111111111111",
-      userId: "user-123",
-    });
+    const result = await getYjsLive({ noteId: NOTE_ID, userId: USER_ID });
 
     expect(result).toHaveProperty("updates");
     expect(result).toHaveProperty("awareness");
@@ -95,6 +92,8 @@ describe("Yjs API Service", () => {
   });
 
   it("saves doc update and returns txid", async () => {
+    mockNoteLookup(true);
+
     const mockReturning = vi.fn().mockResolvedValue([{ txid: "tx-12345" }]);
     const mockValues = vi.fn().mockReturnValue({ returning: mockReturning });
     vi.mocked(db.insert).mockReturnValue({
@@ -102,15 +101,22 @@ describe("Yjs API Service", () => {
     } as unknown as ReturnType<typeof db.insert>);
 
     const result = await saveUpdate({
-      noteId: "11111111-1111-1111-1111-111111111111",
+      noteId: NOTE_ID,
       buffer: Buffer.from([1, 2, 3]),
-      userId: "user-123",
+      userId: USER_ID,
     });
 
     expect(result).toEqual({ txid: "tx-12345" });
+    expect(mockValues).toHaveBeenCalledWith({
+      noteId: NOTE_ID,
+      userId: USER_ID,
+      op: Buffer.from([1, 2, 3]),
+    });
   });
 
   it("saves awareness update and returns txid", async () => {
+    mockNoteLookup(true);
+
     const mockReturning = vi.fn().mockResolvedValue([{ txid: "tx-67890" }]);
     const mockOnConflict = vi
       .fn()
@@ -123,11 +129,44 @@ describe("Yjs API Service", () => {
     } as unknown as ReturnType<typeof db.insert>);
 
     const result = await saveAwareness({
-      noteId: "11111111-1111-1111-1111-111111111111",
+      noteId: NOTE_ID,
       buffer: Buffer.from([4, 5, 6]),
-      userId: "user-123",
+      userId: USER_ID,
     });
 
     expect(result).toEqual({ txid: "tx-67890" });
+    expect(mockValues).toHaveBeenCalledWith({
+      op: Buffer.from([4, 5, 6]),
+      noteId: NOTE_ID,
+      userId: USER_ID,
+    });
+  });
+
+  it("refuses to save updates for a note the user does not own", async () => {
+    mockNoteLookup(false);
+
+    await expect(
+      saveUpdate({
+        noteId: NOTE_ID,
+        buffer: Buffer.from([1, 2, 3]),
+        userId: USER_ID,
+      }),
+    ).rejects.toThrow(NoteNotFound);
+
+    expect(db.insert).not.toHaveBeenCalled();
+  });
+
+  it("refuses to save awareness for a note the user does not own", async () => {
+    mockNoteLookup(false);
+
+    await expect(
+      saveAwareness({
+        noteId: NOTE_ID,
+        buffer: Buffer.from([4, 5, 6]),
+        userId: USER_ID,
+      }),
+    ).rejects.toThrow(NoteNotFound);
+
+    expect(db.insert).not.toHaveBeenCalled();
   });
 });

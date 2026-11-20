@@ -10,13 +10,13 @@ const TXID_SELECTION = {
   txid: sql<string>`pg_current_xact_id()::text`,
 } as const;
 
-export async function getYjsLive({
+async function assertNoteOwner({
   noteId,
   userId,
 }: {
   noteId: string;
   userId: string;
-}) {
+}): Promise<void> {
   const [existingNote] = await db
     .select({ id: note.id })
     .from(note)
@@ -27,6 +27,16 @@ export async function getYjsLive({
       "Note not found or you don't have permission to access it",
     );
   }
+}
+
+export async function getYjsLive({
+  noteId,
+  userId,
+}: {
+  noteId: string;
+  userId: string;
+}) {
+  await assertNoteOwner({ noteId, userId });
 
   const updatesQuery = db
     .select({
@@ -74,6 +84,8 @@ export async function saveUpdate({
   buffer: Buffer;
   userId: string;
 }): Promise<{ txid: string }> {
+  await assertNoteOwner({ noteId, userId });
+
   const [row] = await db
     .insert(ydocUpdate)
     .values({
@@ -99,6 +111,8 @@ export async function saveAwareness({
   buffer: Buffer;
   userId: string;
 }): Promise<{ txid: string }> {
+  await assertNoteOwner({ noteId, userId });
+
   const [row] = await db
     .insert(ydocAwareness)
     .values({

@@ -162,6 +162,48 @@ describe("E2E Yjs & Notes API over Neon Realtime", () => {
         );
         const unauthorizedRes = await app.handle(unauthorizedReq);
         expect(unauthorizedRes.status).toBe(404);
+
+        // Writes must check ownership too, not just the live query.
+        const unauthorizedUpdateReq = new Request(
+          `http://localhost:8080/yjs/update?noteId=${noteId}`,
+          {
+            method: "PUT",
+            headers: {
+              ...Object.fromEntries(otherHeaders.entries()),
+              "content-type": "application/octet-stream",
+            },
+            body: new Uint8Array([9, 9, 9]),
+          },
+        );
+        const unauthorizedUpdateRes = await app.handle(unauthorizedUpdateReq);
+        expect(unauthorizedUpdateRes.status).toBe(404);
+
+        const unauthorizedAwarenessReq = new Request(
+          `http://localhost:8080/yjs/awareness?noteId=${noteId}`,
+          {
+            method: "PUT",
+            headers: {
+              ...Object.fromEntries(otherHeaders.entries()),
+              "content-type": "application/octet-stream",
+            },
+            body: new Uint8Array([8, 8, 8]),
+          },
+        );
+        const unauthorizedAwarenessRes = await app.handle(
+          unauthorizedAwarenessReq,
+        );
+        expect(unauthorizedAwarenessRes.status).toBe(404);
+
+        const [unauthorizedRow] = await db
+          .select({ id: ydocUpdate.id })
+          .from(ydocUpdate)
+          .where(
+            and(
+              eq(ydocUpdate.noteId, noteId),
+              eq(ydocUpdate.userId, savedOtherUser.id),
+            ),
+          );
+        expect(unauthorizedRow).toBeUndefined();
       } finally {
         await test.deleteUser(savedOtherUser.id);
       }
