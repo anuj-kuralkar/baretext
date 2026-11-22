@@ -13,7 +13,7 @@ export const app = new Elysia()
       origin: [env.WEB_URL],
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       credentials: true,
-      allowedHeaders: ["content-type", "authorization", "x-note-id"],
+      allowedHeaders: ["content-type", "authorization"],
     }),
   )
   .onError(async ({ error }) => {
