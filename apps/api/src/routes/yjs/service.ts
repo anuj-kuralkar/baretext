@@ -6,10 +6,6 @@ import { HTTPError } from "elysia";
 
 export class NoteNotFound extends HTTPError.id("NOTE_NOT_FOUND", 404) {}
 
-const TXID_SELECTION = {
-  txid: sql<string>`pg_current_xact_id()::text`,
-} as const;
-
 async function assertNoteOwner({
   noteId,
   userId,
@@ -83,23 +79,14 @@ export async function saveUpdate({
   noteId: string;
   buffer: Buffer;
   userId: string;
-}): Promise<{ txid: string }> {
+}): Promise<void> {
   await assertNoteOwner({ noteId, userId });
 
-  const [row] = await db
-    .insert(ydocUpdate)
-    .values({
-      noteId,
-      userId,
-      op: buffer,
-    })
-    .returning(TXID_SELECTION);
-
-  if (!row) {
-    throw new Error("Failed to save ydoc update");
-  }
-
-  return { txid: row.txid };
+  await db.insert(ydocUpdate).values({
+    noteId,
+    userId,
+    op: buffer,
+  });
 }
 
 export async function saveAwareness({
@@ -110,10 +97,10 @@ export async function saveAwareness({
   noteId: string;
   buffer: Buffer;
   userId: string;
-}): Promise<{ txid: string }> {
+}): Promise<void> {
   await assertNoteOwner({ noteId, userId });
 
-  const [row] = await db
+  await db
     .insert(ydocAwareness)
     .values({
       op: buffer,
@@ -126,12 +113,5 @@ export async function saveAwareness({
         op: buffer,
         updatedAt: new Date(),
       },
-    })
-    .returning(TXID_SELECTION);
-
-  if (!row) {
-    throw new Error("Failed to save ydoc awareness");
-  }
-
-  return { txid: row.txid };
+    });
 }

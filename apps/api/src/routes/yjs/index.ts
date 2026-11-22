@@ -23,8 +23,7 @@ export const yjs = new Elysia({ prefix: "/yjs" })
     },
     async ({ request, query: { noteId }, user }) => {
       const buffer = Buffer.from(await request.arrayBuffer());
-      const { txid } = await saveUpdate({ noteId, buffer, userId: user.id });
-      return { txid };
+      await saveUpdate({ noteId, buffer, userId: user.id });
     },
   )
   .put(
@@ -35,7 +34,6 @@ export const yjs = new Elysia({ prefix: "/yjs" })
     },
     async ({ request, user, query: { noteId } }) => {
       const buffer = Buffer.from(await request.arrayBuffer());
-      const { txid } = await saveAwareness({ noteId, buffer, userId: user.id });
-      return { txid };
+      await saveAwareness({ noteId, buffer, userId: user.id });
     },
   );

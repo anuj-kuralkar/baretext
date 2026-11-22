@@ -66,10 +66,6 @@ describe("E2E Yjs & Notes API over Neon Realtime", () => {
       const updateRes = await app.handle(updateReq);
       expect(updateRes.status).toBe(200);
 
-      const updateData = (await updateRes.json()) as { txid: string };
-      expect(updateData).toHaveProperty("txid");
-      expect(typeof updateData.txid).toBe("string");
-
       // Verify ydoc_update row in database
       const [updateRow] = await db
         .select()
@@ -98,10 +94,6 @@ describe("E2E Yjs & Notes API over Neon Realtime", () => {
       );
       const awarenessRes = await app.handle(awarenessReq);
       expect(awarenessRes.status).toBe(200);
-
-      const awarenessData = (await awarenessRes.json()) as { txid: string };
-      expect(awarenessData).toHaveProperty("txid");
-      expect(typeof awarenessData.txid).toBe("string");
 
       // Verify ydoc_awareness row in database
       const [awarenessRow] = await db

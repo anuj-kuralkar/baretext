@@ -91,11 +91,10 @@ describe("Yjs API Service", () => {
     expect(result).toHaveProperty("initialAwareness");
   });
 
-  it("saves doc update and returns txid", async () => {
+  it("saves doc update", async () => {
     mockNoteLookup(true);
 
-    const mockReturning = vi.fn().mockResolvedValue([{ txid: "tx-12345" }]);
-    const mockValues = vi.fn().mockReturnValue({ returning: mockReturning });
+    const mockValues = vi.fn().mockResolvedValue(undefined);
     vi.mocked(db.insert).mockReturnValue({
       values: mockValues,
     } as unknown as ReturnType<typeof db.insert>);
@@ -106,7 +105,7 @@ describe("Yjs API Service", () => {
       userId: USER_ID,
     });
 
-    expect(result).toEqual({ txid: "tx-12345" });
+    expect(result).toBeUndefined();
     expect(mockValues).toHaveBeenCalledWith({
       noteId: NOTE_ID,
       userId: USER_ID,
@@ -114,13 +113,10 @@ describe("Yjs API Service", () => {
     });
   });
 
-  it("saves awareness update and returns txid", async () => {
+  it("saves awareness update", async () => {
     mockNoteLookup(true);
 
-    const mockReturning = vi.fn().mockResolvedValue([{ txid: "tx-67890" }]);
-    const mockOnConflict = vi
-      .fn()
-      .mockReturnValue({ returning: mockReturning });
+    const mockOnConflict = vi.fn().mockReturnValue({});
     const mockValues = vi
       .fn()
       .mockReturnValue({ onConflictDoUpdate: mockOnConflict });
@@ -134,7 +130,7 @@ describe("Yjs API Service", () => {
       userId: USER_ID,
     });
 
-    expect(result).toEqual({ txid: "tx-67890" });
+    expect(result).toBeUndefined();
     expect(mockValues).toHaveBeenCalledWith({
       op: Buffer.from([4, 5, 6]),
       noteId: NOTE_ID,
