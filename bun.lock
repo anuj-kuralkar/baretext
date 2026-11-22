@@ -165,6 +165,20 @@
         "@types/bun": "catalog:",
       },
     },
+    "tests": {
+      "name": "@baretext/tests",
+      "version": "0.0.1",
+      "devDependencies": {
+        "@baretext/api": "workspace:*",
+        "@baretext/db": "workspace:*",
+        "@baretext/test": "workspace:*",
+        "@neon/realtime": "catalog:",
+        "@types/bun": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:",
+        "yjs": "npm:@y/y@14.0.0-rc.29",
+      },
+    },
   },
   "trustedDependencies": [
     "sharp",
@@ -253,6 +267,8 @@
     "@baretext/emails": ["@baretext/emails@workspace:packages/emails"],
 
     "@baretext/test": ["@baretext/test@workspace:packages/test"],
+
+    "@baretext/tests": ["@baretext/tests@workspace:tests"],
 
     "@baretext/web": ["@baretext/web@workspace:apps/web"],
 

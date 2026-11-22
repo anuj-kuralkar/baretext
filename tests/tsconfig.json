@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "module": "Preserve",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "types": ["bun"],
+
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": false,
+
+    // Keep these in sync with tests/vitest.config.ts: the e2e suite runs
+    // workspace sources directly instead of built packages.
+    "paths": {
+      "@baretext/api": ["../apps/api/src/app.ts"],
+      "@baretext/test": ["../packages/test/src/index.ts"],
+      "@baretext/db": ["../packages/db/src/index.ts"],
+      "@baretext/db/*": ["../packages/db/src/*"],
+      "@/*": ["../apps/web/src/*"],
+      "yjs": ["../apps/web/node_modules/yjs"],
+      "@y/protocols/*": ["../apps/web/node_modules/@y/protocols/*"]
+    }
+  },
+  "include": [
+    "e2e/**/*.ts",
+    "setup.ts",
+    "vitest.config.ts",
+    "../apps/web/src/types/y-protocols.d.ts"
+  ]
+}
