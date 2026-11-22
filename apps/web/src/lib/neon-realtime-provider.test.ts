@@ -83,6 +83,7 @@ interface Harness {
   readonly doc: Y.Doc;
   readonly awareness: Awareness;
   readonly realtime: FakeRealtimeClient;
+  readonly connectivity: EventTarget;
   readonly sentUpdates: Uint8Array[];
   readonly sentAwareness: Uint8Array[];
   readonly liveCalls: RequestInit[];
@@ -94,12 +95,18 @@ function createHarness({
   liveOk = true,
   doc = new Y.Doc(),
   noteId = NOTE_ID,
+  connectivity = new EventTarget(),
+  reconnectBaseDelayMs = 10,
+  reconnectMaxDelayMs = 20,
 }: {
   initialUpdates?: readonly YdocUpdateRow[];
   initialAwareness?: readonly YdocAwarenessRow[];
   liveOk?: boolean;
   doc?: Y.Doc;
   noteId?: string;
+  connectivity?: EventTarget;
+  reconnectBaseDelayMs?: number;
+  reconnectMaxDelayMs?: number;
 } = {}): Harness {
   const realtime = new FakeRealtimeClient();
   const sentUpdates: Uint8Array[] = [];
@@ -167,6 +174,9 @@ function createHarness({
     fetchClient: fetchClient as unknown as typeof fetch,
     apiUrl: "http://localhost:8080",
     debounceMs: 100,
+    connectivityTarget: connectivity,
+    reconnectBaseDelayMs,
+    reconnectMaxDelayMs,
   });
 
   return {
@@ -174,6 +184,7 @@ function createHarness({
     doc,
     awareness,
     realtime,
+    connectivity,
     sentUpdates,
     sentAwareness,
     liveCalls,
@@ -366,6 +377,109 @@ describe("NeonRealtimeProvider", () => {
     expect(provider.status).toBe("connected");
     expect(readText(doc)).toBe("kept");
     expect(sentUpdates.length).toBeGreaterThanOrEqual(1);
+
+    provider.destroy();
+  });
+
+  it("reconnects when the browser comes back online and uploads edits made while disconnected", async () => {
+    const server = new Y.Doc();
+    server.get("content").insert(0, "server");
+    const { provider, doc, realtime, connectivity, sentUpdates } =
+      createHarness({
+        initialUpdates: [updateRow(server, "update-1")],
+      });
+
+    await provider.connect();
+    expect(provider.status).toBe("connected");
+
+    // The live stream dies, as it does after a long offline spell.
+    realtime.updatesSubscription.emit({
+      status: "error",
+      error: new Error("network down"),
+    });
+    expect(provider.status).toBe("disconnected");
+
+    // Edits made while offline only exist on this device.
+    doc.get("content").insert(0, "offline: ");
+    expect(sentUpdates).toHaveLength(0);
+
+    // Coming back online must resume sync without a page refresh.
+    connectivity.dispatchEvent(new Event("online"));
+
+    await vi.waitFor(() => {
+      expect(provider.status).toBe("connected");
+    });
+    await vi.waitFor(() => {
+      expect(sentUpdates.length).toBeGreaterThan(0);
+    });
+
+    const sent = sentUpdates.at(-1);
+    if (!sent) throw new Error("expected an update");
+
+    // The server (and therefore every other device) converges on the edit.
+    const serverAfter = new Y.Doc();
+    Y.applyUpdate(serverAfter, Y.encodeStateAsUpdate(server));
+    Y.applyUpdate(serverAfter, sent);
+    expect(readText(serverAfter)).toBe("offline: server");
+
+    provider.destroy();
+  });
+
+  it("retries a transient connection failure even without an online event", async () => {
+    const server = new Y.Doc();
+    server.get("content").insert(0, "server");
+    const { provider, doc, realtime, sentUpdates } = createHarness({
+      initialUpdates: [updateRow(server, "update-1")],
+      reconnectBaseDelayMs: 10,
+      reconnectMaxDelayMs: 20,
+    });
+
+    await provider.connect();
+    expect(provider.status).toBe("connected");
+
+    realtime.updatesSubscription.emit({
+      status: "error",
+      error: new Error("stream lost"),
+    });
+    expect(provider.status).toBe("disconnected");
+
+    doc.get("content").insert(0, "offline: ");
+
+    await vi.waitFor(
+      () => {
+        expect(provider.status).toBe("connected");
+      },
+      { timeout: 1000 },
+    );
+    await vi.waitFor(
+      () => {
+        expect(sentUpdates.length).toBeGreaterThan(0);
+      },
+      { timeout: 1000 },
+    );
+
+    const sent = sentUpdates.at(-1);
+    if (!sent) throw new Error("expected an update");
+
+    const serverAfter = new Y.Doc();
+    Y.applyUpdate(serverAfter, Y.encodeStateAsUpdate(server));
+    Y.applyUpdate(serverAfter, sent);
+    expect(readText(serverAfter)).toBe("offline: server");
+
+    provider.destroy();
+  });
+
+  it("stays disconnected after an explicit disconnect when the browser comes online", async () => {
+    const { provider, connectivity, liveCalls } = createHarness();
+    await provider.connect();
+    provider.disconnect();
+
+    const callsBefore = liveCalls.length;
+    connectivity.dispatchEvent(new Event("online"));
+    await new Promise((resolve) => setTimeout(resolve, 30));
+
+    expect(provider.status).toBe("disconnected");
+    expect(liveCalls).toHaveLength(callsBefore);
 
     provider.destroy();
   });

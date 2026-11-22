@@ -36,6 +36,12 @@ export interface NeonRealtimeProviderOptions {
   readonly renewalIntervalMs?: number;
   readonly fetchClient?: typeof fetch;
   readonly debounceMs?: number;
+  /** Source of `online`/`offline` events. Defaults to `window` when present. */
+  readonly connectivityTarget?: ConnectivityTarget | null;
+  /** First retry delay after a transient connection failure. */
+  readonly reconnectBaseDelayMs?: number;
+  /** Upper bound for the exponential reconnect backoff. */
+  readonly reconnectMaxDelayMs?: number;
 }
 
 export type ProviderStatus = "connecting" | "connected" | "disconnected";
@@ -44,6 +50,12 @@ export type ProviderEventMap = {
   synced: [boolean];
   status: [{ status: ProviderStatus; error?: Error }];
 };
+
+/** Minimal connectivity source, satisfied by `window` in the browser. */
+export interface ConnectivityTarget {
+  addEventListener(type: "online" | "offline", listener: () => void): void;
+  removeEventListener(type: "online" | "offline", listener: () => void): void;
+}
 
 interface SealedQueries {
   updates: SealedLiveQuery<YdocUpdateRow>;
@@ -54,6 +66,21 @@ interface SealedQueries {
 
 const REMOTE_ORIGIN = "remote";
 const EMPTY_UPDATE = Y.encodeStateAsUpdate(new Y.Doc());
+
+/** A failed request to the app's Yjs API, with retry intent attached. */
+class YjsRequestError extends Error {
+  constructor(
+    message: string,
+    readonly retryable: boolean,
+  ) {
+    super(message);
+    this.name = "YjsRequestError";
+  }
+}
+
+function isRetryableError(error: unknown): boolean {
+  return !(error instanceof YjsRequestError) || error.retryable;
+}
 
 function isEmptyUpdate(update: Uint8Array): boolean {
   return (
@@ -127,6 +154,7 @@ export class NeonRealtimeProvider {
   private readonly apiUrl: string;
   private readonly renewalIntervalMs: number;
   private readonly fetchClient: typeof fetch;
+  private readonly connectivityTarget: ConnectivityTarget | null;
   readonly debounceMs: number;
 
   private pendingDocUpdates: Uint8Array[] = [];
@@ -134,6 +162,12 @@ export class NeonRealtimeProvider {
   private pendingAwarenessClients = new Set<number>();
   private awarenessTimer: ReturnType<typeof setTimeout> | null = null;
   private flushInFlight = false;
+  private connectivityListening = false;
+  private autoReconnect = false;
+  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private reconnectAttempts = 0;
+  private readonly reconnectBaseDelayMs: number;
+  private readonly reconnectMaxDelayMs: number;
 
   private updatesSubscription: MaterializedLiveQuerySubscription<YdocUpdateRow> | null =
     null;
@@ -161,6 +195,9 @@ export class NeonRealtimeProvider {
     fetchClient = ((url, init) =>
       fetch(url, { ...init, credentials: "include" })) as typeof fetch,
     debounceMs = 150,
+    connectivityTarget = typeof window === "undefined" ? null : window,
+    reconnectBaseDelayMs = 1_000,
+    reconnectMaxDelayMs = 30_000,
   }: NeonRealtimeProviderOptions) {
     this.doc = doc;
     this.noteId = noteId;
@@ -168,6 +205,12 @@ export class NeonRealtimeProvider {
     this.renewalIntervalMs = renewalIntervalMs;
     this.fetchClient = fetchClient;
     this.realtimeClient = realtimeClient ?? createAppRealtime();
+    this.connectivityTarget = connectivityTarget;
+    this.reconnectBaseDelayMs = Math.max(1, reconnectBaseDelayMs);
+    this.reconnectMaxDelayMs = Math.max(
+      this.reconnectBaseDelayMs,
+      reconnectMaxDelayMs,
+    );
     // Debounce saves by at least 100ms.
     this.debounceMs = Math.max(100, debounceMs);
 
@@ -228,6 +271,9 @@ export class NeonRealtimeProvider {
   async connect(): Promise<void> {
     if (this.destroyed || this.status === "connected") return;
 
+    this.autoReconnect = true;
+    this.startConnectivityListening();
+
     const connection = ++this.connectionId;
     this.status = "connecting";
     this.emit("status", { status: "connecting" });
@@ -238,7 +284,7 @@ export class NeonRealtimeProvider {
       sealed = await this.fetchSealedQueries();
     } catch (error) {
       if (this.isStale(connection)) return;
-      this.fail(error);
+      this.fail(error, isRetryableError(error));
       throw error;
     }
     if (this.isStale(connection)) return;
@@ -309,7 +355,10 @@ export class NeonRealtimeProvider {
         }
         this.markSynced();
       } else if (snapshot.status === "error") {
-        this.fail(snapshot.error);
+        // A fresh sealed query is the fix for an expired or failed stream,
+        // so treat stream errors as transient even when the client's own
+        // reconnect budget is exhausted.
+        this.fail(snapshot.error, true);
       }
     });
 
@@ -337,6 +386,10 @@ export class NeonRealtimeProvider {
    * {@link connect} resumes from whatever the document holds.
    */
   disconnect(): void {
+    this.autoReconnect = false;
+    this.cancelReconnect();
+    this.stopConnectivityListening();
+
     if (
       this.status === "disconnected" &&
       !this.listening &&
@@ -399,6 +452,63 @@ export class NeonRealtimeProvider {
     this.awareness.off("update", this.handleAwarenessUpdate);
   }
 
+  private startConnectivityListening(): void {
+    if (this.connectivityListening || !this.connectivityTarget) return;
+    this.connectivityListening = true;
+    this.connectivityTarget.addEventListener("online", this.handleOnline);
+    this.connectivityTarget.addEventListener("offline", this.handleOffline);
+  }
+
+  private stopConnectivityListening(): void {
+    if (!this.connectivityListening || !this.connectivityTarget) return;
+    this.connectivityListening = false;
+    this.connectivityTarget.removeEventListener("online", this.handleOnline);
+    this.connectivityTarget.removeEventListener("offline", this.handleOffline);
+  }
+
+  private handleOnline = (): void => {
+    if (this.destroyed || !this.autoReconnect) return;
+    this.cancelReconnect();
+    if (this.status === "connected" || this.status === "connecting") return;
+    void this.connect().catch(() => {});
+  };
+
+  private handleOffline = (): void => {
+    // Retrying while the browser is offline only burns the backoff budget;
+    // the next `online` event starts a fresh attempt immediately.
+    this.cancelReconnect();
+  };
+
+  private scheduleReconnect(): void {
+    if (
+      this.destroyed ||
+      !this.autoReconnect ||
+      this.reconnectTimer !== null ||
+      this.status === "connected" ||
+      this.status === "connecting"
+    ) {
+      return;
+    }
+
+    const delay = Math.min(
+      this.reconnectBaseDelayMs * 2 ** this.reconnectAttempts,
+      this.reconnectMaxDelayMs,
+    );
+    this.reconnectAttempts += 1;
+
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null;
+      if (this.destroyed || !this.autoReconnect) return;
+      void this.connect().catch(() => {});
+    }, delay);
+  }
+
+  private cancelReconnect(): void {
+    if (this.reconnectTimer === null) return;
+    clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = null;
+  }
+
   private clearTimers(): void {
     if (this.renewalTimer) {
       clearInterval(this.renewalTimer);
@@ -412,19 +522,27 @@ export class NeonRealtimeProvider {
       clearTimeout(this.awarenessTimer);
       this.awarenessTimer = null;
     }
+    this.cancelReconnect();
   }
 
-  private fail(error: unknown): void {
+  private fail(error: unknown, retryable = true): void {
     const normalized =
       error instanceof Error ? error : new Error(String(error));
     this.teardownConnection();
     this.synced = false;
     this.status = "disconnected";
+    if (!retryable) {
+      this.autoReconnect = false;
+    }
     this.emit("status", { status: "disconnected", error: normalized });
+    if (retryable) {
+      this.scheduleReconnect();
+    }
   }
 
   private markSynced(): void {
     if (!this.synced) {
+      this.reconnectAttempts = 0;
       this.synced = true;
       this.status = "connected";
       this.emit("synced", true);
@@ -470,8 +588,9 @@ export class NeonRealtimeProvider {
     });
 
     if (!res.ok) {
-      throw new Error(
+      throw new YjsRequestError(
         `Failed to fetch live queries for note ${this.noteId}: ${res.status} ${res.statusText}`,
+        res.status !== 401 && res.status !== 403 && res.status !== 404,
       );
     }
 
@@ -581,7 +700,7 @@ export class NeonRealtimeProvider {
     if (!res.ok) {
       const err = new Error(`Failed to save doc update: ${res.statusText}`);
       if (res.status === 401 || res.status === 403 || res.status === 404) {
-        this.fail(err);
+        this.fail(err, false);
       }
       throw err;
     }
@@ -668,7 +787,7 @@ export class NeonRealtimeProvider {
         `Failed to save awareness update: ${res.statusText}`,
       );
       if (res.status === 401 || res.status === 403 || res.status === 404) {
-        this.fail(err);
+        this.fail(err, false);
       }
       throw err;
     }
