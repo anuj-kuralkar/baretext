@@ -1,0 +1,19 @@
+{
+  "name": "@baretext/tests",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@baretext/api": "workspace:*",
+    "@baretext/db": "workspace:*",
+    "@baretext/test": "workspace:*",
+    "@neon/realtime": "catalog:",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "yjs": "npm:@y/y@14.0.0-rc.29"
+  }
+}

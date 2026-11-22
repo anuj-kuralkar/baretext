@@ -1,18 +1,21 @@
 # Baretext Agent Context
 
 ## Architecture
+
 Baretext is a Bun workspace monorepo (`apps/web`, `apps/api`, `packages/*`).
-- **Web**: Next.js frontend with Lexical (Yjs) editor, synchronized via ElectricSQL and TanStack DB.
+
+- **Web**: Next.js frontend with Lexical (Yjs) editor, synchronized via Neon Realtime and TanStack DB.
 - **API**: ElysiaJS backend.
 - **Data**: Neon Postgres, Drizzle ORM, Upstash Redis.
 - **Auth**: Better Auth.
 
 ## Rules
+
 - **Environment**: Read `package.json` for dependency versions and workspace commands.
 - **Formatting**: Run `biome` scripts defined in the root `package.json` for linting.
 - **Testing**: Run tests using `bun run test` (Vitest), not bare `bun test`.
 - **React Compiler**: The React Compiler is active. NEVER use `useMemo`, `useCallback`, or `React.memo()`. Write standard inline functions and objects; rely on the compiler for optimization.
-- **Sync & Offline**: We use ElectricSQL and TanStack DB. You MUST read https://electric-sql.com/AGENTS.md for general information on developing with Electric and TanStack DB.
+- **Sync & Offline**: We use Neon Realtime and TanStack DB.
 
 ## Agent skills
 

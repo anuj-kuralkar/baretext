@@ -4,9 +4,9 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { clearDocument } from "y-indexeddb";
 import { useNoteCollection } from "@/collections/note";
 import { toast } from "@/components/ui/toast";
+import { clearNoteOffline } from "@/lib/indexeddb";
 
 export interface NoteDeleteTriggerProps
   extends useRender.ComponentProps<"div"> {
@@ -39,9 +39,9 @@ export function NoteDeleteTrigger({
         // Fire-and-forget keeps the transition from waiting on IndexedDB.
         void (async () => {
           try {
-            await clearDocument(noteId);
+            await clearNoteOffline(noteId);
           } catch (error) {
-            console.error("Failed to clear indexeddb for note:", error);
+            console.error("Failed to clear offline storage for note:", error);
           }
         })();
       } catch (error) {

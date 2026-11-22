@@ -1,4 +1,3 @@
-import { LocalStorageResumeStateProvider } from "@electric-sql/y-electric";
 import { CodePrismExtension } from "@lexical/code-prism";
 import { buildEditorFromExtensions } from "@lexical/extension";
 import { $generateHtmlFromNodes } from "@lexical/html";
@@ -10,18 +9,12 @@ import {
   MdastHtmlExtension,
 } from "@lexical/mdast";
 import { RichTextExtension } from "@lexical/rich-text";
-import {
-  createBindingV2__EXPERIMENTAL,
-  syncYjsStateToLexicalV2__EXPERIMENTAL,
-} from "@lexical/yjs";
+import { createYBinding, createYDoc } from "@lexical/y";
+import { loadYOffline, openYOfflineStore } from "@lexical/y/offline";
 import { defineExtension } from "lexical";
-import { IndexeddbPersistence } from "y-indexeddb";
-import { Awareness } from "y-protocols/awareness";
 import * as Y from "yjs";
-import {
-  createElectricProvider,
-  createTrivialProvider,
-} from "@/lib/electric-provider";
+
+import { NeonRealtimeProvider } from "@/lib/neon-realtime-provider";
 
 const exportExtension = defineExtension({
   name: "@baretext/export",
@@ -41,47 +34,55 @@ export async function exportNote(
   noteId: string,
   format: ExportFormat,
 ): Promise<string> {
-  const doc = new Y.Doc();
+  const doc = createYDoc();
 
-  // 1. Load local offline state (using y-indexeddb built-in promise)
-  const persistence = new IndexeddbPersistence(noteId, doc);
-  await Promise.race([
-    persistence.whenSynced,
-    new Promise((r) => setTimeout(r, 2000)),
-  ]);
-
-  // 2. If online, fetch changes from other devices
-  if (typeof navigator !== "undefined" && navigator.onLine) {
-    const resumeProvider = new LocalStorageResumeStateProvider(noteId);
-    const awareness = new Awareness(doc);
-    const electric = createElectricProvider(
-      doc,
-      noteId,
-      awareness,
-      resumeProvider.load(),
-    );
-    const unsubscribeResume = resumeProvider.subscribeToResumeState(electric);
-
+  // 1. Try to load local offline state from @lexical/y/offline store
+  if (typeof window !== "undefined" && window.indexedDB) {
     try {
-      if (!electric.synced) {
-        await new Promise((r) => {
-          electric.once("synced", r);
-          setTimeout(r, 1500);
-        });
+      const opened = await openYOfflineStore({
+        idb: {
+          indexedDB: window.indexedDB,
+          IDBKeyRange: window.IDBKeyRange,
+        },
+      });
+
+      if (opened.ok) {
+        const store = opened.value;
+        const loadedRes = await loadYOffline({ store, key: noteId });
+        if (loadedRes.ok && loadedRes.value?.state) {
+          Y.applyUpdate(doc, loadedRes.value.state, "local");
+        }
       }
-    } finally {
-      unsubscribeResume();
-      electric.destroy();
-      awareness.destroy();
+    } catch (err) {
+      console.warn("Failed to read offline state for export:", err);
     }
   }
 
-  // 3. Bind and sync to headless editor
+  // 2. If online, fetch latest changes from Neon Realtime
+  if (typeof navigator !== "undefined" && navigator.onLine) {
+    const provider = new NeonRealtimeProvider({ doc, noteId });
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    try {
+      const timeout = new Promise<void>((resolve) => {
+        timeoutId = setTimeout(resolve, 1500);
+      });
+      await Promise.race([provider.connect().catch(() => {}), timeout]);
+    } finally {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+      provider.destroy();
+    }
+  }
+
+  // 3. Bind Yjs doc to headless Lexical editor
   const editor = buildEditorFromExtensions(exportExtension);
-  syncYjsStateToLexicalV2__EXPERIMENTAL(
-    createBindingV2__EXPERIMENTAL(editor, noteId, doc, new Map()),
-    createTrivialProvider(),
-  );
+  const binding = createYBinding(editor, {
+    doc,
+    schemaVersion: 1,
+    synced: true,
+    onStatus: () => {},
+  });
 
   // 4. Serialize
   const result = editor.read(() =>
@@ -90,7 +91,7 @@ export async function exportNote(
       : $convertToMarkdownString(),
   );
 
-  persistence.destroy();
+  binding.dispose();
   doc.destroy();
 
   return result;

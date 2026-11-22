@@ -5,7 +5,6 @@ import { env } from "./libs/env";
 import { posthog } from "./libs/posthog";
 import { auth } from "./routes/auth/index";
 import { note } from "./routes/note/index";
-import { shape } from "./routes/shape/index";
 import { yjs } from "./routes/yjs/index";
 
 export const app = new Elysia()
@@ -14,13 +13,7 @@ export const app = new Elysia()
       origin: [env.WEB_URL],
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       credentials: true,
-      allowedHeaders: ["content-type", "authorization", "x-room-id"],
-      exposeHeaders: [
-        "electric-offset",
-        "electric-handle",
-        "electric-schema",
-        "electric-cursor",
-      ],
+      allowedHeaders: ["content-type", "authorization"],
     }),
   )
   .onError(async ({ error }) => {
@@ -28,7 +21,6 @@ export const app = new Elysia()
   })
   .use(auth)
   .use(note)
-  .use(shape)
   .use(yjs);
 
 export type App = typeof app;

@@ -1,78 +1,52 @@
-import { clearDocument } from "y-indexeddb";
+import { openYOfflineStore } from "@lexical/y/offline";
 
 /**
- * Deletes all IndexedDB databases associated with Yjs notes and cleans up
- * cached resume states in localStorage.
+ * Clears offline storage for a single note in @lexical/y/offline store.
  */
-
-// The resume-state provider persists each streamed doc's saved position
-// alongside the store name, under "<noteId>_vector".
-const RESUME_STATE_VECTOR_SUFFIX = "_vector";
-
-function localStorageKeyToDbName(key: string): string {
-  return key.endsWith(RESUME_STATE_VECTOR_SUFFIX)
-    ? key.slice(0, -RESUME_STATE_VECTOR_SUFFIX.length)
-    : key;
-}
-
-async function discoverIndexedDbNames(): Promise<string[]> {
-  if (
-    typeof indexedDB === "undefined" ||
-    typeof indexedDB.databases !== "function"
-  ) {
-    return [];
-  }
+export async function clearNoteOffline(noteId: string): Promise<void> {
+  if (typeof window === "undefined" || !window.indexedDB) return;
 
   try {
-    const dbs = await indexedDB.databases();
-    return dbs.flatMap((db) => (db.name ? [db.name] : []));
-  } catch {
-    // databases() fails when blocked by browser policy
-    return [];
+    const opened = await openYOfflineStore({
+      idb: {
+        indexedDB: window.indexedDB,
+        IDBKeyRange: window.IDBKeyRange,
+      },
+    });
+
+    if (opened.ok) {
+      await opened.value.clear(noteId, { slots: "all", captures: "all" });
+    }
+  } catch (error) {
+    console.error("Failed to clear offline storage for note:", error);
   }
 }
 
-function discoverLocalStorageDbNames(): string[] {
-  try {
-    const keys = Array.from({ length: localStorage.length }, (_, index) =>
-      localStorage.key(index),
-    );
-    return keys.flatMap((key) => (key ? [localStorageKeyToDbName(key)] : []));
-  } catch {
-    // Ignore if localStorage is inaccessible
-    return [];
-  }
-}
-
+/**
+ * Deletes all stored documents in @lexical/y/offline store.
+ */
 export async function clearAllNotesIndexedDb(): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !window.indexedDB) return;
 
-  const dbNames = new Set<string>([
-    // 1. All databases via indexedDB.databases() (Baseline widely available)
-    ...(await discoverIndexedDbNames()),
-    // 2. Note IDs stored in localStorage by LocalStorageResumeStateProvider
-    ...discoverLocalStorageDbNames(),
-  ]);
+  try {
+    const opened = await openYOfflineStore({
+      idb: {
+        indexedDB: window.indexedDB,
+        IDBKeyRange: window.IDBKeyRange,
+      },
+    });
 
-  // 3. Delete each IndexedDB database and any corresponding localStorage keys
-  await Promise.all(
-    Array.from(dbNames).map(async (name) => {
-      try {
-        await clearDocument(name);
-      } catch {
-        try {
-          indexedDB.deleteDatabase(name);
-        } catch {
-          // Ignore
-        }
+    if (opened.ok) {
+      const keysRes = await opened.value.keys();
+      if (keysRes.ok) {
+        await Promise.all(
+          keysRes.value.map((key) =>
+            opened.value.clear(key, { slots: "all", captures: "all" }),
+          ),
+        );
       }
-
-      try {
-        localStorage.removeItem(name);
-        localStorage.removeItem(`${name}${RESUME_STATE_VECTOR_SUFFIX}`);
-      } catch {
-        // Ignore
-      }
-    }),
-  );
+    }
+  } catch (error) {
+    console.error("Failed to clear all offline notes:", error);
+  }
 }
