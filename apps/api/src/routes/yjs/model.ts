@@ -3,19 +3,19 @@ import { z } from "zod";
 
 export const LiveGet = {
   Query: z.object({
-    noteId: z.string().uuid(),
+    noteId: z.uuid(),
   }),
 };
 
 export const UpdatePut = {
   Query: z.object({
-    noteId: z.string().uuid(),
+    noteId: z.uuid(),
   }),
 };
 
 export const AwarenessPut = {
   Query: z.object({
-    noteId: z.string().uuid(),
+    noteId: z.uuid(),
   }),
 };
 
