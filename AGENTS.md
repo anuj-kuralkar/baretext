@@ -1,18 +1,30 @@
 # Baretext Agent Context
 
-## Architecture
-Baretext is a Bun workspace monorepo (`apps/web`, `apps/api`, `packages/*`).
-- **Web**: Next.js frontend with Lexical (Yjs) editor, synchronized via ElectricSQL and TanStack DB.
-- **API**: ElysiaJS backend.
-- **Data**: Neon Postgres, Drizzle ORM, Upstash Redis.
-- **Auth**: Better Auth.
+Bun workspace monorepo (`apps/web`, `apps/api`, `packages/*`, `tests`). Read root `package.json` for dependencies and workspace scripts.
 
-## Rules
-- **Environment**: Read `package.json` for dependency versions and workspace commands.
-- **Formatting**: Run `biome` scripts defined in the root `package.json` for linting.
-- **Testing**: Run tests using `bun run test` (Vitest), not bare `bun test`.
-- **React Compiler**: The React Compiler is active. NEVER use `useMemo`, `useCallback`, or `React.memo()`. Write standard inline functions and objects; rely on the compiler for optimization.
-- **Sync & Offline**: We use ElectricSQL and TanStack DB. You MUST read https://electric-sql.com/AGENTS.md for general information on developing with Electric and TanStack DB.
+## Architecture Boundaries
+
+- **Web (`apps/web`)**: Next.js + React Compiler + Lexical (`yjs`) + TanStack DB. Write plain inline functions and objects; rely on the React Compiler instead of `useMemo`, `useCallback`, or `React.memo()`.
+- **API (`apps/api`)**: ElysiaJS backend separated from Next.js. Export `app` and `type App` from `src/app.ts`; keep `app.listen()` isolated in `src/index.ts`.
+- **Sync (hybrid per ADR-0005)**: Note metadata syncs via Neon Realtime sealed queries; Yjs document sync remains on the Electric shape proxy (`apps/api/src/routes/shape`). When adding or modifying synced entities, follow ADR-0005 and https://electric-sql.com/AGENTS.md.
+- **Data & Auth (`packages/db`, `packages/auth`)**: Neon Postgres + Drizzle ORM, Upstash Redis, Better Auth.
+
+## Tight Verification Loop
+
+Use AI-efficient reporters to keep command output compact and actionable:
+
+- **Typecheck**: `bun check` (runs `tsc --noEmit` across every workspace package)
+- **Format**: `bun fmt` (`biome format --write --reporter=concise .`) or `bun fmt:check`
+- **Lint**: `bun lint` (`biome lint --reporter=concise .`)
+- **Unit tests**: `bun run test:unit -- --reporter=agent` (always run Vitest via `bun run`, never bare `bun test`)
+- **Coverage**: `bun run test:coverage -- --reporter=agent` (80% threshold gate; currently below threshold as tracked tech debt)
+- **E2E tests**: `bun run test:e2e -- --reporter=line` (Playwright in `tests/e2e` on an ephemeral Neon branch)
+
+Before finishing any code change, run `bun check`, `bun lint`, `bun fmt`, and `bun run test:unit -- --reporter=agent` cleanly; run `bun run test:e2e -- --reporter=line` whenever changes span auth, DB schema, API contracts, or end-to-end UI flows.
+
+## Testing Reference
+
+Read [`docs/agents/testing.md`](docs/agents/testing.md) before writing or updating unit tests, Elysia route tests, Better Auth tests, coverage checks, or Playwright E2E tests.
 
 ## Agent skills
 

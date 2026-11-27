@@ -7,10 +7,8 @@
     "dev": "bun --bun next dev",
     "build": "bun --bun next build",
     "start": "bun --bun next start",
-    "check": "biome check",
-    "check:write": "biome check --write",
-    "install-browser": "playwright install --with-deps chromium",
-    "test": "vitest"
+    "check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@baretext/api": "workspace:*",
@@ -55,19 +53,20 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/bun": "catalog:",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
-    "@vitest/browser-playwright": "^5.1.0",
     "babel-plugin-react-compiler": "1.0.0",
-    "playwright": "^1.65.0",
+    "happy-dom": "^20.0.11",
     "raw-loader": "^4.0.2",
     "tailwindcss": "^4.3.3",
     "typescript": "catalog:",
-    "vitest": "catalog:",
-    "vitest-browser-react": "^2.3.0"
+    "vitest": "catalog:"
   },
   "ignoreScripts": [
     "sharp",

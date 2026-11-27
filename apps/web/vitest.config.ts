@@ -1,8 +1,8 @@
 import path from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { defineProject } from "vitest/config";
 
-export default defineConfig({
+export default defineProject({
   root: import.meta.dirname,
   resolve: {
     alias: {
@@ -12,8 +12,9 @@ export default defineConfig({
   plugins: [react()],
   test: {
     name: "web-unit",
+    environment: "happy-dom",
+    setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
-    exclude: ["src/**/*.browser.test.{ts,tsx}"],
     restoreMocks: true,
   },
 });

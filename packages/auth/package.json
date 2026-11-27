@@ -4,7 +4,13 @@
   "type": "module",
   "module": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./env": "./src/env.ts",
+    "./test": "./src/test.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@baretext/db": "workspace:*",
@@ -16,7 +22,9 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@types/bun": "catalog:"
+    "@types/bun": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "typescript": "catalog:"

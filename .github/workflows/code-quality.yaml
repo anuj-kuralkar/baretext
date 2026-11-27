@@ -11,9 +11,31 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
-    name: Check
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck workspaces
+        run: bun run check
+
+  fmt:
+    name: Format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,8 +46,23 @@ jobs:
       - name: Setup Biome
         uses: biomejs/setup-biome@v2
 
-      - name: Run Biome
-        run: biome ci .
+      - name: Check formatting
+        run: biome format --reporter=concise .
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+
+      - name: Run Biome lint
+        run: biome lint --reporter=concise .
 
   build:
     name: Build
@@ -66,8 +103,12 @@ jobs:
       - name: Run unit tests
         run: bun run test:unit
 
-  test-browser:
-    name: Browser tests
+      - name: Check coverage thresholds (tech debt)
+        continue-on-error: true
+        run: bun run test:coverage
+
+  test-e2e:
+    name: E2E tests (Neon Branch)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -81,6 +122,47 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Create Neon branch
+        id: neon-branch
+        uses: neondatabase/create-branch-action@v6
+        with:
+          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          branch_name: ci-e2e-${{ github.event.pull_request.number || github.run_id }}
+          parent: main
+
+      - name: Enable Neon Realtime and pull branch env
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+        run: |
+          bun add -g neon
+          neon realtime enable --project-id "${{ secrets.NEON_PROJECT_ID }}" --branch "${{ steps.neon-branch.outputs.branch_id }}" --allowed-origin "http://localhost:3000"
+          neon env pull --project-id "${{ secrets.NEON_PROJECT_ID }}" --branch "${{ steps.neon-branch.outputs.branch_id }}" --file .env.neon -s realtime
+          sed -E "s/^([^=]+)=['\"]?(.*)['\"]?$/\1=\2/" .env.neon >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_NEON_REALTIME_URL=$(sed -nE "s/^NEON_REALTIME_URL=['\"]?(.*)['\"]?$/\1/p" .env.neon)" >> "$GITHUB_ENV"
+
+      - name: Build apps for E2E
+        env:
+          DATABASE_URL: ${{ steps.neon-branch.outputs.db_url_pooled }}
+          DATABASE_URL_UNPOOLED: ${{ steps.neon-branch.outputs.db_url }}
+          NEXT_PUBLIC_API_URL: http://localhost:8080
+          BETTER_AUTH_URL: http://localhost:8080
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          WEB_URL: http://localhost:3000
+          GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          ELECTRIC_URL: ${{ secrets.ELECTRIC_URL }}
+          AUTH_SENDER_EMAIL: ${{ secrets.AUTH_SENDER_EMAIL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          POSTHOG_PROJECT_TOKEN: ${{ secrets.POSTHOG_PROJECT_TOKEN }}
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+          VERCEL_ENV: development
+        run: bun run build
+
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
@@ -88,31 +170,53 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('bun.lock') }}
 
       - name: Install Chromium
-        run: bun --filter @baretext/web install-browser
+        run: bun --filter @baretext/e2e install-browser
 
-      - name: Run browser tests
-        run: bun run test:browser
+      - name: Run Playwright E2E
+        env:
+          NEON_E2E_EXISTING_DB: "true"
+          DATABASE_URL: ${{ steps.neon-branch.outputs.db_url_pooled }}
+          DATABASE_URL_UNPOOLED: ${{ steps.neon-branch.outputs.db_url }}
+          NEXT_PUBLIC_API_URL: http://localhost:8080
+          BETTER_AUTH_URL: http://localhost:8080
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          WEB_URL: http://localhost:3000
+          GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          ELECTRIC_URL: ${{ secrets.ELECTRIC_URL }}
+          AUTH_SENDER_EMAIL: ${{ secrets.AUTH_SENDER_EMAIL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          POSTHOG_PROJECT_TOKEN: ${{ secrets.POSTHOG_PROJECT_TOKEN }}
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+          VERCEL_ENV: development
+        run: bun run test:e2e -- --reporter=line
+
+      - name: Delete Neon branch
+        if: always()
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          branch: ${{ steps.neon-branch.outputs.branch_id }}
 
   commitlint:
     name: Commit lint
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install commitlint
-        run: bun add -D @commitlint/cli @commitlint/config-conventional
-
-      - name: Print versions
-        run: |
-          git --version
-          bun --version
-          bunx commitlint --version
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'

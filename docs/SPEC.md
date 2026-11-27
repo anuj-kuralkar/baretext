@@ -23,7 +23,7 @@ The Baretext Editor is an offline-first rich text editor that uses a Conflict-fr
 - **Authentication:** Better Auth acts as the absolute boundary for identities, sessions, and security constraints.
 - **Source of Truth:** The binary Yjs state vector (`BYTEA`) is the absolute, lossless source of truth for the document body. Lexical JSON state is discarded entirely to prevent corruption.
 - **Persistence:** Both Notes and Documents are ultimately saved to a cloud Postgres database on Neon. Locally, TanStack DB drives optimistic updates so the UI feels instant, while the active Yjs document relies on `y-indexeddb` to survive tab closures offline. Local data is destroyed when a user securely logs out.
-- **Data Denormalization (Text Content):** Lexical mutation listeners actively extract the *entire plain text* of the document into a `text_content` column on the `note` table.
+- **Data Denormalization (Text Content):** Lexical mutation listeners actively extract the _entire plain text_ of the document into a `text_content` column on the `note` table.
 - **Dynamic Previews:** The UI dynamically slices the `text_content` string on the client to generate list previews. There is no discrete `preview` column.
 - **Ephemerality:** Yjs Awareness (live cursors, presence) is completely omitted. Focus is strictly on durable offline state, not multiplayer collaboration.
 - **Save Paradigm:** Manual "AutoSave" timers serializing JSON are removed. Saving is handled by ElectricProvider syncing binary diffs to Neon, and `y-indexeddb` capturing local offline state.

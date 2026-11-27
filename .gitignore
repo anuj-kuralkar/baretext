@@ -12,6 +12,11 @@ node_modules
 
 # testing
 coverage
+playwright-report/
+test-results/
+
+# neon
+.neon
 
 # next.js
 .next/

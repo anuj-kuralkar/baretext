@@ -1,9 +1,10 @@
-import { defineConfig } from "vitest/config";
+import { defineProject } from "vitest/config";
 
-export default defineConfig({
+export default defineProject({
   root: import.meta.dirname,
   test: {
     name: "emails-unit",
     include: ["src/**/*.test.ts"],
+    restoreMocks: true,
   },
 });

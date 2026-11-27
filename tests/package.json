@@ -1,0 +1,22 @@
+{
+  "name": "@baretext/e2e",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "install-browser": "playwright install --with-deps chromium",
+    "test": "bun run scripts/e2e.ts"
+  },
+  "devDependencies": {
+    "@baretext/api": "workspace:*",
+    "@baretext/auth": "workspace:*",
+    "@baretext/db": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@t3-oss/env-core": "catalog:",
+    "@types/bun": "catalog:",
+    "drizzle-kit": "1.0.0-rc.5",
+    "typescript": "catalog:",
+    "zod": "catalog:"
+  }
+}

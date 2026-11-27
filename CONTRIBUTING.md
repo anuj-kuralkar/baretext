@@ -18,23 +18,22 @@ We use Bun for package management. From the project root, run:
 bun install
 ```
 
-## 3. Install Chromium for Browser Tests
+## 3. Install Chromium for E2E Tests
 
-Install the Playwright Chromium browser before running browser-mode tests locally:
+Install the Playwright Chromium browser before running E2E tests locally:
 
 ```bash
-bun --filter @baretext/web install-browser
+bun --filter @baretext/e2e install-browser
 ```
 
-Lefthook runs only fast unit tests before each commit. Run browser tests headlessly with `bun run test:browser`, or interactively with `bun run test:browser:ui`.
+Local E2E runs (`bun run test:e2e`) create an ephemeral Neon branch via the `neon` CLI (`neon auth` + `neon link`, or `NEON_API_KEY` + `NEON_PROJECT_ID`) and clean it up automatically when the suite finishes.
 
 ### Test Commands and Naming
 
-- `bun run test` runs fast unit tests and is used by Lefthook.
-- `bun run test:browser` runs `*.browser.test.ts(x)` files headlessly.
-- `bun run test:all` runs both tiers, as CI does.
-
-Name pure logic and service tests `*.test.ts(x)`. Name tests that require a real browser `*.browser.test.ts(x)`; this keeps Chromium out of the fast feedback loop.
+- `bun run test` / `bun run test:unit` runs colocated Vitest unit tests (`*.test.ts(x)`), including React Testing Library component tests and Elysia `app.handle()` route tests.
+- `bun run test:coverage` runs unit tests with V8 coverage checks (80% global threshold).
+- `bun run test:e2e` runs Playwright E2E specs (`tests/e2e/*.spec.ts`) against an isolated Neon branch.
+- `bun run test:all` runs `test:unit` followed by `test:e2e`.
 
 ## 4. Running Local Servers
 
@@ -48,14 +47,20 @@ bun dev:web
 bun dev:api
 ```
 
-## 5. Code Quality (Linting & Formatting)
+## 5. Code Quality (Typechecking, Formatting & Linting)
 
-We use [Biome](https://biomejs.dev/) as our formatter and linter. To check your code before committing:
+We use TypeScript (`tsc --noEmit`) for typechecking and [Biome](https://biomejs.dev/) for formatting and linting:
 
 ```bash
-# Report issues
+# Typecheck all workspace packages
 bun check
 
-# Automatically fix safe issues
-bun check:write
+# Format files with Biome
+bun fmt
+
+# Check formatting without writing
+bun fmt:check
+
+# Lint files with Biome
+bun lint
 ```

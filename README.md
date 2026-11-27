@@ -8,11 +8,13 @@
 ## Architecture
 
 Baretext is a Bun workspace monorepo consisting of:
+
 - `apps/web`: Next.js frontend with a Lexical (Yjs) rich text editor.
 - `apps/api`: ElysiaJS backend.
 - `packages/*`: Shared internal packages.
 
 ### Tech Stack
+
 - **Frontend**: Next.js, React, Tailwind CSS, Base UI, shadcn/ui, Lucide React.
 - **Backend**: ElysiaJS.
 - **Database & ORM**: Neon (Serverless Postgres), Drizzle ORM.

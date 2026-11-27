@@ -11,6 +11,10 @@
     "./zod/schema": "./src/zod/schema.ts",
     "./zod/codec": "./src/zod/codec.ts"
   },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "vitest run"
+  },
   "dependencies": {
     "@neon/realtime": "catalog:",
     "@neon/realtime-drizzle": "catalog:",
@@ -22,7 +26,9 @@
   },
   "devDependencies": {
     "@types/bun": "catalog:",
-    "drizzle-kit": "1.0.0-rc.5"
+    "drizzle-kit": "1.0.0-rc.5",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "typescript": "catalog:"

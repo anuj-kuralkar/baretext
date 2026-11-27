@@ -29,5 +29,6 @@ export const env = createEnv({
     PORT: z.coerce.number().default(8080),
   },
   runtimeEnv: process.env,
-  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
+  skipValidation:
+    process.env.SKIP_ENV_VALIDATION === "true" || Boolean(process.env.VITEST),
 });

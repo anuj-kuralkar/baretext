@@ -12,9 +12,8 @@
     "dev": "bun run --watch src/index.ts",
     "build": "bun build.ts",
     "start": "bun index.js",
-    "check": "biome check",
-    "check:write": "biome check --write",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@baretext/auth": "workspace:*",
@@ -33,7 +32,9 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@elysia/eden": "2.0.0-rc.1",
     "@types/bun": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }
